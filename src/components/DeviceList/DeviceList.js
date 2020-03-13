@@ -10,16 +10,15 @@ const DeviceList = () => {
     const allDeviceDataRef = db.collection('DeviceData');
 
     const [allDeviceDetails, setAllDeviceDetails] = useState(DeviceData.DeviceData);
-    const [userDeviceData, setUserDeviceData] = React.useState([]);
+    const [userDeviceData, setUserDeviceData] = useState([]);
     let currentUserId = 'user1';
 
     useEffect(() => {
-        getUserDevices(currentUserId);
+        getUserDeviceConfiguration(currentUserId);
     }, []);
 
-    const getUserDevices = async (userId) => {
+    const getUserDeviceConfiguration = async (userId) => {
         let data = await userDeviceDataRef.get();
-
         setUserDeviceData(data.docs.map(doc => doc.data()).filter(user => user.userID === userId));
     }
 

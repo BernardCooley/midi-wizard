@@ -4,24 +4,24 @@
       "userID": "user1",
       "devices": [
         {
-          "Digitakt": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Digitakt",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Digitone": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Digitone",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Octatrack": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Octatrack",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Minilogue": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Minilogue",
+          "manufacturer": "Korg",
+          "midi": ["", "", ""]
         }
       ]
     },
@@ -29,19 +29,19 @@
       "userID": "user2",
       "devices": [
         {
-          "Keystep": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Keystep",
+          "manufacturer": "Arturia",
+          "midi": ["", "", ""]
         },
         {
-          "Digitone": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Digitone",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Octatrack": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Octatrack",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         }
       ]
     },
@@ -49,24 +49,24 @@
       "userID": "user3",
       "devices": [
         {
-          "Digitakt": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Digitakt",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Digitone": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Digitone",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Octatrack": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Octatrack",
+          "manufacturer": "Elektron",
+          "midi": ["", "", ""]
         },
         {
-          "Minilogue": {
-            "midi": ["", "", ""]
-          }
+          "deviceName": "Minilogue",
+          "manufacturer": "Korg",
+          "midi": ["", "", ""]
         }
       ]
     }
