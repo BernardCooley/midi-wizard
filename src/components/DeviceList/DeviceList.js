@@ -5,22 +5,22 @@ import './DeviceList.scss';
 import firebase from '../../firebase';
 
 const DeviceList = () => {
+    const db = firebase.firestore();
+    const userDeviceDataRef = db.collection('UserDeviceData');
+    const allDeviceDataRef = db.collection('DeviceData');
 
     const [allDeviceDetails, setAllDeviceDetails] = useState(DeviceData.DeviceData);
-    const [userDevices, setUserDevices] = useState([]);
+    const [userDeviceData, setUserDeviceData] = React.useState([]);
+    let currentUserId = 'user1';
 
     useEffect(() => {
-        // getUserDevices();
-        setAllMidiConnections();
+        getUserDevices(currentUserId);
     }, []);
 
-    const getUserDevices = async () => {
-        // TODO not returning any data
-        const db = firebase.firestore();
-        console.log(db);
-        const data = await db.collection('DeviceData').get();
-        console.log(await data);
-        setUserDevices(data.map(doc => { doc.data() }));
+    const getUserDevices = async (userId) => {
+        let data = await userDeviceDataRef.get();
+
+        setUserDeviceData(data.docs.map(doc => doc.data()).filter(user => user.userID === userId));
     }
 
     const setAllMidiConnections = () => {
@@ -61,9 +61,9 @@ const DeviceList = () => {
 
     return(
         <div className="devicesListContainer">
-            {allDeviceDetails[0].map((deviceDetails, index) => (
+            {userDeviceData.length > 0 ? userDeviceData[0].devices.map((deviceDetails, index) => (
                 <Device key={index} deviceDetails={deviceDetails}/>
-            ))}
+            )):null}
         </div>
       );
 }
