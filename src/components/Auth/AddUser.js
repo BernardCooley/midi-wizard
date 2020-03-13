@@ -1,16 +1,19 @@
 import React from 'react';
 import firebase from '../../firebase';
+import './Auth.scss';
 
-const addUser = () => {
+const AddUser = () => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
 
 
     // TODO implement firestore authentication before adding user details to database
-    const addUser = (e) => {
+    const addUser = async (e) => {
         e.preventDefault();
 
-        userDeviceDataRef
+        // TODO error when adding user
+        const signUp = await firebase.auth().createUserWithEmailAndPassword(e.target.email.value, e.target.email.password);
+        console.log(signUp);
 
     }
 
@@ -27,4 +30,4 @@ const addUser = () => {
 
 }
 
-export default Auth;
+export default AddUser;
