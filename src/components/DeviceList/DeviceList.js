@@ -2,18 +2,29 @@ import React, {useEffect, useState} from 'react';
 import Device from '../Device/Device';
 import DeviceData from '../../data/deviceData';
 import './DeviceList.scss';
+import firebase from '../../firebase';
 
 const DeviceList = () => {
 
     const [allDeviceDetails, setAllDeviceDetails] = useState(DeviceData.DeviceData);
+    const [userDevices, setUserDevices] = useState([]);
 
     useEffect(() => {
+        // getUserDevices();
         setAllMidiConnections();
     }, []);
 
+    const getUserDevices = async () => {
+        // TODO not returning any data
+        const db = firebase.firestore();
+        console.log(db);
+        const data = await db.collection('DeviceData').get();
+        console.log(await data);
+        setUserDevices(data.map(doc => { doc.data() }));
+    }
+
     const setAllMidiConnections = () => {
         let currentDevice = getMasterClockDevice();
-        let order = 1;
 
         allDeviceDetails[0].forEach((device, index) => {
             let match = getConnectionMatch(currentDevice)[0];
@@ -21,27 +32,11 @@ const DeviceList = () => {
             if(match) {
                 setAllDeviceDetails([setMidiConnection(allDeviceDetails[0].indexOf(currentDevice), match.name, isDeviceMasterClock(currentDevice))]);
 
-                setAllDeviceDetails([setOrderNumber(allDeviceDetails[0].indexOf(currentDevice), order)]);
-                
-                // TODO Set order correctly
-
                 setAllDeviceDetails([setMidiConnection(allDeviceDetails[0].indexOf(match), currentDevice.name, "in")]);
-                setAllDeviceDetails([setOrderNumber(allDeviceDetails[0].indexOf(match), order)]);
-                order++;
 
                 currentDevice = allDeviceDetails[0][index+1];
             }
-            // console.log(order);
         });
-
-        console.log(allDeviceDetails[0]);
-    }
-
-    const setOrderNumber = (deviceIndex, orderNumber) => {
-        console.log(deviceIndex)
-        let updatedDeviceDetails = allDeviceDetails[0];
-        updatedDeviceDetails[deviceIndex].order = orderNumber;
-        return updatedDeviceDetails;
     }
 
     const isDeviceMasterClock = (device) => {

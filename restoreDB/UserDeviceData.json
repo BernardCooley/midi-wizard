@@ -1,0 +1,74 @@
+{
+  "UserDeviceData": [
+    {
+      "userID": "rgenrgbenbnebj",
+      "devices": [
+        {
+          "Digitakt": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Digitone": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Octatrack": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Minilogue": {
+            "midi": ["", "", ""]
+          }
+        }
+      ]
+    },
+    {
+      "userID": "rstjrsjnrnrsyn",
+      "devices": [
+        {
+          "Keystep": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Digitone": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Octatrack": {
+            "midi": ["", "", ""]
+          }
+        }
+      ]
+    },
+    {
+      "userID": "rntrtsntukikyjfrg",
+      "devices": [
+        {
+          "Digitakt": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Digitone": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Octatrack": {
+            "midi": ["", "", ""]
+          }
+        },
+        {
+          "Minilogue": {
+            "midi": ["", "", ""]
+          }
+        }
+      ]
+    }
+  ]
+}
