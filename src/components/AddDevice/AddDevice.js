@@ -2,46 +2,37 @@ import React, {useEffect, useState} from 'react';
 import './AddDevice.scss';
 import firebase from '../../firebase';
 
-const AddDevice = () => {
+const AddDevice = (props) => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
-    const [userDeviceData, setUserDeviceData] = useState([]);
-    // const [newDevice, setnewDevice] = useState([]);
 
-    useEffect(() => {
-        currentDevices('user1');
-    }, []);
-
-    const add = (e) => {
-        // TODO doc needs to equal the user id. 'Add user' in Auth.js to be finished first
+    const addDevice = async e => {
         e.preventDefault();
 
         const newDevice = 
         {
             "deviceName": e.target.name.value,
             "manufacturer": e.target.manufacturer.value,
-            "midi": [e.target.midiIn.checked, e.target.midiOut.checked, e.target.midiThru.checked]
+            "midi": [
+                e.target.midiIn.checked, 
+                e.target.midiOut.checked, 
+                e.target.midiThru.checked
+            ]
         }
 
-        userDeviceDataRef.doc()
-
-        console.log([...userDeviceData[0].devices, newDevice])
-
-        // console.log(newDevice);
+        let updatedDevices = await getCurrentUserDevices(props.loggedInUserId);
+        
+        userDeviceDataRef.doc(props.loggedInUserId).set({"devices": [...updatedDevices.devices, newDevice]});
     }
 
-    let currentDevices = async (userId) => {
-        let data = await userDeviceDataRef.get();
-        setUserDeviceData(data.docs.map(doc => doc.data()).filter(user => user.userID === userId));
+    const getCurrentUserDevices = async userId => {
+        const response = await userDeviceDataRef.doc(userId).get();
+        return response.data();
     }
-
-    // userDeviceDataRef.doc('devices').set({
-
-    // });
 
     return(
         <div className="addDeviceContainer">
-            <form className="addDeviceForm" onSubmit={add}>
+            <form className="addDeviceForm" onSubmit={addDevice}>
                 <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
                 <input type="text" placeholder="DeviceName" name="name"></input>
                 <div className="formField">

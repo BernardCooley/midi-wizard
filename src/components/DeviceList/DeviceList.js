@@ -17,9 +17,12 @@ const DeviceList = (props) => {
     }, [props]);
 
     const getUserDeviceConfiguration = async userId => {
-        let response = await userDeviceDataRef.doc(userId).get();
-        const responseData = response.data();
-        setUserDeviceData([responseData.devices]);
+
+        if(userId.length > 0) {
+            let response = await userDeviceDataRef.doc(userId).get();
+            const responseData = await response.data();
+            setUserDeviceData([responseData.devices]);
+        }
     }
 
     const setAllMidiConnections = () => {

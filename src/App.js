@@ -31,7 +31,7 @@ function App() {
       {userLoggedIn ? 
       <div>
         <button onClick={logout}>Logout</button>
-        <AddDevice/>
+        <AddDevice loggedInUserId = {loggedInUserId}/>
         <DeviceList loggedInUserId = {loggedInUserId}/>
       </div> : 
       <div>

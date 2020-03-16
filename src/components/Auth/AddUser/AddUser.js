@@ -23,11 +23,11 @@ const AddUser = () => {
 
     const signIn = async (email, password) => {
         const signIn = await firebase.auth().signInWithEmailAndPassword(email, password);
-        console.log(signIn);
     }
 
     const createUserInDatabase = async (userId, username) => {
         userDeviceDataRef.doc(userId).set({
+            devices: [],
             username: username
         })
     }
