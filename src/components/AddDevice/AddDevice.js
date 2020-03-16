@@ -13,7 +13,7 @@ const AddDevice = (props) => {
     useEffect(() => {
         getAllDeviceData();
         getUserDeviceData();
-    }, []);
+    }, [props]);
 
     const addDevice = async e => {
         e.preventDefault();
@@ -56,7 +56,7 @@ const AddDevice = (props) => {
     }
 
     const doesDeviceExist = (deviceList, newDeviceName) => {
-        return deviceList.filter(device => device.deviceName == newDeviceName).length > 0 ? true : false;
+        return deviceList.filter(device => device.deviceName === newDeviceName).length > 0 ? true : false;
     }
 
     const getUserDeviceData = async () => {
@@ -84,15 +84,15 @@ const AddDevice = (props) => {
                 <input type="text" placeholder="DeviceName" name="deviceName"></input>
                 <div className="formField">
                     <input type="checkbox" value="Midi In" name="midiIn" id="midiIn"></input>
-                    <label for="midiIn">Midi In</label>
+                    <label htmlFor="midiIn">Midi In</label>
                 </div>
                 <div className="formField">
                     <input type="checkbox" value="Midi Out" name="midiOut" id="midiOut"></input>
-                    <label for="midiOut">Midi Out</label>
+                    <label htmlFor="midiOut">Midi Out</label>
                 </div>
                 <div className="formField">
                     <input type="checkbox" value="Midi Thru" name="midiThru" id="midiThru"></input>
-                    <label for="midiThru">Midi Thru</label>
+                    <label htmlFor="midiThru">Midi Thru</label>
                 </div>
                 <button type="submit">Add</button>
             </form> : 

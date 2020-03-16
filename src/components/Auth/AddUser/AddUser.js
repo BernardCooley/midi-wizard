@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import firebase from '../../../firebase';
 import './AddUser.scss';
 
 const AddUser = () => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
-    const [userId, setUserId] = useState('');
 
 
     // TODO implement firestore authentication before adding user details to database
@@ -22,7 +21,7 @@ const AddUser = () => {
     }
 
     const signIn = async (email, password) => {
-        const signIn = await firebase.auth().signInWithEmailAndPassword(email, password);
+        await firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
     const createUserInDatabase = async (userId, username) => {

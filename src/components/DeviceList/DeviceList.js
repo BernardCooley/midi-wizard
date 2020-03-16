@@ -7,7 +7,6 @@ import firebase from '../../firebase';
 const DeviceList = (props) => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
-    const allDeviceDataRef = db.collection('DeviceData');
 
     const [allDeviceDetails, setAllDeviceDetails] = useState(DeviceData.DeviceData);
     const [userDeviceData, setUserDeviceData] = useState([]);
@@ -46,7 +45,7 @@ const DeviceList = (props) => {
 
     const getConnectionMatch = (currentDevice) => {
         return allDeviceDetails[0].filter(device => 
-            !currentDevice.midiDetails.out.connectedTo && currentDevice != device &&!device.midiDetails.in.connectedTo && device.midiDetails.thru.available
+            !currentDevice.midiDetails.out.connectedTo && currentDevice !== device &&!device.midiDetails.in.connectedTo && device.midiDetails.thru.available
         )
     }
 
