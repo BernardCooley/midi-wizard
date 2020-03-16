@@ -8,18 +8,29 @@ import firebase from './firebase';
 
 function App() {
 
+  const db = firebase.firestore();
+  const userDeviceDataRef = db.collection('UserDeviceData');
   const [loggedInUserId, setLoggedInUserId] = useState('');
-  const [userLoggedIn, setuserLoggedIn] = useState(false);
+  const [isUserLoggedIn, setisUserLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       setLoggedInUserId(user.uid);
-      setuserLoggedIn(true);
+      setisUserLoggedIn(true);
+      getUsername(user.uid);
     } else {
       setLoggedInUserId('');
-      setuserLoggedIn(false);
+      setisUserLoggedIn(false);
+      getUsername('');
     }
-  });
+  })
+
+  const getUsername = async (userId) => {
+    const response = await userDeviceDataRef.doc(userId).get();
+    const data = await response.data();
+    setUsername(data.username);
+  }
 
   const logout = () => {
     firebase.auth().signOut();
@@ -27,8 +38,8 @@ function App() {
 
   return (
     <div className="App">
-      User id: {loggedInUserId}
-      {userLoggedIn ? 
+      Welcome {username.replace(/ .*/,'')}
+      {isUserLoggedIn ? 
       <div>
         <button onClick={logout}>Logout</button>
         <AddDevice loggedInUserId = {loggedInUserId}/>
