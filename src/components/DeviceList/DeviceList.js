@@ -4,18 +4,17 @@ import DeviceData from '../../data/deviceData';
 import './DeviceList.scss';
 import firebase from '../../firebase';
 
-const DeviceList = () => {
+const DeviceList = (props) => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
     const allDeviceDataRef = db.collection('DeviceData');
 
     const [allDeviceDetails, setAllDeviceDetails] = useState(DeviceData.DeviceData);
     const [userDeviceData, setUserDeviceData] = useState([]);
-    let currentUserId = 'user1';
 
     useEffect(() => {
-        getUserDeviceConfiguration(currentUserId);
-    }, []);
+        
+    }, [props]);
 
     const getUserDeviceConfiguration = async (userId) => {
         let data = await userDeviceDataRef.get();
