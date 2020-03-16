@@ -31,12 +31,15 @@ const AddDevice = (props) => {
             ]
         }
 
-        let updatedDevices = await getCurrentUserDevices(props.loggedInUserId);
+        let updatedUserData = await getCurrentUserDevices(props.loggedInUserId);
 
         doesDeviceExist(allDeviceData, deviceName) ? console.log('Already exists in all devices db') : addToAllDevices(newDevice);
 
         if(!doesDeviceExist(userDeviceData[0], deviceName)) {
-            userDeviceDataRef.doc(props.loggedInUserId).set({"devices": [...updatedDevices.devices, newDevice]});
+            userDeviceDataRef.doc(props.loggedInUserId).set(
+                {"devices": [...updatedUserData.devices, newDevice],
+                username: updatedUserData.username
+            });
             getUserDeviceData();
             toggleAddDeviceForm();
         }else {
