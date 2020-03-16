@@ -38,9 +38,9 @@ function App() {
 
   return (
     <div className="App">
-      Welcome {username.replace(/ .*/,'')}
       {isUserLoggedIn ? 
       <div>
+        Welcome {username.replace(/ .*/,'')}
         <button onClick={logout}>Logout</button>
         <AddDevice loggedInUserId = {loggedInUserId}/>
         <DeviceList loggedInUserId = {loggedInUserId}/>
