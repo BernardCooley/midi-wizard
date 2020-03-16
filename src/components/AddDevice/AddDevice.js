@@ -5,14 +5,24 @@ import firebase from '../../firebase';
 const AddDevice = (props) => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
+    const allDeviceDataRef = db.collection('DeviceData');
+    const [allDeviceData, setAllDeviceData] = useState([]);
+    const [userDeviceData, setUserDeviceData] = useState([]);
+
+    useEffect(() => {
+        getAllDeviceData();
+        getUserDeviceData();
+    }, []);
 
     const addDevice = async e => {
         e.preventDefault();
+        const deviceName = e.target.deviceName.value;
+        const manufacturer = e.target.manufacturer.value;
 
         const newDevice = 
         {
-            "deviceName": e.target.name.value,
-            "manufacturer": e.target.manufacturer.value,
+            "deviceName": deviceName,
+            "manufacturer": manufacturer,
             "midi": [
                 e.target.midiIn.checked, 
                 e.target.midiOut.checked, 
@@ -21,8 +31,15 @@ const AddDevice = (props) => {
         }
 
         let updatedDevices = await getCurrentUserDevices(props.loggedInUserId);
-        
-        userDeviceDataRef.doc(props.loggedInUserId).set({"devices": [...updatedDevices.devices, newDevice]});
+
+        doesDeviceExist(allDeviceData, deviceName) ? console.log('Already exists in all devices db') : addToAllDevices(newDevice);
+
+        if(!doesDeviceExist(userDeviceData[0], deviceName)) {
+            userDeviceDataRef.doc(props.loggedInUserId).set({"devices": [...updatedDevices.devices, newDevice]});
+            getUserDeviceData();
+        }else {
+            alert('Already added to your studio');
+        }
     }
 
     const getCurrentUserDevices = async userId => {
@@ -30,11 +47,33 @@ const AddDevice = (props) => {
         return response.data();
     }
 
+    const getAllDeviceData = async () => {
+        const response = await allDeviceDataRef.get();
+        const allDeviceData = await response.docs.map(doc => doc.data());
+        setAllDeviceData(allDeviceData);
+    }
+
+    const doesDeviceExist = (deviceList, newDeviceName) => {
+        return deviceList.filter(device => device.deviceName == newDeviceName).length > 0 ? true : false;
+    }
+
+    const getUserDeviceData = async () => {
+        const response = await userDeviceDataRef.get();
+        const userDeviceData = await response.docs.map(doc => doc.data().devices);
+        setUserDeviceData(userDeviceData);
+    }
+
+    const addToAllDevices = async newDevice => {
+        const newDocument = allDeviceDataRef.doc();
+        await newDocument.set(newDevice);
+        getAllDeviceData();
+    }
+
     return(
         <div className="addDeviceContainer">
             <form className="addDeviceForm" onSubmit={addDevice}>
                 <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
-                <input type="text" placeholder="DeviceName" name="name"></input>
+                <input type="text" placeholder="DeviceName" name="deviceName"></input>
                 <div className="formField">
                     <input type="checkbox" value="Midi In" name="midiIn" id="midiIn"></input>
                     <label for="midiIn">Midi In</label>
