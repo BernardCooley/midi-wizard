@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './AddDevice.scss';
 import firebase from '../../firebase';
+import AutoCompleteList from '../AutoCompleteList/AutoCompleteList';
 
 const AddDevice = (props) => {
     const db = firebase.firestore();
@@ -9,6 +10,7 @@ const AddDevice = (props) => {
     const [allDeviceData, setAllDeviceData] = useState([]);
     const [userDeviceData, setUserDeviceData] = useState([]);
     const [addDeviceEnabled, setAddDeviceEnabled] = useState(false);
+    const [autoCompleteList, setAutoCompleteList] = useState([]);
 
     useEffect(() => {
         getAllDeviceData();
@@ -78,13 +80,36 @@ const AddDevice = (props) => {
         setAddDeviceEnabled(!addDeviceEnabled);
     }
 
+    const searchExistingDevices = async e => {
+        const inputValue = e.target.value;
+        const fieldName = e.target.name;
+        const matchList = [];
+
+        if(e.target.value.length > 2) {
+            const response = await allDeviceDataRef.get();
+            const data = await response.docs.map(doc => doc.data());
+            
+            const matchedDevices = data.filter(device => device[fieldName].toLowerCase().includes(inputValue.toLowerCase()));
+
+            matchedDevices.map(matchedDevice => {
+                matchList.push(matchedDevice[fieldName]);
+            });
+
+            setAutoCompleteList([...new Set(matchList)]);
+        }
+    }
+
     return(
         <div className="addDeviceContainer">
 
             {addDeviceEnabled ? 
-            <form className="addDeviceForm" onSubmit={addDevice}>
-                <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
-                <input type="text" placeholder="DeviceName" name="deviceName"></input>
+            <form className="addDeviceForm" onSubmit={addDevice} autocomplete="off">
+                <div className="manufacturer">
+                    <input type="text" placeholder="Manufacturer" name="manufacturer" onChange={searchExistingDevices}></input>
+                    <AutoCompleteList autoCompleteList={autoCompleteList} field={'manufacturer'}/>
+                </div>
+                
+                <input type="text" placeholder="DeviceName" name="deviceName" onChange={searchExistingDevices}></input>
                 <div className="formField">
                     <input type="checkbox" value="Midi In" name="midiIn" id="midiIn"></input>
                     <label htmlFor="midiIn">Midi In</label>
