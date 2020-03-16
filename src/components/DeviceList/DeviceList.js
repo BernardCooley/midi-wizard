@@ -13,11 +13,10 @@ const DeviceList = (props) => {
     const [userDeviceData, setUserDeviceData] = useState([]);
 
     useEffect(() => {
-        getUserDeviceConfiguration(props.loggedInUserId);
+        getUserDevices(props.loggedInUserId);
     }, [props]);
 
-    const getUserDeviceConfiguration = async userId => {
-
+    const getUserDevices = async userId => {
         if(userId.length > 0) {
             let response = await userDeviceDataRef.doc(userId).get();
             const responseData = await response.data();
@@ -63,7 +62,7 @@ const DeviceList = (props) => {
 
     return(
         <div className="devicesListContainer">
-            {userDeviceData.devices > 0 ? userDeviceData.devices.map((deviceDetails, index) => (
+            {userDeviceData.length > 0 ? userDeviceData[0].map((deviceDetails, index) => (
                 <Device key={index} deviceDetails={deviceDetails}/>
             )):null}
         </div>
