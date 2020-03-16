@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import firebase from '../../../firebase';
 import './Login.scss';
 
-const Login = (props) => {
+const Login = () => {
 
     const login = async (e) => {
         e.preventDefault();

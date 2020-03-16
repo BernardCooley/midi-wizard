@@ -8,6 +8,7 @@ const AddDevice = (props) => {
     const allDeviceDataRef = db.collection('DeviceData');
     const [allDeviceData, setAllDeviceData] = useState([]);
     const [userDeviceData, setUserDeviceData] = useState([]);
+    const [addDeviceEnabled, setAddDeviceEnabled] = useState(false);
 
     useEffect(() => {
         getAllDeviceData();
@@ -37,6 +38,7 @@ const AddDevice = (props) => {
         if(!doesDeviceExist(userDeviceData[0], deviceName)) {
             userDeviceDataRef.doc(props.loggedInUserId).set({"devices": [...updatedDevices.devices, newDevice]});
             getUserDeviceData();
+            toggleAddDeviceForm();
         }else {
             alert('Already added to your studio');
         }
@@ -69,8 +71,14 @@ const AddDevice = (props) => {
         getAllDeviceData();
     }
 
+    const toggleAddDeviceForm = () => {
+        setAddDeviceEnabled(!addDeviceEnabled);
+    }
+
     return(
         <div className="addDeviceContainer">
+
+            {addDeviceEnabled ? 
             <form className="addDeviceForm" onSubmit={addDevice}>
                 <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
                 <input type="text" placeholder="DeviceName" name="deviceName"></input>
@@ -87,7 +95,10 @@ const AddDevice = (props) => {
                     <label for="midiThru">Midi Thru</label>
                 </div>
                 <button type="submit">Add</button>
-            </form>
+            </form> : 
+            <div>
+                <button onClick={toggleAddDeviceForm}>Add device</button>
+            </div>}
         </div>
     )
 }

@@ -18,9 +18,9 @@ const DeviceList = (props) => {
 
     const getUserDevices = async userId => {
         if(userId.length > 0) {
-            let response = await userDeviceDataRef.doc(userId).get();
-            const responseData = await response.data();
-            setUserDeviceData([responseData.devices]);
+            await userDeviceDataRef.doc(userId).onSnapshot(doc => {
+                setUserDeviceData([doc.data().devices]);
+            });
         }
     }
 
