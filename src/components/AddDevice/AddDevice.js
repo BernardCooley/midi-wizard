@@ -95,7 +95,8 @@ const AddDevice = (props) => {
                     <label htmlFor="midiThru">Midi Thru</label>
                 </div>
                 <button type="submit">Add</button>
-            </form> : 
+                <button onClick={toggleAddDeviceForm}>Cancel</button>
+            </form>: 
             <div>
                 <button onClick={toggleAddDeviceForm}>Add device</button>
             </div>}
