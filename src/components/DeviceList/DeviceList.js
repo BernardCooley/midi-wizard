@@ -13,12 +13,13 @@ const DeviceList = (props) => {
     const [userDeviceData, setUserDeviceData] = useState([]);
 
     useEffect(() => {
-        
+        getUserDeviceConfiguration(props.loggedInUserId);
     }, [props]);
 
-    const getUserDeviceConfiguration = async (userId) => {
-        let data = await userDeviceDataRef.get();
-        setUserDeviceData(data.docs.map(doc => doc.data()).filter(user => user.userID === userId));
+    const getUserDeviceConfiguration = async userId => {
+        let response = await userDeviceDataRef.doc(userId).get();
+        const responseData = response.data();
+        setUserDeviceData([responseData.devices]);
     }
 
     const setAllMidiConnections = () => {
@@ -59,7 +60,7 @@ const DeviceList = (props) => {
 
     return(
         <div className="devicesListContainer">
-            {userDeviceData.length > 0 ? userDeviceData[0].devices.map((deviceDetails, index) => (
+            {userDeviceData.devices > 0 ? userDeviceData.devices.map((deviceDetails, index) => (
                 <Device key={index} deviceDetails={deviceDetails}/>
             )):null}
         </div>
