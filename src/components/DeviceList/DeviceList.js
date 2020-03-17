@@ -12,7 +12,7 @@ const DeviceList = (props) => {
     const [userDeviceData, setUserDeviceData] = useState([]);
 
     useEffect(() => {
-        getUserDevices(props.loggedInUserId);
+        getUserDevices(props.currentUserId);
     }, [props]);
 
     const getUserDevices = async userId => {

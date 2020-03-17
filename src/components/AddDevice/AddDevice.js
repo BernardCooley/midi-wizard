@@ -1,21 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './AddDevice.scss';
 import firebase from '../../firebase';
 import AutoCompleteList from '../AutoCompleteList/AutoCompleteList';
+import { useSelector, useDispatch } from 'react-redux';
 
 const AddDevice = (props) => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
     const allDeviceDataRef = db.collection('DeviceData');
-    const [allDeviceData, setAllDeviceData] = useState([]);
-    const [userDeviceData, setUserDeviceData] = useState([]);
+
+    const dispatch = useDispatch();
+    
+    const stockDevices = useSelector(state => state.stockDevices);
+    const userDevices = useSelector(state => state.userDevices);
+    const currentUserId = useSelector(state => state.currentUserId);
+    const currentUsername = useSelector(state => state.currentUsername);
+
     const [addDeviceEnabled, setAddDeviceEnabled] = useState(false);
     const [autoCompleteList, setAutoCompleteList] = useState([]);
-
-    useEffect(() => {
-        getAllDeviceData();
-        getUserDeviceData();
-    }, [props]);
 
     const addDevice = async e => {
         e.preventDefault();
@@ -33,47 +35,26 @@ const AddDevice = (props) => {
             ]
         }
 
-        let updatedUserData = await getCurrentUserDevices(props.loggedInUserId);
+        doesDeviceExist(stockDevices, deviceName) ? console.log('Already exists in all devices db') : addToAllDevices(newDevice);
 
-        doesDeviceExist(allDeviceData, deviceName) ? console.log('Already exists in all devices db') : addToAllDevices(newDevice);
-
-        if(!doesDeviceExist(userDeviceData[0], deviceName)) {
-            userDeviceDataRef.doc(props.loggedInUserId).set(
-                {"devices": [...updatedUserData.devices, newDevice],
-                username: updatedUserData.username
+        if(!doesDeviceExist(userDevices, deviceName)) {
+            userDeviceDataRef.doc(currentUserId).set(
+                {"devices": [...userDevices, newDevice],
+                username: currentUsername
             });
-            getUserDeviceData();
             toggleAddDeviceForm();
         }else {
             alert('Already added to your studio');
         }
     }
 
-    const getCurrentUserDevices = async userId => {
-        const response = await userDeviceDataRef.doc(userId).get();
-        return response.data();
-    }
-
-    const getAllDeviceData = async () => {
-        const response = await allDeviceDataRef.get();
-        const allDeviceData = await response.docs.map(doc => doc.data());
-        setAllDeviceData(allDeviceData);
-    }
-
     const doesDeviceExist = (deviceList, newDeviceName) => {
         return deviceList.filter(device => device.deviceName === newDeviceName).length > 0 ? true : false;
-    }
-
-    const getUserDeviceData = async () => {
-        const response = await userDeviceDataRef.get();
-        const userDeviceData = await response.docs.map(doc => doc.data().devices);
-        setUserDeviceData(userDeviceData);
     }
 
     const addToAllDevices = async newDevice => {
         const newDocument = allDeviceDataRef.doc();
         await newDocument.set(newDevice);
-        getAllDeviceData();
     }
 
     const toggleAddDeviceForm = () => {
@@ -86,16 +67,11 @@ const AddDevice = (props) => {
         const matchList = [];
 
         if(e.target.value.length > 2) {
-            const response = await allDeviceDataRef.get();
-            const data = await response.docs.map(doc => doc.data());
-            
-            const matchedDevices = data.filter(device => device[fieldName].toLowerCase().includes(inputValue.toLowerCase()));
+            const matchedDevices = stockDevices.filter(device => device[fieldName].toLowerCase().includes(inputValue.toLowerCase()));
 
             matchedDevices.map(matchedDevice => {
                 matchList.push(matchedDevice[fieldName]);
             });
-
-            setAutoCompleteList([...new Set(matchList)]);
         }
     }
 
@@ -106,7 +82,6 @@ const AddDevice = (props) => {
             <form className="addDeviceForm" onSubmit={addDevice} autocomplete="off">
                 <div className="manufacturer">
                     <input type="text" placeholder="Manufacturer" name="manufacturer" onChange={searchExistingDevices}></input>
-                    <AutoCompleteList autoCompleteList={autoCompleteList} field={'manufacturer'}/>
                 </div>
                 
                 <input type="text" placeholder="DeviceName" name="deviceName" onChange={searchExistingDevices}></input>

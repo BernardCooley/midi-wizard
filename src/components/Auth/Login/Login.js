@@ -11,7 +11,7 @@ const Login = () => {
         firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
-    return(
+    return (
         <div className="loginFormContainer">
             <form className="loginForm" onSubmit={login}>
                 <input type="email" placeholder="Email" name="email"></input>

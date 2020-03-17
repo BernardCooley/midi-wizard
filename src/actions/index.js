@@ -1,13 +1,34 @@
-export const increment = (number) => {
+export const setIsLoggedIn = inOut => {
     return {
-        type: 'INCREMENT',
-        payload: number
+        type: 'IS_LOGGED_IN',
+        payload: inOut
     };
 };
 
-export const decrement = (number) => {
+export const setCurrentUserId = userId => {
     return {
-        type: 'DECREMENT',
-        payload: number
+        type: 'USER_ID',
+        payload: userId
+    };
+};
+
+export const setCurrentUsername = username => {
+    return {
+        type: 'USERNAME',
+        payload: username
+    };
+};
+
+export const setStockDevices = stockDevices => {
+    return {
+        type: 'STOCK_DEVICES',
+        payload: stockDevices
+    };
+};
+
+export const setUserDevices = userDevices => {
+    return {
+        type: 'USER_DEVICES',
+        payload: userDevices
     };
 };
