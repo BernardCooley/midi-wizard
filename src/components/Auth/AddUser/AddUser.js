@@ -6,15 +6,12 @@ const AddUser = () => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
 
-
-    // TODO implement firestore authentication before adding user details to database
-    const addUser = async (e) => {
+    const addUser = async e => {
         let username = e.target.username.value;
         let password = e.target.password.value;
         let email = e.target.email.value;
         e.preventDefault();
 
-        // TODO error when adding user
         const signUp = await firebase.auth().createUserWithEmailAndPassword(e.target.email.value, e.target.password.value);
         createUserInDatabase(signUp.user.uid, username);
         signIn(email, password);

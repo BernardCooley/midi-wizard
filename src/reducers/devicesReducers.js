@@ -14,6 +14,14 @@ const deviceReducers = {
             default:
                 return state;
         }
+    },
+    toggleAddDeviceForm: (state = false, action) => {
+        switch(action.type) {
+            case 'ADD_DEVICE_FORM':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

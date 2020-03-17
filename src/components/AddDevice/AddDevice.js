@@ -1,32 +1,30 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './AddDevice.scss';
 import firebase from '../../firebase';
-import AutoCompleteList from '../AutoCompleteList/AutoCompleteList';
 import { useSelector, useDispatch } from 'react-redux';
+import { toggleAddDeviceForm } from '../../actions';
 
-const AddDevice = (props) => {
+const AddDevice = () => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
     const allDeviceDataRef = db.collection('DeviceData');
-
-    const dispatch = useDispatch();
     
+    const dispatch = useDispatch();
+
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);
     const currentUserId = useSelector(state => state.currentUserId);
     const currentUsername = useSelector(state => state.currentUsername);
+    const isAddDeviceFormOpen = useSelector(state => state.toggleAddDeviceForm);
 
-    const [addDeviceEnabled, setAddDeviceEnabled] = useState(false);
-    const [autoCompleteList, setAutoCompleteList] = useState([]);
-
-    const addDevice = async e => {
+    const addDevice = async (e) => {
         e.preventDefault();
-        const deviceName = e.target.deviceName.value;
+        const newDeviceName = e.target.deviceName.value;
         const manufacturer = e.target.manufacturer.value;
 
         const newDevice = 
         {
-            "deviceName": deviceName,
+            "deviceName": newDeviceName,
             "manufacturer": manufacturer,
             "midi": [
                 e.target.midiIn.checked, 
@@ -35,56 +33,45 @@ const AddDevice = (props) => {
             ]
         }
 
-        doesDeviceExist(stockDevices, deviceName) ? console.log('Already exists in all devices db') : addToAllDevices(newDevice);
-
-        if(!doesDeviceExist(userDevices, deviceName)) {
-            userDeviceDataRef.doc(currentUserId).set(
-                {"devices": [...userDevices, newDevice],
-                username: currentUsername
-            });
-            toggleAddDeviceForm();
-        }else {
-            alert('Already added to your studio');
-        }
+        addToStockDevices(newDevice);
+        addToUserDevices(newDevice);
     }
 
     const doesDeviceExist = (deviceList, newDeviceName) => {
         return deviceList.filter(device => device.deviceName === newDeviceName).length > 0 ? true : false;
     }
 
-    const addToAllDevices = async newDevice => {
-        const newDocument = allDeviceDataRef.doc();
-        await newDocument.set(newDevice);
+    const addToStockDevices = async newDevice => {
+        if(!doesDeviceExist(stockDevices, newDevice.deviceName)) {
+            const newDocumentRef = await allDeviceDataRef.doc();
+            await newDocumentRef.set(newDevice);
+            addToUserDevices(newDevice);
+            // TODO get id of stock device and add it to new user device
+            console.log(newDocumentRef.id);
+        }else {
+            console.log('Already exists in database');
+        }
     }
 
-    const toggleAddDeviceForm = () => {
-        setAddDeviceEnabled(!addDeviceEnabled);
-    }
-
-    const searchExistingDevices = async e => {
-        const inputValue = e.target.value;
-        const fieldName = e.target.name;
-        const matchList = [];
-
-        if(e.target.value.length > 2) {
-            const matchedDevices = stockDevices.filter(device => device[fieldName].toLowerCase().includes(inputValue.toLowerCase()));
-
-            matchedDevices.map(matchedDevice => {
-                matchList.push(matchedDevice[fieldName]);
+    const addToUserDevices = async newDevice => {
+        if(!doesDeviceExist(userDevices, newDevice.deviceName)) {
+            await userDeviceDataRef.doc(currentUserId).set(
+                {"devices": [...userDevices, newDevice],
+                username: currentUsername
             });
+        }else {
+            alert('Already added to your studio');
         }
     }
 
     return(
         <div className="addDeviceContainer">
-
-            {addDeviceEnabled ? 
+            {isAddDeviceFormOpen ? 
             <form className="addDeviceForm" onSubmit={addDevice} autocomplete="off">
                 <div className="manufacturer">
-                    <input type="text" placeholder="Manufacturer" name="manufacturer" onChange={searchExistingDevices}></input>
+                    <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
                 </div>
-                
-                <input type="text" placeholder="DeviceName" name="deviceName" onChange={searchExistingDevices}></input>
+                <input type="text" placeholder="DeviceName" name="deviceName"></input>
                 <div className="formField">
                     <input type="checkbox" value="Midi In" name="midiIn" id="midiIn"></input>
                     <label htmlFor="midiIn">Midi In</label>
@@ -98,10 +85,10 @@ const AddDevice = (props) => {
                     <label htmlFor="midiThru">Midi Thru</label>
                 </div>
                 <button type="submit">Add</button>
-                <button onClick={toggleAddDeviceForm}>Cancel</button>
+                <button onClick={() => dispatch(toggleAddDeviceForm(false))}>Cancel</button>
             </form>: 
             <div>
-                <button onClick={toggleAddDeviceForm}>Add device</button>
+                <button onClick={() => dispatch(toggleAddDeviceForm(true))}>Add device</button>
             </div>}
         </div>
     )

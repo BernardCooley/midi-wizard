@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import DeviceList from './components/DeviceList/DeviceList';
 import AddDevice from './components/AddDevice/AddDevice';
@@ -41,13 +41,13 @@ function App() {
     });
   }
 
-  const getUserDevices = async (userId) => {
+  const getUserDevices = async userId => {
     await userDeviceDataRef.doc(userId).onSnapshot(response => {
       dispatch(setUserDevices(response.data().devices));
     })
   }
 
-  const getUsername = async (userId) => {
+  const getUsername = async userId => {
     await userDeviceDataRef.doc(userId).onSnapshot(response => {
       dispatch(setCurrentUsername(response.data().username));  
     })

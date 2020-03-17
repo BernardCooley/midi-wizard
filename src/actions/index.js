@@ -32,3 +32,10 @@ export const setUserDevices = userDevices => {
         payload: userDevices
     };
 };
+
+export const toggleAddDeviceForm = show => {
+    return {
+        type: 'ADD_DEVICE_FORM',
+        payload: show
+    };
+};

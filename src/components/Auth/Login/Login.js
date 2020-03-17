@@ -4,7 +4,7 @@ import './Login.scss';
 
 const Login = () => {
 
-    const login = async (e) => {
+    const login = async e => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;

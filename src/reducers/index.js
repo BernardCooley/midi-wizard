@@ -7,7 +7,8 @@ const allReducers = combineReducers({
     currentUserId: authReducers.currentUserIdReducer,
     currentUsername: authReducers.currentUsernameReducer,
     stockDevices: deviceReducers.stockDevices,
-    userDevices: deviceReducers.userDevices
+    userDevices: deviceReducers.userDevices,
+    toggleAddDeviceForm: deviceReducers.toggleAddDeviceForm
 });
 
 export default allReducers;

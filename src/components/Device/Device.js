@@ -1,7 +1,7 @@
 import React from 'react';
 import './Device.scss';
 
-const Device = (deviceDetails) => {
+const Device = deviceDetails => {
     const device = deviceDetails.deviceDetails;
 
     return (
