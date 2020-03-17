@@ -5,8 +5,13 @@ import AddDevice from './components/AddDevice/AddDevice';
 import AddUser from './components/Auth/AddUser/AddUser';
 import Login from './components/Auth/Login/Login';
 import firebase from './firebase';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, decrement } from './actions';
 
 function App() {
+
+  const counter = useSelector(state => state.counter);
+  const dispatch = useDispatch();
 
   const db = firebase.firestore();
   const userDeviceDataRef = db.collection('UserDeviceData');
@@ -38,6 +43,11 @@ function App() {
 
   return (
     <div className="App">
+    Counter: {counter}
+
+    <button onClick={() => dispatch(increment(5))}>+</button>
+    <button onClick={() => dispatch(decrement(7))}>-</button>
+
       {isUserLoggedIn ? 
       <div>
         Welcome {username.replace(/ .*/,'')}
