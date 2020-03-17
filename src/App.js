@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import './App.css';
+import './App.scss';
 import DeviceList from './components/DeviceList/DeviceList';
 import AddDevice from './components/AddDevice/AddDevice';
 import AddUser from './components/Auth/AddUser/AddUser';
@@ -7,12 +7,15 @@ import Login from './components/Auth/Login/Login';
 import firebase from './firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevices } from './actions';
+import ToggleDeviceTray from './components/ToggleDeviceTray/ToggleDeviceTray';
 
 function App() {
+  
   const dispatch = useDispatch();
   const currentUserId = useSelector(state => state.currentUserId);
   const isLoggedIn = useSelector(state => state.isLoggedIn);
   const username = useSelector(state => state.currentUsername);
+  const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
 
   const db = firebase.firestore();
   const userDeviceDataRef = db.collection('UserDeviceData');
@@ -66,11 +69,14 @@ function App() {
     Is logged in: {isLoggedIn.toString()}
 
       {isLoggedIn ? 
-      <div>
+      <div className='loggedInContainer'>
         Welcome {username.replace(/ .*/,'')}
         <button onClick={logout}>Logout</button>
         <AddDevice currentUserId = {currentUserId}/>
-        <DeviceList currentUserId = {currentUserId}/>
+        <div className={`deviceTrayContainer ${ deviceTrayOpen ? '': 'deviceContainerClosed'}`}>
+          <ToggleDeviceTray/>
+          <DeviceList className='deviceListOuterContainer' currentUserId = {currentUserId}/>
+        </div>
       </div> : 
       <div>
         <Login/>

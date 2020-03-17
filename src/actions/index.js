@@ -39,3 +39,9 @@ export const toggleAddDeviceForm = show => {
         payload: show
     };
 };
+
+export const isDeviceTrayOpen = () => {
+    return {
+        type: 'IS_DEVICE_TRAY_OPEN'
+    };
+};

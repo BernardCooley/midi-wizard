@@ -22,6 +22,14 @@ const deviceReducers = {
             default:
                 return state;
         }
+    },
+    isDeviceTrayOpen: (state = false, action) => {
+        switch(action.type) {
+            case 'IS_DEVICE_TRAY_OPEN':
+                return !state;
+            default:
+                return state;
+        }
     }
 }
 

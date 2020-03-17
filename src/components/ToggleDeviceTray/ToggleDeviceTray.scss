@@ -1,0 +1,20 @@
+.toggleDeviceTrayContainer {
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    .deviceTrayLabel {
+        margin-right: 10px;
+    }
+
+    svg {
+        font-size: 20px;
+        color: gray;
+    }
+
+    .deviceTrayOpen {
+        transform: rotate(180deg);
+    }
+}

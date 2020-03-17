@@ -1,8 +1,10 @@
 .devicesListContainer {
     display: flex;
-    flex-wrap: wrap;
-    width: 90%;
-    margin: auto;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
     justify-content: center;
     align-items: center;
+    overflow-x: auto;
+    width: 100%;
+    border-top: 3px solid gray;
 }

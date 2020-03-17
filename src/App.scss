@@ -1,3 +1,5 @@
+
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,22 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.loggedInContainer {
+
+    .deviceTrayContainer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .deviceContainerClosed {
+      height: 0;
+    }
 }
