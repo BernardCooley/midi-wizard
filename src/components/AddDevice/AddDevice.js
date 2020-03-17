@@ -22,19 +22,18 @@ const AddDevice = () => {
         const newDeviceName = e.target.deviceName.value;
         const manufacturer = e.target.manufacturer.value;
 
-        const newDevice = 
-        {
-            "deviceName": newDeviceName,
-            "manufacturer": manufacturer,
-            "midi": [
-                e.target.midiIn.checked, 
-                e.target.midiOut.checked, 
-                e.target.midiThru.checked
-            ]
+        const newDevice = {
+            'deviceName': newDeviceName,
+            'manufacturer': manufacturer,
+            'midi': 
+                {
+                    'in': e.target.midiIn.checked,
+                    'out': e.target.midiOut.checked,
+                    'thru': e.target.midiThru.checked
+                }
         }
 
-        addToStockDevices(newDevice);
-        addToUserDevices(newDevice);
+        addToUserDevices(addToStockDevices(newDevice), newDeviceName);
     }
 
     const doesDeviceExist = (deviceList, newDeviceName) => {
@@ -45,20 +44,35 @@ const AddDevice = () => {
         if(!doesDeviceExist(stockDevices, newDevice.deviceName)) {
             const newDocumentRef = await allDeviceDataRef.doc();
             await newDocumentRef.set(newDevice);
-            addToUserDevices(newDevice);
-            // TODO get id of stock device and add it to new user device
-            console.log(newDocumentRef.id);
+            newDevice['deviceId'] = newDocumentRef.id;
+            newDocumentRef.set(newDevice);
+            return newDocumentRef.id;
         }else {
             console.log('Already exists in database');
+            return '';
         }
     }
 
-    const addToUserDevices = async newDevice => {
-        if(!doesDeviceExist(userDevices, newDevice.deviceName)) {
+    const addToUserDevices = async (newDocId, newDeviceName) => {
+
+        const newUserDevice = {
+            'deviceId': await newDocId,
+            'midi': 
+                {
+                    'in': '',
+                    'out': '',
+                    'thru': ''
+                }
+        }
+
+        if(!doesDeviceExist(userDevices, newDeviceName)) {
+            const updatedDevices = [...userDevices, newUserDevice];
             await userDeviceDataRef.doc(currentUserId).set(
-                {"devices": [...userDevices, newDevice],
-                username: currentUsername
+                {
+                    'devices': updatedDevices,
+                    'username': currentUsername
             });
+            dispatch(toggleAddDeviceForm(false));
         }else {
             alert('Already added to your studio');
         }
@@ -67,7 +81,7 @@ const AddDevice = () => {
     return(
         <div className="addDeviceContainer">
             {isAddDeviceFormOpen ? 
-            <form className="addDeviceForm" onSubmit={addDevice} autocomplete="off">
+            <form className="addDeviceForm" onSubmit={addDevice} autoComplete="off">
                 <div className="manufacturer">
                     <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
                 </div>

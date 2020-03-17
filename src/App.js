@@ -43,7 +43,10 @@ function App() {
 
   const getUserDevices = async userId => {
     await userDeviceDataRef.doc(userId).onSnapshot(response => {
-      dispatch(setUserDevices(response.data().devices));
+
+      if(response.data().devices) {
+        dispatch(setUserDevices(response.data().devices))
+      }
     })
   }
 
