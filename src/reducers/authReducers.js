@@ -30,6 +30,14 @@ const authReducers = {
             default:
                 return state;
         }
+    },
+    isAdmin: (state = false, action) => {
+        switch(action.type) {
+            case 'IS_ADMIN':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

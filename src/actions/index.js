@@ -52,3 +52,17 @@ export const toggleLoginRegister = show => {
         payload: show
     };
 };
+
+export const isAdmin = isAdmin => {
+    return {
+        type: 'IS_ADMIN',
+        payload: isAdmin
+    };
+};
+
+export const toggleAdminConsole = show => {
+    return {
+        type: 'IS_ADMIN_CONSOLE_OPEN',
+        payload: show
+    };
+};

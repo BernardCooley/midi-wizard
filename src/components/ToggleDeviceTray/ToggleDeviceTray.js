@@ -14,8 +14,12 @@ const ToggleDeviceTray = () => {
     library.add(faChevronUp);
 
 
+    const toggleDeviceTray = () => {
+        dispatch(isDeviceTrayOpen());
+    }
+
     return (
-        <div className='toggleDeviceTrayContainer' onClick={() => dispatch(isDeviceTrayOpen())}>
+        <div className='toggleDeviceTrayContainer' onClick={toggleDeviceTray}>
             <div className='deviceTrayLabel'>Device tray</div>
             <FontAwesomeIcon className={deviceTrayOpen ? 'deviceTrayOpen' : ''} icon="chevron-up" />
         </div>
