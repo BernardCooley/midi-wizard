@@ -1,0 +1,43 @@
+.studioDesignerContainer {
+    height: 100%;
+
+    .loggedInContainer {
+        height: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      
+      
+          .deviceTrayContainer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+      
+          .deviceContainerClosed {
+            height: 0;
+          }
+      
+          .openAddDeviceFormButton {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: gray;
+            border-radius: 2px;
+            border-radius: 25px;
+            padding: 10px;
+      
+            svg {
+              font-size: 25px;
+            }
+          }
+      
+          .trayOpen {
+            bottom: 180px;
+          }
+      }
+}
