@@ -1,7 +1,13 @@
-.addDeviceForm {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    margin: auto;
-    padding: 50px;
+.addDeviceContainer {
+    position: absolute;
+    top: 100px;
+    background-color: lightgray;
+
+    .addDeviceForm {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        margin: auto;
+        padding: 50px;
+    }
 }

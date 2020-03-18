@@ -72,7 +72,7 @@ function App() {
       {isLoggedIn ? 
       <div className='loggedInContainer'>
         <Header/>
-        {!isAddDeviceFormOpen ? <div className='openAddDeviceFormButton' onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon icon="plus" /></div> : null}
+        {!isAddDeviceFormOpen ? <div className={`openAddDeviceFormButton ${ deviceTrayOpen ? 'trayOpen': ''}`} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon icon="plus" /></div> : null}
         <AddDevice/>
         <Workspace/>
         <div className={`deviceTrayContainer ${ deviceTrayOpen ? '': 'deviceContainerClosed'}`}>
