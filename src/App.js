@@ -1,22 +1,29 @@
 import React, {useEffect} from 'react';
 import './App.scss';
 import DeviceList from './components/DeviceList/DeviceList';
-import AddDevice from './components/AddDevice/AddDevice';
 import AddUser from './components/Auth/AddUser/AddUser';
 import Login from './components/Auth/Login/Login';
 import firebase from './firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevices } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevices, toggleAddDeviceForm } from './actions';
 import ToggleDeviceTray from './components/ToggleDeviceTray/ToggleDeviceTray';
 import Header from './components/Header/Header';
+import Workspace from './components/Workspace/Wrokspace';
+import AddDevice from './components/AddDevice/AddDevice';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
+
+  library.add(faPlus);
   
   const dispatch = useDispatch();
   const currentUserId = useSelector(state => state.currentUserId);
   const isLoggedIn = useSelector(state => state.isLoggedIn);
   const username = useSelector(state => state.currentUsername);
   const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
+  const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
 
   const db = firebase.firestore();
   const userDeviceDataRef = db.collection('UserDeviceData');
@@ -60,20 +67,19 @@ function App() {
     })
   }
 
-  const logout = () => {
-    firebase.auth().signOut();
-  }
-
   return (
     <div className="App">
-      <Header/>
       {isLoggedIn ? 
       <div className='loggedInContainer'>
-        <button onClick={logout}>Logout</button>
-        <AddDevice currentUserId = {currentUserId}/>
+        <Header/>
+        {!isAddDeviceFormOpen ? <div className='openAddDeviceFormButton' onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon icon="plus" /></div> : null}
+        <AddDevice/>
+        <Workspace/>
         <div className={`deviceTrayContainer ${ deviceTrayOpen ? '': 'deviceContainerClosed'}`}>
-          <ToggleDeviceTray/>
-          <DeviceList className='deviceListOuterContainer' currentUserId = {currentUserId}/>
+          <div className='deviceTrayActions'>
+            <ToggleDeviceTray/>
+          </div>
+          <DeviceList className='deviceListOuterContainer'/>
         </div>
       </div> : 
       <div>

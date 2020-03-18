@@ -15,7 +15,7 @@ const AddDevice = () => {
     const userDevices = useSelector(state => state.userDevices);
     const currentUserId = useSelector(state => state.currentUserId);
     const currentUsername = useSelector(state => state.currentUsername);
-    const isAddDeviceFormOpen = useSelector(state => state.toggleAddDeviceForm);
+    const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
 
     const addDevice = async (e) => {
         e.preventDefault();
@@ -100,10 +100,7 @@ const AddDevice = () => {
                 </div>
                 <button type="submit">Add</button>
                 <button onClick={() => dispatch(toggleAddDeviceForm(false))}>Cancel</button>
-            </form>: 
-            <div>
-                <button onClick={() => dispatch(toggleAddDeviceForm(true))}>Add device</button>
-            </div>}
+            </form>: null}
         </div>
     )
 }
