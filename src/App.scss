@@ -3,10 +3,6 @@
 .App {
   text-align: center;
   height: 99%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .App-logo {
@@ -42,4 +38,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.loggedInContainer {
+  height: 100%;
 }

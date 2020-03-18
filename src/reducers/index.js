@@ -6,6 +6,7 @@ const allReducers = combineReducers({
     isLoggedIn: authReducers.isLoggedInReducer,
     currentUserId: authReducers.currentUserIdReducer,
     currentUsername: authReducers.currentUsernameReducer,
+    isLoginRegisterOpen: authReducers.toggleLoginRegister,
     stockDevices: deviceReducers.stockDevices,
     userDevices: deviceReducers.userDevices,
     isAddDeviceFormOpen: deviceReducers.toggleAddDeviceForm,

@@ -1,8 +1,11 @@
 import React from 'react';
 import './Header.scss';
 import firebase from '../../firebase';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
+
+    const isLoggedIn = useSelector(state => state.isLoggedIn);
 
     const logout = () => {
         firebase.auth().signOut();
@@ -10,7 +13,9 @@ const Header = () => {
 
     return (
         <div className='headerContainer'>
-        <button onClick={logout}>Logout</button>
+            {isLoggedIn ? 
+                <button onClick={logout}>Logout</button> : null
+            }
             Header
         </div>
     )

@@ -45,3 +45,10 @@ export const isDeviceTrayOpen = () => {
         type: 'IS_DEVICE_TRAY_OPEN'
     };
 };
+
+export const toggleLoginRegister = show => {
+    return {
+        type: 'TOGGLE_LOGIN_REGISTER',
+        payload: show
+    };
+};

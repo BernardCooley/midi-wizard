@@ -22,6 +22,14 @@ const authReducers = {
             default:
                 return state;
         }
+    },
+    toggleLoginRegister: (state = false, action) => {
+        switch(action.type) {
+            case 'TOGGLE_LOGIN_REGISTER':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 
