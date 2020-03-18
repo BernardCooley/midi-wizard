@@ -8,6 +8,7 @@ import firebase from './firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevices } from './actions';
 import ToggleDeviceTray from './components/ToggleDeviceTray/ToggleDeviceTray';
+import Header from './components/Header/Header';
 
 function App() {
   
@@ -65,12 +66,9 @@ function App() {
 
   return (
     <div className="App">
-    User id: {currentUserId}
-    Is logged in: {isLoggedIn.toString()}
-
+      <Header/>
       {isLoggedIn ? 
       <div className='loggedInContainer'>
-        Welcome {username.replace(/ .*/,'')}
         <button onClick={logout}>Logout</button>
         <AddDevice currentUserId = {currentUserId}/>
         <div className={`deviceTrayContainer ${ deviceTrayOpen ? '': 'deviceContainerClosed'}`}>
