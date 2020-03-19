@@ -66,3 +66,10 @@ export const toggleAdminConsole = show => {
         payload: show
     };
 };
+
+export const getWorkspaceDevices = devices => {
+    return {
+        type: 'GET_WORKSPACE_DEVICES',
+        payload: devices
+    };
+};

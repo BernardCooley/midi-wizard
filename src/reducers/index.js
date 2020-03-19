@@ -1,6 +1,7 @@
 import authReducers from './authReducers';
 import deviceReducers from './devicesReducers';
 import adminConsoleReducers from './adminConsoleReducers';
+import workspaceDevices from './wrokspaceReducers';
 import { combineReducers } from 'redux';
 
 const allReducers = combineReducers({
@@ -13,7 +14,8 @@ const allReducers = combineReducers({
     userDevices: deviceReducers.userDevices,
     isAddDeviceFormOpen: deviceReducers.toggleAddDeviceForm,
     isDeviceTrayOpen: deviceReducers.isDeviceTrayOpen,
-    isAdminConsoleOpen: adminConsoleReducers.isAdminConsoleOpen
+    isAdminConsoleOpen: adminConsoleReducers.isAdminConsoleOpen,
+    workspaceDevices: workspaceDevices.getWorkspaceDevices
 });
 
 export default allReducers;
