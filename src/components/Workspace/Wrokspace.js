@@ -7,11 +7,12 @@ import Device from '../Device/Device';
 const Workspace = () => {
 
     const userDevices = useSelector(state => state.userDevices);
+    const workspaceDevice = true;
 
     return (
         <div className='workSpaceContainer'>
             {userDevices.length > 0 ? userDevices.map((device, index) => (
-                device.workspace ? <Device key={index} deviceDetails={device} />
+                device.workspace ? <Device key={index} deviceDetails={device} workspaceDevice={workspaceDevice} />
                     : null
             )) : null}
         </div>

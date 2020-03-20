@@ -24,9 +24,8 @@ const Device = (deviceDetails) => {
         const clickedDeviceId = e.target.parentElement.getAttribute('deviceId')
         const clickedDevice = userDevices.filter(device => device.deviceId === clickedDeviceId)[0];
 
-        userDevices[userDevices.indexOf(clickedDevice)]['workspace'] = device.workspace ? false : true;
+        userDevices[userDevices.indexOf(clickedDevice)]['workspace'] = deviceDetails.workspaceDevice ? false : true;
 
-        // TODO BUG removes from workspace when clicking on device tray device
         userDataRef.doc(userId).update({ devices: userDevices});
     }
 
