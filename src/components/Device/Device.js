@@ -1,10 +1,9 @@
 import React from 'react';
 import './Device.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { getWorkspaceDevices } from '../../actions';
 import firebase from 'firebase';
 
-const Device = deviceDetails => {
+const Device = (deviceDetails) => {
     const db = firebase.firestore();
     const device = deviceDetails.deviceDetails;
 
@@ -17,8 +16,7 @@ const Device = deviceDetails => {
 
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);
-    const userId = useSelector(state => state.userId);
-    const userName = useSelector(state => state.userName);
+    const userId = useSelector(state => state.currentUserId);
     const matchedStockDevice = stockDevices.filter(stockDevice => stockDevice.deviceId === device.deviceId)[0];
 
     const addToWorkspace = async e => {
@@ -26,8 +24,9 @@ const Device = deviceDetails => {
         const clickedDeviceId = e.target.parentElement.getAttribute('deviceId')
         const clickedDevice = userDevices.filter(device => device.deviceId === clickedDeviceId)[0];
 
-        const response = userDataRef.doc(userId).set();
-        // response.data()
+        userDevices[userDevices.indexOf(clickedDevice)]['workspace'] = device.workspace ? false : true;
+
+        userDataRef.doc(userId).update({ devices: userDevices});
     }
 
     return (

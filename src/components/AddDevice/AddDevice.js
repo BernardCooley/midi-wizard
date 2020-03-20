@@ -6,7 +6,7 @@ import { toggleAddDeviceForm } from '../../actions';
 
 const AddDevice = () => {
     const db = firebase.firestore();
-    const userDeviceDataRef = db.collection('UserDeviceData');
+    const userDataRef = db.collection('UserDeviceData');
     const allDeviceDataRef = db.collection('DeviceData');
     
     const dispatch = useDispatch();
@@ -67,10 +67,10 @@ const AddDevice = () => {
 
         if(!doesDeviceExist(userDevices, newDeviceName)) {
             const updatedDevices = [...userDevices, newUserDevice];
-            await userDeviceDataRef.doc(currentUserId).set(
+
+            userDataRef.doc(currentUserId).update(
                 {
-                    'devices': updatedDevices,
-                    'username': currentUsername
+                    'devices': updatedDevices
             });
             dispatch(toggleAddDeviceForm(false));
         }else {

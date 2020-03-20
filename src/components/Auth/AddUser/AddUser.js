@@ -24,7 +24,8 @@ const AddUser = () => {
     const createUserInDatabase = async (userId, username) => {
         userDeviceDataRef.doc(userId).set({
             devices: [],
-            username: username
+            username: username,
+            admin: false
         })
     }
 
