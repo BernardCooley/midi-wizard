@@ -1,5 +1,4 @@
 import React from 'react';
-import './StudioDesignerPage.scss';
 import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
 import { useSelector, useDispatch } from 'react-redux';
 import ToggleDeviceTray from '../../components/ToggleDeviceTray/ToggleDeviceTray';
