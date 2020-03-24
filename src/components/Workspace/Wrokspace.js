@@ -1,13 +1,23 @@
 import React, { useEffect } from 'react';
-import './Workspace.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { getWorkspaceDevices } from '../../actions';
 import UserDevice from '../UserDevice/UserDevice';
 
 const Workspace = () => {
 
+
+    const styles = {
+        workSpaceContainer: {
+            backgroundColor: 'lightblue',
+            width: '100%',
+            height: '100%',
+            padding: '20px 0',
+            display: 'flex'
+        }
+    }
+
     return (
-        <div className='workSpaceContainer'>
+        <div style={styles.workSpaceContainer}>
             Workspace
         </div>
     )

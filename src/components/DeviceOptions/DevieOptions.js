@@ -1,5 +1,4 @@
 import React from 'react';
-import './DevieOptions.scss';
 
 const DevieOptions = () => {
 
@@ -9,6 +8,10 @@ const DevieOptions = () => {
 
     const removeFromDeviceTray = () => {
         console.log('removeFromDeviceTray');
+    }
+
+    const styles = {
+
     }
 
     return (

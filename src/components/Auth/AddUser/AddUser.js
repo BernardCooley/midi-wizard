@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../../../firebase';
-import './AddUser.scss';
 
 const AddUser = () => {
     const db = firebase.firestore();
@@ -29,9 +28,19 @@ const AddUser = () => {
         })
     }
 
+    const styles = {
+        addUserForm: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '300px',
+            margin: 'auto',
+            padding: '50px'
+        }
+    }
+
     return(
         <div className="addUserContainer">
-            <form className="addUserForm" onSubmit={addUser}>
+            <form style={styles.addUserForm} onSubmit={addUser}>
                 <input type="text" placeholder="Username" name="username"></input>
                 <input type="email" placeholder="Email" name="email"></input>
                 <input type="password" placeholder="Password" name="password"></input>

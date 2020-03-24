@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './AddDevice.scss';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
@@ -99,12 +98,47 @@ const AddDevice = () => {
         toggleAddDeviceForm(open);
     }
 
+
+    const styles = {
+        addDeviceContainer: {
+            width: '90%',
+            position: 'absolute',
+            top: '100px',
+            border: '1px solid lightgray',
+            backgroundColor: 'white',
+            padding: '20px',
+            position: 'relative',
+            zIndex: '10'
+        },
+        svg: {
+            position: 'relative',
+            right: '28px',
+            top: '-29px',
+            fontSize: '30px',
+            cursor: 'pointer'
+        },
+        deviceSearchBox: {
+            width: '98%',
+            height: '50px',
+            fontSize: '30px',
+            padding: '10px',
+            marginBottom: '30px'
+        },
+        addDeviceForm: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '300px',
+            margin: 'auto',
+            padding: '50px'
+        }
+    }
+
     return(
         <div className="addDeviceContainer">
 
             <FontAwesomeIcon onClick={toggleDeviceForm(false)} icon="times-circle" />
 
-            <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
+            <input style={styles.deviceSearchBox} type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
             <StockSearchResults searchTerm={searchTerm}/>
 

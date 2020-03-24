@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './StockSearchResults.scss';
 import { useSelector } from 'react-redux';
 import firebase from '../../firebase';
 
@@ -55,13 +54,34 @@ const StockSearchResults = props => {
         return userDevices.filter(device => device.deviceId === deviceId).length > 0 ? true : false;
     }
 
+    const styles = {
+        stockSearchResultsContainer: {
+
+        },
+        resultContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid gray'
+        },
+        result: {
+            margin: '10px',
+            fontSize: '30px'
+        },
+        button: {
+            cursor: 'pointer',
+            height: '50px',
+            width: '100px'
+        }
+    }
+
     return (
-        <div className='stockSearchResultsContainer'>
+        <div style={styles.stockSearchResultsContainer}>
             {
                 filteredDevices.map((device, index) => (
-                    <div key={index} deviceid={device.deviceId} className='resultContainer'>
-                        <div className='result'>{device.manufacturer} - {device.deviceName}</div>
-                        <button disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
+                    <div key={index} deviceid={device.deviceId} style={styles.resultContainer}>
+                        <div style={styles.result}>{device.manufacturer} - {device.deviceName}</div>
+                        <button style={styles.button} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
                     </div>
                 ))
             }

@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../../../firebase';
-import './Login.scss';
 
 const Login = () => {
 
@@ -9,6 +8,10 @@ const Login = () => {
         const email = e.target.email.value;
         const password = e.target.password.value;
         firebase.auth().signInWithEmailAndPassword(email, password);
+    }
+
+    const styles = {
+
     }
 
     return (

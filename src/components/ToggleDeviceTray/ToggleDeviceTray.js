@@ -18,10 +18,27 @@ const ToggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
     }
 
+    const styles = {
+        toggleDeviceTrayContainer: {
+            margin: '2px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer'
+        },
+        deviceTrayLabel: {
+            marginRight: '10px'
+        },
+        svg: {
+            fontSize: '20px',
+            color: 'gray'
+        }
+    }
+
     return (
-        <div className='toggleDeviceTrayContainer' onClick={toggleDeviceTray}>
-            <div className='deviceTrayLabel'>Device tray</div>
-            <FontAwesomeIcon className={deviceTrayOpen ? 'deviceTrayOpen' : ''} icon="chevron-up" />
+        <div style={styles.toggleDeviceTrayContainer} onClick={toggleDeviceTray}>
+            <div style={styles.deviceTrayLabel}>Device tray</div>
+            <FontAwesomeIcon style={styles.svg} className={deviceTrayOpen ? 'deviceTrayOpen' : ''} icon="chevron-up" />
         </div>
     )
 }

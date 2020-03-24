@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './UserDevice.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import DevieOptions from '../DeviceOptions/DevieOptions';
@@ -41,18 +40,56 @@ const UserDevice = (deviceDetails) => {
         }
     }
 
+    const styles = {
+        deviceContainer: {
+            height: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '5px 10px'
+        },
+        deviceTrayOptions: {
+            width: '87%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        },
+        img: {
+            height: '130px',
+            border: '0',
+            pointerEvents: 'none'
+        },
+        svg: {
+            pointerEvents: 'none'
+        },
+        deviceAction: {
+            cursor: 'pointer',
+            fontSize: '18px'
+        },
+        deleteIcon: {
+            color: 'red'
+        },
+        addToWorkspaceIcon: {
+            color: 'green'
+        },
+        deviceTitle: {
+
+        }
+    }
+
     return (
-        <div deviceid={device.deviceId} className='deviceContainer'>
-            <div className='deviceTrayOptions'>
+        <div deviceid={device.deviceId} style={styles.deviceContainer}>
+            <div style={styles.deviceTrayOptions}>
                 <div onClick={deleteDevice}>
-                    <FontAwesomeIcon className='deviceAction deleteIcon' icon="trash-alt" />
+                    <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
                 <div onClick={addToWorkspace}>
-                    <FontAwesomeIcon className='deviceAction addToWorkspaceIcon' icon="network-wired" />
+                    <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
                 </div>
             </div>
-            <img src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
-            <div className='deviceTitle'>{matchedStockDevice.deviceName}</div>
+            <img style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
+            <div style={styles.deviceTitle}>{matchedStockDevice.deviceName}</div>
         </div>
     )
 }

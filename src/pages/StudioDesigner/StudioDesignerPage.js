@@ -12,13 +12,30 @@ const StudioDesignerPage = () => {
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
 
+    const styles = {
+        studioDesignerContainer: {
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        },
+        deviceTrayContainer: {
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
+    }
+
     return(
-        <div className='studioDesignerContainer'>
+        <div style={styles.studioDesignerContainer}>
             {isAddDeviceFormOpen ? 
                 <AddDevice/> :
                 <Workspace/>
             }
-            <div className={`deviceTrayContainer ${ deviceTrayOpen ? '': 'deviceContainerClosed'}`}>
+            <div style={styles.deviceTrayContainer} className={deviceTrayOpen ? '': 'deviceContainerClosed'}>
                 <div className='deviceTrayActions'>
                     <ToggleDeviceTray/>
                 </div>

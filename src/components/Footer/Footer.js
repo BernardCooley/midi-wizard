@@ -1,11 +1,19 @@
 import React from 'react';
-import './Footer.scss';
 
 const Footer = () => {
 
 
+    const styles = {
+        footerContainer: {
+            marginTop: '20px',
+            position: 'absolute',
+            bottom: '0',
+            width: '100%'
+        }
+    }
+
     return (
-        <div className='footerContainer'>
+        <div style={styles.footerContainer}>
             Footer
         </div>
     )

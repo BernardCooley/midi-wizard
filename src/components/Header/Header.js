@@ -1,5 +1,4 @@
 import React from 'react';
-import './Header.scss';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAdminConsole } from '../../actions';
@@ -19,8 +18,16 @@ const Header = () => {
         dispatch(toggleAdminConsole(true));
     }
 
+    const styles = {
+        headerContainer: {
+            width: '100%',
+            backgroundColor: 'green',
+            height: '50px'
+        }
+    }
+
     return (
-        <div className='headerContainer'>
+        <div style={styles.headerContainer}>
 
             {isAdmin && !isAdminConsoleOpen ? <button onClick={openAdminConsole}>Admin console</button> : null}
 

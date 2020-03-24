@@ -42,3 +42,15 @@
 .loggedInContainer {
   height: 100%;
 }
+
+.hidden {
+  display: none;
+}
+
+.trayOpen {
+  bottom: 165px;
+}
+
+.deviceContainerClosed {
+  height: 0;
+}
