@@ -67,9 +67,7 @@ function App() {
       {isLoggedIn ?
         <div className='loggedInContainer'>
           <Header />
-
           {isAdminConsoleOpen ? <AdminConsole/> : <StudioDesignerPage />}
-          
         </div> :
         <div className='loggedOutContainer'>
           <LandingPage/>

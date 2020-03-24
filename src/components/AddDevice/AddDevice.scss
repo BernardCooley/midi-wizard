@@ -1,7 +1,15 @@
 .addDeviceContainer {
+    width: 90%;
     position: absolute;
     top: 100px;
-    background-color: lightgray;
+
+    .deviceSearchBox {
+        width: 98%;
+        height: 50px;
+        font-size: 30px;
+        padding: 10px;
+        margin-bottom: 30px;
+    }
 
     .addDeviceForm {
         display: flex;

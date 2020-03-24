@@ -1,6 +1,6 @@
 import React from 'react';
 import './StudioDesignerPage.scss';
-import DeviceList from '../../components/DeviceList/DeviceList';
+import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
 import ToggleDeviceTray from '../../components/ToggleDeviceTray/ToggleDeviceTray';
@@ -22,7 +22,8 @@ const StudioDesignerPage = () => {
         <div className='studioDesignerContainer'>
             <AddDevice/>
             {!isAddDeviceFormOpen ? 
-                <div className={`openAddDeviceFormButton ${ deviceTrayOpen ? 'trayOpen': ''}`} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon icon="plus" /></div> : 
+                <div className={`openAddDeviceFormButton ${ deviceTrayOpen ? 'trayOpen': ''}`} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon icon="plus" /></div>
+                 : 
                 null
             }
             <Workspace/>
@@ -30,7 +31,7 @@ const StudioDesignerPage = () => {
                 <div className='deviceTrayActions'>
                     <ToggleDeviceTray/>
                 </div>
-                <DeviceList className='deviceListOuterContainer'/>
+                <UserDeviceList className='deviceListOuterContainer'/>
             </div>
         </div>
     )

@@ -1,19 +1,20 @@
 import React from 'react';
-import Device from '../Device/Device';
-import './DeviceList.scss';
+import UserDevice from '../UserDevice/UserDevice';
+import './UserDeviceList.scss';
 import { useSelector } from 'react-redux';
 
-const DeviceList = () => {
+const UserDeviceList = () => {
+
     const userDevices = useSelector(state => state.userDevices);
     const workspaceDevice = false;
 
     return(
         <div className="devicesListContainer">
             {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
-                <Device key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
+                <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
             )):null}
         </div>
       );
 }
 
-export default DeviceList;
+export default UserDeviceList;

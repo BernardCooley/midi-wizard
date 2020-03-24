@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './AddDevice.scss';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
+import StockSearchResults from '../StockSearchResults/StockSearchResults';
 
 const AddDevice = () => {
     const db = firebase.firestore();
@@ -16,6 +17,7 @@ const AddDevice = () => {
     const currentUserId = useSelector(state => state.currentUserId);
     const currentUsername = useSelector(state => state.currentUsername);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const addDevice = async (e) => {
         e.preventDefault();
@@ -78,9 +80,24 @@ const AddDevice = () => {
         }
     }
 
+    const updateSearchTerm = e => {
+        let searchTerm = e.target.value;
+
+        if(searchTerm.length > 2) {
+            setSearchTerm(searchTerm);
+        }else {
+            setSearchTerm('');
+        }
+    }
+
     return(
         <div className="addDeviceContainer">
-            {isAddDeviceFormOpen ? 
+
+            <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
+
+            <StockSearchResults searchTerm={searchTerm}/>
+
+            {/* {isAddDeviceFormOpen ? 
             <form className="addDeviceForm" onSubmit={addDevice} autoComplete="off">
                 <div className="manufacturer">
                     <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
@@ -100,7 +117,7 @@ const AddDevice = () => {
                 </div>
                 <button type="submit">Add</button>
                 <button onClick={() => dispatch(toggleAddDeviceForm(false))}>Cancel</button>
-            </form>: null}
+            </form>: null} */}
         </div>
     )
 }

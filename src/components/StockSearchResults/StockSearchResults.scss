@@ -1,0 +1,21 @@
+.stockSearchResultsContainer {
+
+    .resultContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid gray;
+
+        .result {
+            margin: 10px;
+            font-size: 30px;
+        }
+    
+        button {
+            cursor: pointer;
+            height: 50px;
+            width: 100px;
+        }
+    }
+
+}
