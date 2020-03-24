@@ -10,7 +10,7 @@ const StockSearchResults = props => {
 
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);
-    const [filteredDevices, setFilteredDevices] = useState([]);
+    const [filteredDevices, setFilteredDevices] = useState(stockDevices);
     const userId = useSelector(state => state.currentUserId);
 
     useEffect(() => {
@@ -25,19 +25,16 @@ const StockSearchResults = props => {
         );
     }
 
-    const markExistingDevices = filteredResults => {
-        filteredResults.map(device => {
-            userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? device['inDeviceTray'] = true : device['inDeviceTray'] = false;
-            console.log(device);
-        })
+    const markExistingDevices = () => {
+        filteredDevices.map(device => {
+            device['inDeviceTray'] = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
+        });
     }
 
-    const addToDeviceTray = async e => {
+    const addToUserDevices = async e => {
         const deviceId = e.target.parentNode.getAttribute('deviceid');
         
         if(!doesUserAlreadyHaveDevice(deviceId)) {
-            console.log(deviceId);
-
             const newDevice = {
                 deviceId: deviceId,
                 midi: {
@@ -64,7 +61,7 @@ const StockSearchResults = props => {
                 filteredDevices.map((device, index) => (
                     <div key={index} deviceid={device.deviceId} className='resultContainer'>
                         <div className='result'>{device.manufacturer} - {device.deviceName}</div>
-                        <button disabled={device.inDeviceTray} onClick={addToDeviceTray}>Add</button>
+                        <button disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
                     </div>
                 ))
             }

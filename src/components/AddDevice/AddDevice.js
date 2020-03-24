@@ -4,8 +4,13 @@ import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
 import StockSearchResults from '../StockSearchResults/StockSearchResults';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 const AddDevice = () => {
+    library.add(faTimesCircle);
+
     const db = firebase.firestore();
     const userDataRef = db.collection('UserDeviceData');
     const allDeviceDataRef = db.collection('DeviceData');
@@ -90,8 +95,14 @@ const AddDevice = () => {
         }
     }
 
+    const toggleDeviceForm = open => {
+        toggleAddDeviceForm(open);
+    }
+
     return(
         <div className="addDeviceContainer">
+
+            <FontAwesomeIcon onClick={toggleDeviceForm(false)} icon="times-circle" />
 
             <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
