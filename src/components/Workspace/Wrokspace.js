@@ -12,7 +12,8 @@ const Workspace = () => {
             width: '100%',
             height: '100%',
             padding: '20px 0',
-            display: 'flex'
+            display: 'flex',
+            paddingTop: '50px'
         }
     }
 

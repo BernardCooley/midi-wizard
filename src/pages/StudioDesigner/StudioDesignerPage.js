@@ -1,7 +1,6 @@
 import React from 'react';
 import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
 import { useSelector, useDispatch } from 'react-redux';
-import ToggleDeviceTray from '../../components/ToggleDeviceTray/ToggleDeviceTray';
 import Workspace from '../../components/Workspace/Wrokspace';
 import AddDevice from '../../components/AddDevice/AddDevice';
 
@@ -13,11 +12,13 @@ const StudioDesignerPage = () => {
 
     const styles = {
         studioDesignerContainer: {
-            height: '100%',
+            height: '100vh',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            backgroundColor: 'lightgreen',
+            paddingTop: '90px'
         },
         deviceTrayContainer: {
             width: '100%',
@@ -35,9 +36,6 @@ const StudioDesignerPage = () => {
                 <Workspace/>
             }
             <div style={styles.deviceTrayContainer} className={deviceTrayOpen ? '': 'deviceContainerClosed'}>
-                <div className='deviceTrayActions'>
-                    <ToggleDeviceTray/>
-                </div>
                 <UserDeviceList className='deviceListOuterContainer'/>
             </div>
         </div>

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import UserDevice from '../UserDevice/UserDevice';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { toggleAddDeviceForm } from '../../actions';
+import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
 
 const UserDeviceList = () => {
 
@@ -15,40 +15,66 @@ const UserDeviceList = () => {
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
     const workspaceDevice = false;
 
+    const toggleDevideTray = () => {
+        dispatch(isDeviceTrayOpen());
+    }
+
     const styles = {
         devicesListContainer: {
             display: 'flex',
             flexWrap: 'nowrap',
-            marginBottom: '10px',
             justifyContent: 'center',
             alignItems: 'center',
-            overflowX: 'auto',
             width: '100%',
-            borderTop: '3px solid gray'
+            backgroundColor: 'white',
+            position: 'absolute',
+            bottom: '0',
+            flexDirection: 'column'
         },
         openAddDeviceFormButton: {
-            position: 'relative',
-            bottom: '-60px',
-            right: '-375px',
             backgroundColor: 'gray',
             borderRadius: '25px',
-            padding: '10px'
+            padding: '10px',
+            height: '25px',
+            marginLeft: '50px'
         },
         svg: {
             fontSize: '25px'
-          }
+        },
+        listContainer: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        openCloseButton: {
+            position: 'relative',
+            top: '-29px',
+            backgroundColor: 'white',
+            height: '30px',
+            border: 'none',
+            width: '120px',
+            fontSize: '20px',
+            outline: 'none',
+            borderRadius: '5px 5px 0 0',
+            cursor: 'pointer'
+        },
+        hidden: {
+            display: 'none'
+        }
     }
 
     return(
         <div style={styles.devicesListContainer}>
-            {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
-                <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
-            )):null}
-            {!isAddDeviceFormOpen ? 
-                <div style={styles.openAddDeviceFormButton} className={deviceTrayOpen ? 'trayOpen': ''} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon style={styles.svg} icon="plus" /></div>
-                 : 
-                null
-            }
+            <button onClick={toggleDevideTray} style={styles.openCloseButton}>{deviceTrayOpen ? 'Device tray' : 'Close'}</button>
+            <div style={{...styles.listContainer, ...deviceTrayOpen ? styles.hidden : ''}}>
+                {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
+                    <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
+                )):null}
+                {!isAddDeviceFormOpen ? 
+                    <div style={styles.openAddDeviceFormButton} className={deviceTrayOpen ? 'trayOpen': ''} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon style={styles.svg} icon="plus" /></div>
+                    : 
+                    null
+                }
+            </div>
         </div>
       );
 }

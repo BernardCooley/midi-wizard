@@ -24,7 +24,8 @@ const Header = () => {
             height: '50px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'absolute'
         },
         button: {
             height: '100%',
