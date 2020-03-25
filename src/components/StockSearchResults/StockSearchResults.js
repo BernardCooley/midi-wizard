@@ -66,11 +66,11 @@ const StockSearchResults = props => {
         },
         result: {
             margin: '10px',
-            fontSize: '30px'
+            fontSize: '20px'
         },
         button: {
             cursor: 'pointer',
-            height: '50px',
+            height: '30px',
             width: '100px'
         }
     }

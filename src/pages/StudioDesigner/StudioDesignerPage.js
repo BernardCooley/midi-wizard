@@ -17,8 +17,7 @@ const StudioDesignerPage = () => {
             flexDirection: 'column',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: 'lightgreen',
-            paddingTop: '90px'
+            backgroundColor: 'lightgreen'
         },
         deviceTrayContainer: {
             width: '100%',

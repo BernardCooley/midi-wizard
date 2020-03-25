@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
@@ -22,6 +22,12 @@ const AddDevice = () => {
     const currentUsername = useSelector(state => state.currentUsername);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        document.querySelector('.closeIcon').addEventListener('click', () => {
+            openCloseAddDeviceForm(false);
+        })
+    }, [isAddDeviceFormOpen]);
 
     const addDevice = async (e) => {
         e.preventDefault();
@@ -94,10 +100,10 @@ const AddDevice = () => {
         }
     }
 
-    const toggleDeviceForm = open => {
-        toggleAddDeviceForm(open);
+    const openCloseAddDeviceForm = open => {
+        console.log('erthetheat');
+        dispatch(toggleAddDeviceForm(open));
     }
-
 
     const styles = {
         addDeviceContainer: {
@@ -119,7 +125,7 @@ const AddDevice = () => {
         },
         deviceSearchBox: {
             width: '98%',
-            height: '50px',
+            height: '30px',
             fontSize: '30px',
             padding: '10px',
             marginBottom: '30px'
@@ -134,9 +140,9 @@ const AddDevice = () => {
     }
 
     return(
-        <div className="addDeviceContainer">
+        <div style={styles.addDeviceContainer}>
 
-            <FontAwesomeIcon onClick={toggleDeviceForm(false)} icon="times-circle" />
+            <FontAwesomeIcon style={styles.svg} className='closeIcon' icon="times-circle" />
 
             <input style={styles.deviceSearchBox} type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
