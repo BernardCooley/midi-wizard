@@ -30,7 +30,10 @@ const UserDeviceList = () => {
             backgroundColor: 'white',
             position: 'absolute',
             bottom: '0',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            webkitBoxShadow: '0px -4px 5px 0px rgba(0,0,0,0.75)',
+            mozBoxShadow: '0px -4px 5px 0px rgba(0,0,0,0.75)',
+            boxShadow: '0px -4px 5px 0px rgba(0,0,0,0.75)'
         },
         openAddDeviceFormButton: {
             borderRadius: '25px',
