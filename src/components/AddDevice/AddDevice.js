@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
-import StockSearchResults from '../StockSearchResults/StockSearchResults';
+import StockSearchResults from './StockSearchResults';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import ManualAddForm from '../AddDevice/ManualAddForm';
 
 const AddDevice = () => {
     library.add(faTimesCircle);
@@ -21,6 +22,7 @@ const AddDevice = () => {
     const currentUserId = useSelector(state => state.currentUserId);
     const currentUsername = useSelector(state => state.currentUsername);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
+    const searchResults = useSelector(state => state.searchResults);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -101,7 +103,6 @@ const AddDevice = () => {
     }
 
     const openCloseAddDeviceForm = open => {
-        console.log('erthetheat');
         dispatch(toggleAddDeviceForm(open));
     }
 
@@ -148,8 +149,12 @@ const AddDevice = () => {
 
             <StockSearchResults searchTerm={searchTerm}/>
 
-            {/* {isAddDeviceFormOpen ? 
-            <form className="addDeviceForm" onSubmit={addDevice} autoComplete="off">
+            {searchResults.length === 0 ?
+                <ManualAddForm/> :
+                null
+            }
+
+            {/* <form className="addDeviceForm" onSubmit={addDevice} autoComplete="off">
                 <div className="manufacturer">
                     <input type="text" placeholder="Manufacturer" name="manufacturer"></input>
                 </div>
@@ -168,7 +173,7 @@ const AddDevice = () => {
                 </div>
                 <button type="submit">Add</button>
                 <button onClick={() => dispatch(toggleAddDeviceForm(false))}>Cancel</button>
-            </form>: null} */}
+            </form> */}
         </div>
     )
 }

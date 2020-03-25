@@ -73,3 +73,10 @@ export const getWorkspaceDevices = devices => {
         payload: devices
     };
 };
+
+export const setSearchResults = results => {
+    return {
+        type: 'SEARCH_RESULTS',
+        payload: results
+    };
+};

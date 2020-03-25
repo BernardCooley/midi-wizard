@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import firebase from '../../firebase';
+import { setSearchResults } from '../../actions';
 
 const StockSearchResults = props => {
 
     const db = firebase.firestore();
     const userDataRef = db.collection('UserDeviceData');
 
+    const dispatch = useDispatch();
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);
-    const [filteredDevices, setFilteredDevices] = useState(stockDevices);
     const userId = useSelector(state => state.currentUserId);
+    const searchResults = useSelector(state => state.searchResults);
 
     useEffect(() => {
-        setFilteredDevices(getSearchResults(props.searchTerm));
-        markExistingDevices(filteredDevices);
-    }, [props]);
+        dispatch(setSearchResults(getSearchResults(props.searchTerm)));
+        markExistingDevices(searchResults);
+    }, [props.searchTerm]);
     
     const getSearchResults = searchTerm => {
         return stockDevices.filter(device => 
@@ -25,7 +27,7 @@ const StockSearchResults = props => {
     }
 
     const markExistingDevices = () => {
-        filteredDevices.map(device => {
+        searchResults.map(device => {
             device['inDeviceTray'] = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });
     }
@@ -78,7 +80,7 @@ const StockSearchResults = props => {
     return (
         <div style={styles.stockSearchResultsContainer}>
             {
-                filteredDevices.map((device, index) => (
+                searchResults.map((device, index) => (
                     <div key={index} deviceid={device.deviceId} style={styles.resultContainer}>
                         <div style={styles.result}>{device.manufacturer} - {device.deviceName}</div>
                         <button style={styles.button} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>

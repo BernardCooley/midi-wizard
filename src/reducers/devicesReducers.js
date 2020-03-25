@@ -30,7 +30,15 @@ const deviceReducers = {
             default:
                 return state;
         }
-    }
+    },
+    searchResults: (state = [], action) => {
+        switch(action.type) {
+            case 'SEARCH_RESULTS':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
 }
 
 export default deviceReducers;
