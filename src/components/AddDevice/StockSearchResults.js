@@ -16,20 +16,17 @@ const StockSearchResults = props => {
 
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
-        markExistingDevices(searchResults);
-    }, [props.searchTerm]);
+    }, [props.searchTerm, userDevices]);
     
     const getSearchResults = searchTerm => {
-        return stockDevices.filter(device => 
+        const results = stockDevices.filter(device => 
             device.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) || 
             device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
-    }
-
-    const markExistingDevices = () => {
-        searchResults.map(device => {
-            device['inDeviceTray'] = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
+        results.map(device => {
+            device.inDeviceTray = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });
+        return results;
     }
 
     const addToUserDevices = async e => {
@@ -83,6 +80,7 @@ const StockSearchResults = props => {
                 searchResults.map((device, index) => (
                     <div key={index} deviceid={device.deviceId} style={styles.resultContainer}>
                         <div style={styles.result}>{device.manufacturer} - {device.deviceName}</div>
+                        {device.inDeviceTray}
                         <button style={styles.button} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
                     </div>
                 ))
