@@ -30,7 +30,7 @@ const UserDevice = (deviceDetails) => {
         const confirmDelete = window.confirm("Delete from device tray");
 
         if(confirmDelete) {
-            const clickedDeviceId = e.target.parentNode.parentNode.parentNode.parentNode.getAttribute('deviceid');
+            const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
             const newUserDeviceList = userDevices.filter(device => device.deviceId != clickedDeviceId);
 
