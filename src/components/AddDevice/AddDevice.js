@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAddDeviceForm } from '../../actions';
 import StockSearchResults from './StockSearchResults';
