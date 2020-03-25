@@ -6,11 +6,6 @@ const ManualAddForm = () => {
     const stockDevices = useSelector(state => state.stockDevices);
     const [suggestions, setSuggestions] = useState([]);
 
-    const addDevice = async (e) => {
-        e.preventDefault();
-        console.log('form submitted');
-    }
-
     const searchManufacturers = e => {
         const searchTerm = e.target.value;
         
@@ -26,6 +21,23 @@ const ManualAddForm = () => {
         const suggestionClicked = e.target.innerText;
         e.target.parentNode.parentNode.querySelector('input').value = suggestionClicked;
         setSuggestions([]);
+    }
+
+    const submitNewDevice = e => {
+        e.preventDefault();
+
+        const formData = {
+            manufacturer: e.target.manufacturer.value,
+            deviceName: e.target.deviceName.value,
+            keyboard: e.target.keyboard.checked,
+            synth: e.target.synth.checked,
+            padController: e.target.padController.checked,
+            audioOuts: e.target.audioOuts.value,
+            audioIns: e.target.audioIns.value,
+            midiOut: e.target.midiOut.checked,
+            midiIn: e.target.midiIn.checked,
+            midiThru: e.target.midiThru.checked
+        }
     }
 
     const styles = {
@@ -92,13 +104,18 @@ const ManualAddForm = () => {
         },
         numberFields: {
             textAlign: 'center',
+        },
+        submitButton: {
+            width: '150px',
+            height: '50px',
+            fontSize: '20px'
         }
     }
 
     return (
         <div style={styles.manualAddFormContainer} className='manualAddFormContainer'>
             <h2>No results found... add manually</h2>
-            <form style={styles.manualAddDeviceForm} className='manualAddDeviceForm' onSubmit={addDevice} autoComplete="off">
+            <form onSubmit={submitNewDevice} style={styles.manualAddDeviceForm} className='manualAddDeviceForm' autoComplete="off">
                 <div style={styles.detailsContainer} className='detailsContainer'>
                     <div style={styles.inputContainer} className='inputContainer'>
                         <input style={styles.inputField} type="text" placeholder="Manufacturer" name="manufacturer" onChange={searchManufacturers}></input>
@@ -151,6 +168,7 @@ const ManualAddForm = () => {
                         </div>
                     </div>
                 </div>
+                <button type='submit' style={styles.submitButton} className='submitButton'>Add device</button>
             </form>
         </div>
     )
