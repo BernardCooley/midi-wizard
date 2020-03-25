@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from "react-hook-form";
+import { toggleAddDeviceForm } from '../../actions';
+import firebase from '../../firebase';
 
 const ManualAddForm = () => {
 
+    const db = firebase.firestore();
+    const stockDeviceDtaRef = db.collection('DeviceData');
+    const userDataRef = db.collection('UserDeviceData');
+    const dispatch = useDispatch();
     const stockDevices = useSelector(state => state.stockDevices);
     const [suggestions, setSuggestions] = useState([]);
+    const { handleSubmit, register, errors } = useForm();
+    const userDevices = useSelector(state => state.userDevices);
+    const currentUserId = useSelector(state => state.currentUserId);
 
     const searchManufacturers = e => {
         const searchTerm = e.target.value;
@@ -23,21 +33,56 @@ const ManualAddForm = () => {
         setSuggestions([]);
     }
 
-    const submitNewDevice = e => {
-        e.preventDefault();
+    const submitNewDevice = async data => {
+        const formData = data;
 
-        const formData = {
-            manufacturer: e.target.manufacturer.value,
-            deviceName: e.target.deviceName.value,
-            keyboard: e.target.keyboard.checked,
-            synth: e.target.synth.checked,
-            padController: e.target.padController.checked,
-            audioOuts: e.target.audioOuts.value,
-            audioIns: e.target.audioIns.value,
-            midiOut: e.target.midiOut.checked,
-            midiIn: e.target.midiIn.checked,
-            midiThru: e.target.midiThru.checked
+        const newDevice = {
+            'deviceName': formData.deviceName,
+            'manufacturer': formData.manufacturer,
+            'midi': {
+                'in': formData.midiIn === 'midiIn',
+                'out': formData.midiOut === 'midiOut',
+                'thru': formData.midiThru === 'midiThru',
+            },
+            'audio': {
+                'ins': Number(formData.audioIns),
+                'outs': Number(formData.audioOuts)
+            }
         }
+
+        addToUserDevices(addToStockDevices(newDevice), formData.audioIns, formData.audioOuts);
+    }
+
+    const addToStockDevices = async newDevice => {
+        const newDocumentRef = await stockDeviceDtaRef.doc();
+        await newDocumentRef.set(newDevice);
+        newDevice['deviceId'] = newDocumentRef.id;
+        newDocumentRef.set(newDevice);
+        return newDocumentRef.id;
+    }
+
+    const addToUserDevices = async (newDocId, audioIns, audioOuts) => {
+        const newUserDevice = {
+            'deviceId': await newDocId,
+            'midi': {
+                'in': '',
+                'out': '',
+                'thru': ''
+            },
+            'audio': {
+                'ins': Array(Number(audioIns)).join(".").split("."),
+                'outs': Array(Number(audioOuts)).join(".").split(".")
+            }
+        }
+
+        const updatedDevices = [...userDevices, newUserDevice];
+
+        userDataRef.doc(currentUserId).update(
+            {
+                'devices': updatedDevices
+        });
+        dispatch(toggleAddDeviceForm(false));
+        alert('Device added');
     }
 
     const styles = {
@@ -56,7 +101,7 @@ const ManualAddForm = () => {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-start',
-            margin: '30px 0'
+            margin: '10px 0px'
         },
         manufacturerSuggestions: {
             minHeight: '30px'
@@ -109,61 +154,80 @@ const ManualAddForm = () => {
             width: '150px',
             height: '50px',
             fontSize: '20px'
+        },
+        validationContainer: {
+            color: 'red',
+            minHeight: '20px'
         }
     }
 
     return (
         <div style={styles.manualAddFormContainer} className='manualAddFormContainer'>
             <h2>No results found... add manually</h2>
-            <form onSubmit={submitNewDevice} style={styles.manualAddDeviceForm} className='manualAddDeviceForm' autoComplete="off">
+            <form onSubmit={handleSubmit(submitNewDevice)} style={styles.manualAddDeviceForm} className='manualAddDeviceForm' autoComplete="off">
                 <div style={styles.detailsContainer} className='detailsContainer'>
                     <div style={styles.inputContainer} className='inputContainer'>
-                        <input style={styles.inputField} type="text" placeholder="Manufacturer" name="manufacturer" onChange={searchManufacturers}></input>
+                        
+                        <div style={styles.validationContainer} className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
+                        <input style={styles.inputField} placeholder="Manufacturer" name="manufacturer" onChange={searchManufacturers} ref={register({
+                            required: 'Please enter manufacturer name'
+                        })}/>
                         <div style={styles.manufacturerSuggestions} className='manufacturerSuggestions'>
                             {suggestions.length > 0 ? suggestions.map((suggestion, index) => (
                                     <div key={index} style={styles.suggentionItem} className='suggentionItem' onClick={setFieldValue}>{suggestion}</div>
                                 )):null
                             }
                         </div>
+                        
                     </div>
                     <div style={styles.inputContainer} className='inputContainer'>
-                        <input style={styles.inputField} type="text" placeholder="Device name" name="deviceName"></input>
+                        <div style={styles.validationContainer} className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
+                        <input style={styles.inputField} placeholder="Device name" name="deviceName" ref={register({
+                            required: 'Please enter device name'
+                        })}/>
                     </div>
                     <div style={styles.checkboxGroupContainer} className='checkboxGroupContainer'>
                         <div style={styles.checkboxGroupTitle} className='checkboxGroupTitle'>Device type</div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='keyboard' name="deviceType" value="keyboard"/>
+                            <input style={styles.checkboxField} type="checkbox" id='keyboard' name="deviceType" value="keyboard" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="keyboard"> Keyboard</label>
                         </div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='synth' name="deviceType" value="synth"/>
+                            <input style={styles.checkboxField} type="checkbox" id='synth' name="deviceType" value="synth" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="synth"> Synth</label>
                         </div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='padController' name="deviceType" value="padController"/>
+                            <input style={styles.checkboxField} type="checkbox" id='padController' name="deviceType" value="padController" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="padController"> Pad controller</label>
                         </div>
                     </div>
                 </div>
                 <div style={styles.detailsContainer} className='detailsContainer'>
                     <div style={styles.inputContainer} className='inputContainer'>
-                        <input style={{...styles.inputField, ...styles.numberFields}} type="number" placeholder="Audio outs" name="audioOuts"></input>
+                        <div style={styles.validationContainer} className='validationContainer'>{errors.audioOuts && errors.audioOuts.message}</div>
+                        <input style={{...styles.inputField, ...styles.numberFields}} type="number" placeholder="Audio outs" name="audioOuts" ref={register({
+                            required: 'Please enter amount of audio outputs'
+                        })}/>
                     </div>
                     <div style={styles.inputContainer} className='inputContainer'>
-                        <input style={{...styles.inputField, ...styles.numberFields}} type="number" placeholder="Audio ins" name="audioIns"></input>
+                        <div style={styles.validationContainer} className='validationContainer'>{errors.audioIns && errors.audioIns.message}</div>
+                        <input style={{...styles.inputField, ...styles.numberFields}} type="number" placeholder="Audio ins" name="audioIns" ref={register({
+                            required: 'Please enter amount of audio inputs'
+                        })}/>
                     </div>
                     <div style={styles.checkboxGroupContainer} className='checkboxGroupContainer'>
+                        <div style={styles.validationContainer} className='validationContainer'></div>
                         <div style={styles.checkboxGroupTitle} className='checkboxGroupTitle'>Midi</div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='midiIn' name="midiIn" value="midiIn"/>
+                            <input style={styles.checkboxField} type="checkbox" id='midiIn' name="midiIn" value="midiIn" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="midiIn"> Midi in</label>
                         </div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='midiOut' name="midiOut" value="midiOut"/>
+                            <input style={styles.checkboxField} type="checkbox" id='midiOut' name="midiOut" value="midiOut" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="midiOut"> Midi out</label>
                         </div>
                         <div style={styles.checkboxInputContainer} className='checkboxInputContainer'>
-                            <input style={styles.checkboxField} type="checkbox" id='midiThru' name="midiThru" value="midiThru"/>
+                            <input style={styles.checkboxField} type="checkbox" id='midiThru' name="midiThru" value="midiThru" ref={register()}/>
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="midiThru"> Midi thru</label>
                         </div>
                     </div>

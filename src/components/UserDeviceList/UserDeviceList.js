@@ -64,8 +64,8 @@ const UserDeviceList = () => {
 
     return(
         <div style={styles.devicesListContainer}>
-            <button onClick={toggleDeviceTray} style={styles.openCloseButton}>{deviceTrayOpen ? 'Device tray' : 'Close'}</button>
-            <div style={{...styles.listContainer, ...deviceTrayOpen ? styles.hidden : ''}}>
+            <button onClick={toggleDeviceTray} style={styles.openCloseButton}>{deviceTrayOpen ? 'Close' : 'Device tray'}</button>
+            <div style={{...styles.listContainer, ...!deviceTrayOpen ? styles.hidden : ''}}>
                 {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
                     <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
                 )):null}
