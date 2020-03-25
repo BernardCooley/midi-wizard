@@ -64,7 +64,6 @@ const UserDevice = (deviceDetails) => {
             pointerEvents: 'none'
         },
         deviceAction: {
-            cursor: 'pointer',
             fontSize: '18px'
         },
         deleteIcon: {
@@ -75,16 +74,19 @@ const UserDevice = (deviceDetails) => {
         },
         deviceTitle: {
 
+        },
+        deviceActionContainer: {
+            cursor: 'pointer'
         }
     }
 
     return (
         <div deviceid={device.deviceId} style={styles.deviceContainer}>
             <div style={styles.deviceTrayOptions}>
-                <div onClick={deleteDevice}>
+                <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
-                <div onClick={addToWorkspace}>
+                <div style={styles.deviceActionContainer} onClick={addToWorkspace}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
                 </div>
             </div>

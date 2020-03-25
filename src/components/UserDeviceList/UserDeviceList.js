@@ -32,11 +32,11 @@ const UserDeviceList = () => {
             flexDirection: 'column'
         },
         openAddDeviceFormButton: {
-            backgroundColor: 'gray',
             borderRadius: '25px',
             padding: '10px',
             height: '25px',
-            marginLeft: '50px'
+            marginLeft: '50px',
+            cursor: 'pointer'
         },
         svg: {
             fontSize: '25px'
