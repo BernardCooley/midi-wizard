@@ -17,6 +17,7 @@ const UserDeviceList = () => {
 
     const toggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
+        dispatch(toggleAddDeviceForm(false));
     }
 
     const styles = {

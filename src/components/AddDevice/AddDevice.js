@@ -36,22 +36,28 @@ const AddDevice = () => {
     }
 
     const styles = {
-        addDeviceContainer: {
+        addDeviceOuterContainer: {
             width: '90%',
-            position: 'absolute',
-            top: '100px',
+            maxHeight: '300px',
+            position: 'relative',
+            top: '50px'
+        },
+        addDeviceContainer: {
             border: '1px solid lightgray',
             backgroundColor: 'white',
             padding: '20px',
             position: 'relative',
-            zIndex: '10'
+            zIndex: '10',
+            height: '100%',
+            overflowY: 'scroll'
         },
         svg: {
             position: 'relative',
-            right: '28px',
-            top: '-29px',
+            right: '7px',
+            top: '23px',
             fontSize: '30px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            zIndex: '20'
         },
         deviceSearchBox: {
             width: '98%',
@@ -70,18 +76,18 @@ const AddDevice = () => {
     }
 
     return(
-        <div style={styles.addDeviceContainer}>
-
+        <div style={styles.addDeviceOuterContainer}>
             <FontAwesomeIcon style={styles.svg} className='closeIcon' icon="times-circle" />
+            <div style={styles.addDeviceContainer}>
+                <input style={styles.deviceSearchBox} type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
-            <input style={styles.deviceSearchBox} type='text' onChange={updateSearchTerm} placeholder='Search'></input>
+                <StockSearchResults searchTerm={searchTerm}/>
 
-            <StockSearchResults searchTerm={searchTerm}/>
-
-            {searchResults.length === 0 ?
-                <ManualAddForm/> :
-                null
-            }
+                {searchResults.length === 0 ?
+                    <ManualAddForm/> :
+                    null
+                }
+            </div>
         </div>
     )
 }
