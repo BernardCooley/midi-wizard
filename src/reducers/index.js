@@ -16,7 +16,9 @@ const allReducers = combineReducers({
     isDeviceTrayOpen: deviceReducers.isDeviceTrayOpen,
     isAdminConsoleOpen: adminConsoleReducers.isAdminConsoleOpen,
     workspaceDevices: workspaceDevices.getWorkspaceDevices,
-    searchResults: deviceReducers.searchResults
+    searchResults: deviceReducers.searchResults,
+    selectedLayoutId: workspaceDevices.selectedLayoutId,
+    layouts: workspaceDevices.layouts
 });
 
 export default allReducers;

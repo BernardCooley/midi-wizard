@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import DevieOptions from '../DeviceOptions/DevieOptions';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
+import { workspaceDevices, layouts, selectedLayoutId } from '../../actions';
 
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt, faNetworkWired);
     const db = firebase.firestore();
     const device = deviceDetails.deviceDetails;
     const userDataRef = db.collection('UserDeviceData');
+    const userLayoutDataRef = db.collection('UserLayouts');
 
     const dispatch = useDispatch();
     // TODO getDownloadURL() returning an object. Extract url and assign to src of image
@@ -20,10 +22,56 @@ const UserDevice = (deviceDetails) => {
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);
     const userId = useSelector(state => state.currentUserId);
+    const layoutId = useSelector(state => state.selectedLayoutId);
+    const userLayouts = useSelector(state => state.layouts);
     const matchedStockDevice = stockDevices.filter(stockDevice => stockDevice.deviceId === device.deviceId)[0];
 
+    useEffect(() => {
+        getLayouts(getLayoutIds());
+    }, []);
+
+    useEffect(() => {
+        if(userLayouts.length > 0) {
+            dispatch(selectedLayoutId(userLayouts[0].layoutId));
+        }
+    }, [userLayouts]);
+
     const addToWorkspace = async e => {
-        console.log('add to workspace')
+        const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
+        const selectedDevice = userDevices.filter(device => device.deviceId === clickedDeviceId)[0];
+
+        const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
+
+        if(!isDeviceAlreadyInLayout(currentLayout, selectedDevice)) {
+            const updatedLayout = currentLayout.devices = [...currentLayout.devices, selectedDevice];
+            const response = await userLayoutDataRef.where('layoutId', '==', currentLayout.layoutId).get();
+            const documentId = await response.docs.map(doc => doc.id)[0];
+
+            await userLayoutDataRef.doc(documentId).set({
+                devices: updatedLayout
+            });
+        }
+    }
+
+    const getLayoutIds = async () => {
+        const layoutIdsResponse = await userDataRef.doc(userId).get()
+
+        return layoutIdsResponse.data().layouts;
+    }
+
+    const getLayouts = async layoutIds => {
+        const uLayouts = [];
+
+        for (const id of await layoutIds) {
+            const response = await userLayoutDataRef.doc(id).get();
+            uLayouts.push(response.data());
+        }
+
+        dispatch(layouts(uLayouts));
+    }
+
+    const isDeviceAlreadyInLayout = (layout, selectedDevice) => {
+        return layout.devices.filter(device => device.deviceId === selectedDevice.deviceId).length > 0;
     }
 
     const deleteDevice = async e => {

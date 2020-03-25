@@ -80,3 +80,17 @@ export const setSearchResults = results => {
         payload: results
     };
 };
+
+export const selectedLayoutId = id => {
+    return {
+        type: 'GET_LAYOUT_ID',
+        payload: id
+    };
+};
+
+export const layouts = layouts => {
+    return {
+        type: 'LAYOUTS',
+        payload: layouts
+    };
+};
