@@ -39,7 +39,7 @@ const UserDeviceList = () => {
             borderRadius: '25px',
             padding: '10px',
             height: '25px',
-            marginLeft: '50px',
+            marginLeft: '20px',
             cursor: 'pointer'
         },
         svg: {
@@ -47,7 +47,12 @@ const UserDeviceList = () => {
         },
         listContainer: {
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            margin: 'auto',
+            overflowY: 'auto'
         },
         openCloseButton: {
             position: 'relative',
@@ -63,16 +68,23 @@ const UserDeviceList = () => {
         },
         hidden: {
             display: 'none'
+        },
+        deviceListInnerContainer: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '98%'
         }
     }
 
     return(
         <div style={styles.devicesListContainer}>
             <button onClick={toggleDeviceTray} style={styles.openCloseButton}>{deviceTrayOpen ? 'Close' : 'Device tray'}</button>
-            <div style={{...styles.listContainer, ...!deviceTrayOpen ? styles.hidden : ''}}>
-                {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
-                    <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
-                )):null}
+            <div style={{...styles.deviceListInnerContainer, ...!deviceTrayOpen ? styles.hidden : ''}} className='deviceListInnerContainer'>
+                <div style={{...styles.listContainer, ...!deviceTrayOpen ? styles.hidden : ''}}>
+                    {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
+                        <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
+                    )):null}
+                </div>
                 {!isAddDeviceFormOpen ? 
                     <div style={styles.openAddDeviceFormButton} className={deviceTrayOpen ? 'trayOpen': ''} onClick={() => dispatch(toggleAddDeviceForm(true))}><FontAwesomeIcon style={styles.svg} icon="plus" /></div>
                     : 
