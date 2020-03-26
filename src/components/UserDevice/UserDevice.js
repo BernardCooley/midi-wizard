@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import firebase from 'firebase';
-import DevieOptions from '../DeviceOptions/DevieOptions';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
-import { workspaceDevices, layouts, selectedLayoutId } from '../../actions';
 
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt, faNetworkWired);
@@ -14,7 +12,6 @@ const UserDevice = (deviceDetails) => {
     const userDataRef = db.collection('UserDeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
 
-    const dispatch = useDispatch();
     // TODO getDownloadURL() returning an object. Extract url and assign to src of image
     const deviceImageName = device.imageName ? device.imageName : 'default_device_image.jpg';
     const deviceImageUrl = firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
@@ -54,7 +51,7 @@ const UserDevice = (deviceDetails) => {
         if(confirmDelete) {
             const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
-            const newUserDeviceList = userDevices.filter(device => device.deviceId != clickedDeviceId);
+            const newUserDeviceList = userDevices.filter(device => device.deviceId !== clickedDeviceId);
 
             await userDataRef.doc(userId).update({
                 devices: newUserDeviceList

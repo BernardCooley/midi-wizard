@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { toggleAddDeviceForm } from '../../actions';
@@ -135,7 +135,6 @@ const ManualAddForm = () => {
         },
         inputField: {
             width: '80%',
-            height: '100%',
             fontSize: '20px',
             margin: '5px 0',
             height: '30px',

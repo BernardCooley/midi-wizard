@@ -50,7 +50,7 @@ const AddDevice = () => {
             height: '100%',
             overflowY: 'scroll',
             ebkitBoxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)',
-            mozBoxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)',
+            MozBoxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)',
             boxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)'
         },
         svg: {

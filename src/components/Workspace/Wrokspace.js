@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getWorkspaceDevices, selectedLayoutId, layouts, currentLayout } from '../../actions';
-import UserDevice from '../UserDevice/UserDevice';
+import { selectedLayoutId, currentLayout } from '../../actions';
 import firebase from 'firebase';
 
 const Workspace = () => {
 
     const db = firebase.firestore();
-    const userDataRef = db.collection('UserDeviceData');
-    const userLayoutDataRef = db.collection('UserLayouts');
     const dispatch = useDispatch();
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const userLayouts = useSelector(state => state.layouts);
-    const userId = useSelector(state => state.currentUserId);
     const layout = useSelector(state => state.currentLayout);
 
     useEffect(() => {

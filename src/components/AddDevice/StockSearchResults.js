@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from '../../firebase';
 import { setSearchResults } from '../../actions';
@@ -23,7 +23,7 @@ const StockSearchResults = props => {
             device.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) || 
             device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        results.map(device => {
+        results.forEach(device => {
             device.inDeviceTray = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });
         return results;
