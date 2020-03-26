@@ -15,6 +15,14 @@ const workspaceReducers = {
                 return state;
         }
     },
+    currentLayout: (state = [], action) => {
+        switch(action.type) {
+            case 'CURRENT_LAYOUT':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
     layouts: (state = [], action) => {
         switch(action.type) {
             case 'LAYOUTS':

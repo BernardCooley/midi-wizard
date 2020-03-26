@@ -26,16 +26,6 @@ const UserDevice = (deviceDetails) => {
     const userLayouts = useSelector(state => state.layouts);
     const matchedStockDevice = stockDevices.filter(stockDevice => stockDevice.deviceId === device.deviceId)[0];
 
-    useEffect(() => {
-        getLayouts(getLayoutIds());
-    }, []);
-
-    useEffect(() => {
-        if(userLayouts.length > 0) {
-            dispatch(selectedLayoutId(userLayouts[0].layoutId));
-        }
-    }, [userLayouts]);
-
     const addToWorkspace = async e => {
         const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
         const selectedDevice = userDevices.filter(device => device.deviceId === clickedDeviceId)[0];
@@ -48,26 +38,10 @@ const UserDevice = (deviceDetails) => {
             const documentId = await response.docs.map(doc => doc.id)[0];
 
             await userLayoutDataRef.doc(documentId).set({
-                devices: updatedLayout
+                devices: updatedLayout,
+                layoutId: documentId
             });
         }
-    }
-
-    const getLayoutIds = async () => {
-        const layoutIdsResponse = await userDataRef.doc(userId).get()
-
-        return layoutIdsResponse.data().layouts;
-    }
-
-    const getLayouts = async layoutIds => {
-        const uLayouts = [];
-
-        for (const id of await layoutIds) {
-            const response = await userLayoutDataRef.doc(id).get();
-            uLayouts.push(response.data());
-        }
-
-        dispatch(layouts(uLayouts));
     }
 
     const isDeviceAlreadyInLayout = (layout, selectedDevice) => {

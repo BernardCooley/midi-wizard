@@ -94,3 +94,10 @@ export const layouts = layouts => {
         payload: layouts
     };
 };
+
+export const currentLayout = layout => {
+    return {
+        type: 'CURRENT_LAYOUT',
+        payload: layout
+    };
+};
