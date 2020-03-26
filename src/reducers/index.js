@@ -19,7 +19,8 @@ const allReducers = combineReducers({
     searchResults: deviceReducers.searchResults,
     selectedLayoutId: workspaceDevices.selectedLayoutId,
     layouts: workspaceDevices.layouts,
-    currentLayout: workspaceDevices.currentLayout
+    currentLayout: workspaceDevices.currentLayout,
+    layoutIds: workspaceDevices.layoutIds
 });
 
 export default allReducers;

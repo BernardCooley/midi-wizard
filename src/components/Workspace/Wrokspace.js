@@ -14,18 +14,19 @@ const Workspace = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const userLayouts = useSelector(state => state.layouts);
     const userId = useSelector(state => state.currentUserId);
-
-    useEffect(() => {
-        if(userId.length > 0) {
-            getLayouts(getLayoutIds());
-        }
-    }, [userId]);
+    const layout = useSelector(state => state.currentLayout);
 
     useEffect(() => {
         if(userLayouts.length > 0) {
             dispatch(selectedLayoutId(userLayouts[selectedIndex].layoutId));
         }
     }, [userLayouts]);
+
+    useEffect(() => {
+        if(userLayouts.length > 0) {
+            dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
+        }
+    }, [currentLayoutId]);
 
     const changeLayout = e => {
         setSelectedIndex(e.target.options[e.target.selectedIndex].index);
@@ -35,23 +36,6 @@ const Workspace = () => {
 
     const getCurrentLayout = layoutId => {
         dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId ===layoutId)[0]));
-    }
-
-    const getLayoutIds = async () => {
-        const layoutIdsResponse = await userDataRef.doc(userId).get()
-
-        return layoutIdsResponse.data().layouts;
-    }
-
-    const getLayouts = async layoutIds => {
-        const uLayouts = [];
-
-        for (const id of await layoutIds) {
-            const response = await userLayoutDataRef.doc(id).get();
-            uLayouts.push(response.data());
-        }
-
-        dispatch(layouts(uLayouts));
     }
 
     const styles = {
@@ -88,6 +72,12 @@ const Workspace = () => {
                     ))}
                 </select>
             </div>
+
+            <div>{layout.layoutName}</div>
+            {/* {layout.devices ? layout.devices.map((device, index) => (
+                    <div key={index}>{device.deviceId}</div>
+                )): null
+            } */}
         </div>
     )
 }

@@ -30,6 +30,14 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    layoutIds: (state = [], action) => {
+        switch(action.type) {
+            case 'LAYOUT_IDS':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

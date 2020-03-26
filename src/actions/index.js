@@ -95,6 +95,13 @@ export const layouts = layouts => {
     };
 };
 
+export const layoutIds = layoutIds => {
+    return {
+        type: 'LAYOUT_IDS',
+        payload: layoutIds
+    };
+};
+
 export const currentLayout = layout => {
     return {
         type: 'CURRENT_LAYOUT',
