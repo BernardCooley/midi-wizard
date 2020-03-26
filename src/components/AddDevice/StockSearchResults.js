@@ -24,7 +24,7 @@ const StockSearchResults = props => {
             device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
         results.forEach(device => {
-            device.inDeviceTray = userDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
+            device.inDeviceTray = userDevices.filter(userDeviceId => userDeviceId === device.deviceId).length > 0 ? true : false;
         });
         return results;
     }
@@ -33,24 +33,14 @@ const StockSearchResults = props => {
         const deviceId = e.target.parentNode.getAttribute('deviceid');
         
         if(!doesUserAlreadyHaveDevice(deviceId)) {
-            const newDevice = {
-                deviceId: deviceId,
-                midi: {
-                    in: '',
-                    out: '',
-                    thru: ''
-                },
-                workspace: false
-            }
-
             await userDataRef.doc(userId).update({
-                devices: [...userDevices, newDevice]
+                devices: [...userDevices, deviceId]
             });
         }
     }
 
     const doesUserAlreadyHaveDevice = deviceId => {
-        return userDevices.filter(device => device.deviceId === deviceId).length > 0 ? true : false;
+        return userDevices.filter(userDeviceId => userDeviceId === deviceId).length > 0 ? true : false;
     }
 
     const styles = {

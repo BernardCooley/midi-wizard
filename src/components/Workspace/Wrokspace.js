@@ -55,6 +55,9 @@ const Workspace = () => {
         layoutSelect: {
             height: '30px',
             width: '150px'
+        },
+        layoutDevicesList: {
+            
         }
     }
 
@@ -70,10 +73,12 @@ const Workspace = () => {
             </div>
 
             <div>{layout.layoutName}</div>
-            {/* {layout.devices ? layout.devices.map((device, index) => (
-                    <div key={index}>{device.deviceId}</div>
-                )): null
-            } */}
+            <div className='layoutDevicesList'>
+                {layout.devices ? layout.devices.map((device, index) => (
+                        <div key={index}>{device.deviceName}</div>
+                    )): null
+                }
+            </div>
         </div>
     )
 }

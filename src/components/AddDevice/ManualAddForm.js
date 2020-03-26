@@ -50,7 +50,7 @@ const ManualAddForm = () => {
             }
         }
 
-        addToUserDevices(addToStockDevices(newDevice), formData.audioIns, formData.audioOuts);
+        addToUserDevices(addToStockDevices(newDevice));
     }
 
     const addToStockDevices = async newDevice => {
@@ -61,21 +61,8 @@ const ManualAddForm = () => {
         return newDocumentRef.id;
     }
 
-    const addToUserDevices = async (newDocId, audioIns, audioOuts) => {
-        const newUserDevice = {
-            'deviceId': await newDocId,
-            'midi': {
-                'in': '',
-                'out': '',
-                'thru': ''
-            },
-            'audio': {
-                'ins': Array(Number(audioIns)).join(".").split("."),
-                'outs': Array(Number(audioOuts)).join(".").split(".")
-            }
-        }
-
-        const updatedDevices = [...userDevices, newUserDevice];
+    const addToUserDevices = async (newDocId) => {
+        const updatedDevices = [...userDevices, newDocId];
 
         userDataRef.doc(currentUserId).update(
             {

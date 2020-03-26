@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import firebase from 'firebase';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,12 +8,13 @@ import { faTrashAlt, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt, faNetworkWired);
     const db = firebase.firestore();
-    const device = deviceDetails.deviceDetails;
+    const deviceId = deviceDetails.deviceDetails;
+
     const userDataRef = db.collection('UserDeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
 
     // TODO getDownloadURL() returning an object. Extract url and assign to src of image
-    const deviceImageName = device.imageName ? device.imageName : 'default_device_image.jpg';
+    const deviceImageName = deviceId.imageName ? deviceId.imageName : 'default_device_image.jpg';
     const deviceImageUrl = firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
 
     const stockDevices = useSelector(state => state.stockDevices);
@@ -21,23 +22,70 @@ const UserDevice = (deviceDetails) => {
     const userId = useSelector(state => state.currentUserId);
     const layoutId = useSelector(state => state.selectedLayoutId);
     const userLayouts = useSelector(state => state.layouts);
-    const matchedStockDevice = stockDevices.filter(stockDevice => stockDevice.deviceId === device.deviceId)[0];
+    const layout = useSelector(state => state.currentLayout);
+    const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
+    const [currentDevice, setCurrentDevice] = useState([]);
+
+    useEffect(() => {
+        setInCurrentWorkspace(isDeviceInCurrentLayout());
+    }, [layout]);
+
+    useEffect(() => {
+        setCurrentDevice(getDeviceFromStock(deviceId));
+    }, [deviceId]);
+
+    const getDeviceFromStock = deviceId => {
+        return stockDevices.filter(device => device.deviceId === deviceId)[0];
+    }
 
     const addToWorkspace = async e => {
         const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
-        const selectedDevice = userDevices.filter(device => device.deviceId === clickedDeviceId)[0];
+        const selectedDevice = stockDevices.filter(device => device.deviceId === clickedDeviceId)[0];
+
+        const newLayoutDevice = createNewLayoutDeviceFromStockDevice(selectedDevice);
 
         const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
 
-        if(!isDeviceAlreadyInLayout(currentLayout, selectedDevice)) {
-            const updatedLayout = currentLayout.devices = [...currentLayout.devices, selectedDevice];
-            const response = await userLayoutDataRef.where('layoutId', '==', currentLayout.layoutId).get();
-            const documentId = await response.docs.map(doc => doc.id)[0];
+        if(!isDeviceAlreadyInLayout(currentLayout, newLayoutDevice)) {
+            const updatedLayoutDevices = [...currentLayout.devices, newLayoutDevice];
 
-            await userLayoutDataRef.doc(documentId).set({
-                devices: updatedLayout,
-                layoutId: documentId
+            userLayoutDataRef.doc(currentLayout.layoutId).set({
+                'layoutId': currentLayout.layoutId,
+                'layoutName': currentLayout.layoutName,
+                'devices': updatedLayoutDevices
             });
+        }
+    }
+
+    const createNewLayoutDeviceFromStockDevice = stockDevice => {
+        return {
+            'deviceId': stockDevice.deviceId,
+            'midi': setMidiForNewLayoutDevice(stockDevice),
+            'audio': setAudioForNewLayoutDevice(stockDevice),
+            'deviceName': stockDevice.deviceName
+        }
+    }
+
+    const setMidiForNewLayoutDevice = device => {
+        let midi = {};
+
+        if(device.midi.in) {midi['in'] = ''};
+        if(device.midi.out) {midi['out'] = ''};
+        if(device.midi.thru) {midi['thru'] = ''};
+
+        return midi;
+    }
+
+    const setAudioForNewLayoutDevice = device => {
+        const ins = {};
+        const outs = {};
+
+        for(let i  = 0; i < device.audio.ins; i++) {ins[i+1] = ''}
+        for(let i  = 0; i < device.audio.outs; i++) {outs[i+1] = ''}
+
+        return {
+            'ins': ins,
+            'outs': outs
         }
     }
 
@@ -51,12 +99,21 @@ const UserDevice = (deviceDetails) => {
         if(confirmDelete) {
             const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
-            const newUserDeviceList = userDevices.filter(device => device.deviceId !== clickedDeviceId);
+            const newUserDeviceList = userDevices.filter(deviceId => deviceId !== clickedDeviceId);
 
             await userDataRef.doc(userId).update({
                 devices: newUserDeviceList
             });
         }
+    }
+
+    const isDeviceInCurrentLayout = () => {
+        let inCurrentLayout = false;
+        if(layout.devices && currentDevice) {
+            const layoutDeviceIds = layout.devices.map(device => device.deviceId);
+            inCurrentLayout = layoutDeviceIds.includes(currentDevice.deviceId)
+        }
+        return inCurrentLayout;
     }
 
     const styles = {
@@ -96,21 +153,26 @@ const UserDevice = (deviceDetails) => {
         },
         deviceActionContainer: {
             cursor: 'pointer'
+        },
+        alreadyInLayout: {
+            opacity: '0.5',
+            cursor: 'unset !important'
         }
     }
 
     return (
-        <div deviceid={device.deviceId} style={styles.deviceContainer}>
+        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={styles.deviceContainer}>
+            {inCurrentWorkspace.toString()}
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
-                <div style={styles.deviceActionContainer} onClick={addToWorkspace}>
+                <div style={{...styles.deviceActionContainer, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} onClick={addToWorkspace}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
                 </div>
             </div>
             <img style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
-            <div style={styles.deviceTitle}>{matchedStockDevice.deviceName}</div>
+            <div style={styles.deviceTitle}>{currentDevice ? currentDevice.deviceName : ''}</div>
         </div>
     )
 }
