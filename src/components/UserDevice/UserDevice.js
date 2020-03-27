@@ -162,7 +162,6 @@ const UserDevice = (deviceDetails) => {
 
     return (
         <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={styles.deviceContainer}>
-            {inCurrentWorkspace.toString()}
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
