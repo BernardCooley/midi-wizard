@@ -8,7 +8,7 @@ const Workspace = () => {
     const db = firebase.firestore();
     const dispatch = useDispatch();
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedIndex, setSelectedIndex] = useState(1);
     const userLayouts = useSelector(state => state.layouts);
     const layout = useSelector(state => state.currentLayout);
 
@@ -29,7 +29,7 @@ const Workspace = () => {
     }, [currentLayoutId]);
 
     const changeLayout = e => {
-        setSelectedIndex(e.target.options[e.target.selectedIndex].index);
+        setSelectedIndex(e.target.options[e.target.selectedIndex].index-1);
         dispatch(selectedLayoutId(e.target.options[e.target.selectedIndex].value));
         getCurrentLayout(e.target.options[e.target.selectedIndex].value);
     }
