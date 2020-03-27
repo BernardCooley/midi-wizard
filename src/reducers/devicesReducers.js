@@ -38,7 +38,7 @@ const deviceReducers = {
             default:
                 return state;
         }
-    },
+    }
 }
 
 export default deviceReducers;

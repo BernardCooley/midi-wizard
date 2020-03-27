@@ -14,8 +14,8 @@ const UserDevice = (deviceDetails) => {
     const userLayoutDataRef = db.collection('UserLayouts');
 
     // TODO getDownloadURL() returning an object. Extract url and assign to src of image
-    const deviceImageName = deviceId.imageName ? deviceId.imageName : 'default_device_image.jpg';
-    const deviceImageUrl = firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
+    // const deviceImageName = deviceId.imageName ? deviceId.imageName : 'default_device_image.jpg';
+    // const deviceImageUrl = firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
 
     const stockDevices = useSelector(state => state.stockDevices);
     const userDevices = useSelector(state => state.userDevices);

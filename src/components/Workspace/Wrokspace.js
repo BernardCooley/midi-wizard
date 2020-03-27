@@ -15,6 +15,10 @@ const Workspace = () => {
     useEffect(() => {
         if(userLayouts.length > 0) {
             dispatch(selectedLayoutId(userLayouts[selectedIndex].layoutId));
+
+            if(currentLayoutId) {
+                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
+            }
         }
     }, [userLayouts]);
 
@@ -31,7 +35,7 @@ const Workspace = () => {
     }
 
     const getCurrentLayout = layoutId => {
-        dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId ===layoutId)[0]));
+        dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]));
     }
 
     const styles = {

@@ -19,10 +19,23 @@ function App() {
   const userLayoutDataRef = db.collection('UserLayouts');
   const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
   const userLayoutIds = useSelector(state => state.layoutIds);
+  const userId = useSelector(state => state.currentUserId);
 
   useEffect(() => {
     getStockDevices();
   }, []);
+
+  useEffect(() => {
+    if(userId) {
+      getLayoutIds(userId);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if(userLayoutIds) {
+      triggerGetLayouts();
+    }
+  }, [userLayoutIds]);
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
@@ -31,7 +44,6 @@ function App() {
       getUsername(user.uid);
       getIsAdmin(user.uid);
       getUserDevices(user.uid);
-      getLayouts(user.uid);
     } else {
       dispatch(setIsLoggedIn(false));
       dispatch(setCurrentUserId(''));
@@ -60,26 +72,33 @@ function App() {
     });
   }
 
-  const getLayoutIds = async userId => {
-    const response = await userDataRef.doc(userId).get();
-    return response.data().layouts;
+  const getLayoutIds = async uid => {
+    await userDataRef.doc(uid).onSnapshot(response => {
+      dispatch(layoutIds(response.data().layouts));
+    });
   }
 
-  const getLayouts = async userId => {
-    const allLayoutIds = await getLayoutIds(userId);
-    const uLayouts = [];
+  const getLayouts = async () => {
+    const layoutsArray = [];
 
-    for (const id of allLayoutIds) {
+    for (const id of userLayoutIds) {
       const response = await userLayoutDataRef.doc(id).get();
-      uLayouts.push(response.data());
+      layoutsArray.push(response.data());
     }
+    dispatch(layouts(layoutsArray));
+  }
 
-    dispatch(layouts(uLayouts));
+  const triggerGetLayouts = async () => {
+    for (const id of userLayoutIds) {
+      await userLayoutDataRef.doc(id).onSnapshot(response => {
+        getLayouts();
+      });
+    }
   }
 
   const getIsAdmin = async userId => {
-    const response = await userDataRef.doc(userId).get();
-    dispatch(isAdmin(response.data().admin));
+      const response = await userDataRef.doc(userId).get();
+      dispatch(isAdmin(response.data().admin));
   }
 
   return (
