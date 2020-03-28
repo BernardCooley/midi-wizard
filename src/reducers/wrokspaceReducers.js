@@ -38,6 +38,14 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    isLayoutsTrayOpen: (state = false, action) => {
+        switch(action.type) {
+            case 'IS_LAYOUTS_TRAY_OPEN':
+                return !state;
+            default:
+                return state;
+        }
     }
 }
 

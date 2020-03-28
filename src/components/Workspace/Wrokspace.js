@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectedLayoutId, currentLayout } from '../../actions';
+import { currentLayout } from '../../actions';
 import firebase from 'firebase';
+import LayoutsTray from '../LayoutsTray/LayoutsTray';
 
 const Workspace = () => {
 
@@ -9,14 +10,11 @@ const Workspace = () => {
     const userLayoutDataRef = db.collection('UserLayouts');
     const dispatch = useDispatch();
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
-    const [selectedIndex, setSelectedIndex] = useState(1);
     const userLayouts = useSelector(state => state.layouts);
     const layout = useSelector(state => state.currentLayout);
 
     useEffect(() => {
         if(userLayouts.length > 0) {
-            dispatch(selectedLayoutId(userLayouts[selectedIndex].layoutId));
-
             if(currentLayoutId) {
                 dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
             }
@@ -28,16 +26,6 @@ const Workspace = () => {
             dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
         }
     }, [currentLayoutId]);
-
-    const changeLayout = e => {
-        setSelectedIndex(e.target.options[e.target.selectedIndex].index-1);
-        dispatch(selectedLayoutId(e.target.options[e.target.selectedIndex].value));
-        getCurrentLayout(e.target.options[e.target.selectedIndex].value);
-    }
-
-    const getCurrentLayout = layoutId => {
-        dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]));
-    }
 
     const removeFromLayout = async e => {
         const confirmDelete = window.confirm("Delete from layout");
@@ -64,19 +52,6 @@ const Workspace = () => {
             display: 'flex',
             paddingTop: '50px'
         },
-        layoutSelectContainer: {
-            position: 'absolute',
-            top: '60px',
-            display: 'flex',
-            flexDirection: 'column',
-            height: '45px',
-            justifyContent: 'space-between',
-            right: '8px'
-        },
-        layoutSelect: {
-            height: '30px',
-            width: '150px'
-        },
         layoutDevicesList: {
             
         },
@@ -87,15 +62,6 @@ const Workspace = () => {
 
     return (
         <div style={styles.workSpaceContainer}>
-            <div style={styles.layoutSelectContainer} className='layoutSelectContainer'>
-                <select onChange={changeLayout} style={styles.layoutSelect} className='layoutSelect' id="studioLayout">
-                    <option disabled>Choose layout</option>
-                    {userLayouts.map((layout, index) => (
-                        <option key={index} value={layout.layoutId} selected={index === selectedIndex}>{layout.layoutName}</option>
-                    ))}
-                </select>
-            </div>
-
             <div>{layout.layoutName}</div>
             <div className='layoutDevicesList'>
                 {layout.devices ? layout.devices.map((device, index) => (
@@ -106,6 +72,8 @@ const Workspace = () => {
                     )): null
                 }
             </div>
+
+            <LayoutsTray/>
         </div>
     )
 }

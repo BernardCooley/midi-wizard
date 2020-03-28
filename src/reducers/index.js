@@ -20,7 +20,8 @@ const allReducers = combineReducers({
     selectedLayoutId: workspaceDevices.selectedLayoutId,
     layouts: workspaceDevices.layouts,
     currentLayout: workspaceDevices.currentLayout,
-    layoutIds: workspaceDevices.layoutIds
+    layoutIds: workspaceDevices.layoutIds,
+    isLayoutsTrayOpen: workspaceDevices.isLayoutsTrayOpen
 });
 
 export default allReducers;

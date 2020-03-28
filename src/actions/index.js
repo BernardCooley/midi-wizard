@@ -108,3 +108,9 @@ export const currentLayout = layout => {
         payload: layout
     };
 };
+
+export const isLayoutsTrayOpen = () => {
+    return {
+        type: 'IS_LAYOUTS_TRAY_OPEN'
+    };
+};
