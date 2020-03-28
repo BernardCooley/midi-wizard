@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectedLayoutId, isLayoutsTrayOpen, currentLayout } from '../../actions';
 
 const LayoutsTray = () => {
 
-    library.add(faTrashAlt, faEdit);
+    library.add(faTrashAlt, faEdit, faCheck);
 
     const dispatch = useDispatch();
     const userLayouts = useSelector(state => state.layouts);
     const layoutsTrayOpen = useSelector(state => state.isLayoutsTrayOpen);
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
     const [firstLoad, setFirstLoad] = useState(true);
+    const [editEnabled, setEditEnabled] = useState(false);
+    const [layoutIdBeingEdited, setLayoutIdBeingEdited] = useState('');
 
     useEffect(() => {
         if(userLayouts.length > 0) {
@@ -29,14 +31,18 @@ const LayoutsTray = () => {
         const confirmDelete = window.confirm("Delete layout?");
 
         if(confirmDelete) {
-            console.log(e.target.parentNode.getAttribute('layoutid'));
+            console.log(e.target.parentNode.parentNode.getAttribute('layoutid'));
             console.log('deleteFromLayout');
         }
     }
 
     const renameLayout = e => {
-        console.log(e.target.parentNode.getAttribute('layoutid'));
-        console.log('renameLayout');
+        if(!editEnabled) {
+            setEditEnabled(true);
+            setLayoutIdBeingEdited(e.target.parentNode.parentNode.getAttribute('layoutid'));
+        }else {
+            setEditEnabled(false);
+        }
     }
 
     const toggleLayoutsTray = () => {
@@ -44,10 +50,16 @@ const LayoutsTray = () => {
     }
 
     const switchLayouts = e => {
-        const layoutId = e.target.parentNode.getAttribute('layoutid');
-        dispatch(selectedLayoutId(layoutId));
-        dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
-        toggleLayoutsTray();
+        if(!editEnabled) {
+            const layoutId = e.target.parentNode.getAttribute('layoutid');
+            dispatch(selectedLayoutId(layoutId));
+            dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
+            toggleLayoutsTray();
+        }
+    }
+
+    const updateLayoutName = e => {
+        console.log(e.target.value);
     }
 
     const styles = {
@@ -121,13 +133,16 @@ const LayoutsTray = () => {
         editIcon: {
             color: 'blue'
         },
+        confirmEditIcon: {
+            color: 'green'
+        },
         hidden: {
             right: '-215px'
         },
         layoutSelected: {
             border: '1px solid lightgreen'
         },
-        eidtEnabled: {
+        editEnabled: {
             pointerEvents: 'all'
         }
     }
@@ -140,14 +155,17 @@ const LayoutsTray = () => {
                     {userLayouts.map((layout, index) => (
                         <div layoutid={layout.layoutId} key={index} style={{...styles.layoutContainer, ...currentLayoutId === layout.layoutId ? styles.layoutSelected : ''}} className='layoutContainer'>
                             <div onClick={switchLayouts} style={styles.layoutNameContainer} className='layoutNameContainer'>
-                                <input type='text' value={layout.layoutName} style={styles.layoutName} className='layoutName'/>
+                                <input onChange={updateLayoutName} type='text' value={layout.layoutName} style={{...styles.layoutName, ...editEnabled ? styles.editEnabled : ''}} className='layoutName'/>
                             </div>
                             <div style={styles.layoutActions} className='layoutActions'>
+                                <div style={styles.layoutDeviceActionContainer} onClick={renameLayout} className='layoutDeviceActionContainer'>
+                                    {editEnabled && layoutIdBeingEdited === layout.layoutId ?
+                                        <FontAwesomeIcon style={{...styles.svg, ...styles.editIcon}} icon="check" />:
+                                        <FontAwesomeIcon style={{...styles.svg, ...styles.editIcon}} icon="edit" />
+                                    }
+                                </div>
                                 <div style={styles.layoutDeviceActionContainer} onClick={deleteFromLayout} className='layoutDeviceActionContainer'>
                                     <FontAwesomeIcon style={{...styles.svg, ...styles.deleteIcon}} icon="trash-alt" />
-                                </div>
-                                <div style={styles.layoutDeviceActionContainer} onClick={renameLayout} className='layoutDeviceActionContainer'>
-                                    <FontAwesomeIcon style={{...styles.svg, ...styles.editIcon}} icon="edit" />
                                 </div>
                             </div>
                         </div>
