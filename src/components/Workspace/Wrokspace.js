@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { currentLayout } from '../../actions';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import firebase from 'firebase';
 import LayoutsTray from '../LayoutsTray/LayoutsTray';
 
@@ -8,24 +7,7 @@ const Workspace = () => {
 
     const db = firebase.firestore();
     const userLayoutDataRef = db.collection('UserLayouts');
-    const dispatch = useDispatch();
-    const currentLayoutId = useSelector(state => state.selectedLayoutId);
-    const userLayouts = useSelector(state => state.layouts);
     const layout = useSelector(state => state.currentLayout);
-
-    useEffect(() => {
-        if(userLayouts.length > 0) {
-            if(currentLayoutId) {
-                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
-            }
-        }
-    }, [userLayouts]);
-
-    useEffect(() => {
-        if(userLayouts.length > 0) {
-            dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
-        }
-    }, [currentLayoutId]);
 
     const removeFromLayout = async e => {
         const confirmDelete = window.confirm("Delete from layout");

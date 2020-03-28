@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from 'react-redux';
-import { selectedLayoutId, isLayoutsTrayOpen } from '../../actions';
+import { selectedLayoutId, isLayoutsTrayOpen, currentLayout } from '../../actions';
 
 const LayoutsTray = () => {
 
@@ -18,6 +18,7 @@ const LayoutsTray = () => {
     useEffect(() => {
         if(userLayouts.length > 0) {
             if(firstLoad) {
+                dispatch(currentLayout(userLayouts[0]))
                 dispatch(selectedLayoutId(userLayouts[0].layoutId));
                 setFirstLoad(false);
             }
@@ -33,9 +34,9 @@ const LayoutsTray = () => {
         }
     }
 
-    const editLayoutName = e => {
+    const renameLayout = e => {
         console.log(e.target.parentNode.getAttribute('layoutid'));
-        console.log('editLayoutName');
+        console.log('renameLayout');
     }
 
     const toggleLayoutsTray = () => {
@@ -45,7 +46,8 @@ const LayoutsTray = () => {
     const switchLayouts = e => {
         const layoutId = e.target.parentNode.getAttribute('layoutid');
         dispatch(selectedLayoutId(layoutId));
-        dispatch(isLayoutsTrayOpen());
+        dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
+        toggleLayoutsTray();
     }
 
     const styles = {
@@ -124,6 +126,9 @@ const LayoutsTray = () => {
         },
         layoutSelected: {
             border: '1px solid lightgreen'
+        },
+        eidtEnabled: {
+            pointerEvents: 'all'
         }
     }
 
@@ -141,7 +146,7 @@ const LayoutsTray = () => {
                                 <div style={styles.layoutDeviceActionContainer} onClick={deleteFromLayout} className='layoutDeviceActionContainer'>
                                     <FontAwesomeIcon style={{...styles.svg, ...styles.deleteIcon}} icon="trash-alt" />
                                 </div>
-                                <div style={styles.layoutDeviceActionContainer} onClick={editLayoutName} className='layoutDeviceActionContainer'>
+                                <div style={styles.layoutDeviceActionContainer} onClick={renameLayout} className='layoutDeviceActionContainer'>
                                     <FontAwesomeIcon style={{...styles.svg, ...styles.editIcon}} icon="edit" />
                                 </div>
                             </div>
