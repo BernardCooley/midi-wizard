@@ -6,6 +6,7 @@ import firebase from 'firebase';
 const Workspace = () => {
 
     const db = firebase.firestore();
+    const userLayoutDataRef = db.collection('UserLayouts');
     const dispatch = useDispatch();
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
     const [selectedIndex, setSelectedIndex] = useState(1);
@@ -38,6 +39,22 @@ const Workspace = () => {
         dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]));
     }
 
+    const removeFromLayout = async e => {
+        const confirmDelete = window.confirm("Delete from layout");
+
+        if(confirmDelete) {
+            const deviceId = e.target.parentNode.getAttribute('deviceid');
+    
+            const updatedLayoutDevices = layout.devices.filter(device => device.deviceId !== deviceId);
+
+            userLayoutDataRef.doc(layout.layoutId).set({
+                'layoutId': layout.layoutId,
+                'layoutName': layout.layoutName,
+                'devices': updatedLayoutDevices
+            });
+        }
+    }
+
     const styles = {
         workSpaceContainer: {
             backgroundColor: 'lightblue',
@@ -62,6 +79,9 @@ const Workspace = () => {
         },
         layoutDevicesList: {
             
+        },
+        layoutDevice: {
+            display: 'flex'
         }
     }
 
@@ -79,7 +99,10 @@ const Workspace = () => {
             <div>{layout.layoutName}</div>
             <div className='layoutDevicesList'>
                 {layout.devices ? layout.devices.map((device, index) => (
-                        <div key={index}>{device.deviceName}</div>
+                        <div deviceid={device.deviceId} key={index} style={styles.layoutDevice}>
+                            <div>{device.deviceName}</div>
+                            <button onClick={removeFromLayout} style={styles.deleteButton}>Delete</button>
+                        </div>
                     )): null
                 }
             </div>
