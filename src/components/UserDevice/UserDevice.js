@@ -123,7 +123,8 @@ const UserDevice = (deviceDetails) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            margin: '5px 10px'
+            margin: '5px 10px',
+            padding: '5px'
         },
         deviceTrayOptions: {
             width: '87%',
@@ -155,13 +156,12 @@ const UserDevice = (deviceDetails) => {
             cursor: 'pointer'
         },
         alreadyInLayout: {
-            opacity: '0.5',
-            cursor: 'unset !important'
+            outline: '#6990ab solid 1px'
         }
     }
 
     return (
-        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={styles.deviceContainer}>
+        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={{...styles.deviceContainer, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
