@@ -12,11 +12,15 @@ const LayoutsTray = () => {
 
     const db = firebase.firestore();
     const userLayoutDataRef = db.collection('UserLayouts');
+    const userDataRef = db.collection('UserDeviceData');
 
     const dispatch = useDispatch();
     const userLayouts = useSelector(state => state.layouts);
     const layoutsTrayOpen = useSelector(state => state.isLayoutsTrayOpen);
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
+    const currentUserId = useSelector(state => state.currentUserId);
+    const userLayoutIds = useSelector(state => state.layoutIds);
+
     const [firstLoad, setFirstLoad] = useState(true);
     const [editEnabled, setEditEnabled] = useState(false);
     const [layoutIdBeingEdited, setLayoutIdBeingEdited] = useState('');
@@ -75,6 +79,31 @@ const LayoutsTray = () => {
             dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
             toggleLayoutsTray();
         }
+    }
+
+    const addNewLayout = () => {
+        addNewLayoutToUserLayouts(addNewLayoutToLayouts());
+    }
+
+    const addNewLayoutToLayouts = async () => {
+        const newDocumentRef = await userLayoutDataRef.doc();
+
+        const newLayout = {
+            devices: [],
+            layoutId: newDocumentRef.id,
+            layoutName: 'New layout'
+        }
+
+        await newDocumentRef.set(newLayout);
+        return newDocumentRef.id;
+    }
+
+    const addNewLayoutToUserLayouts = async newLayoutId => {
+        userLayoutIds.push(await newLayoutId);
+
+        await userDataRef.doc(currentUserId).update({
+            layouts: userLayoutIds
+        });
     }
 
     const styles = {
@@ -159,6 +188,11 @@ const LayoutsTray = () => {
         },
         editEnabled: {
             pointerEvents: 'all'
+        },
+        newLayoutButton: {
+            height: '25px',
+            width: '90px',
+            fontSize: '13px'
         }
     }
 
@@ -186,6 +220,7 @@ const LayoutsTray = () => {
                         </div>
                     ))}
                 </div>
+                <button onClick={addNewLayout} style={styles.newLayoutButton} className='newLayoutButton'>New layout</button>
             </div>
         </div>
     )
