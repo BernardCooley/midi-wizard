@@ -114,3 +114,10 @@ export const isLayoutsTrayOpen = () => {
         type: 'IS_LAYOUTS_TRAY_OPEN'
     };
 };
+
+export const deletedLayoutId = layoutId => {
+    return {
+        type: 'DELETED_LAYOUT_ID',
+        payload: layoutId
+    };
+};

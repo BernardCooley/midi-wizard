@@ -46,6 +46,14 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    deletedLayoutId: (state = false, action) => {
+        switch(action.type) {
+            case 'DELETED_LAYOUT_ID':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

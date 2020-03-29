@@ -13,11 +13,13 @@ const Workspace = () => {
     const layout = useSelector(state => state.currentLayout);
     const userLayouts = useSelector(state => state.layouts);
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
+    const currentDeletedLayoutId = useSelector(state => state.deletedLayoutId);
 
     useEffect(() => {
         if(userLayouts.length > 0) {
-            if(currentLayoutId) {
-                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
+            if(currentLayoutId && currentLayoutId !== currentDeletedLayoutId) {
+                const removedUndefined = userLayouts.filter(layout => layout);
+                dispatch(currentLayout(removedUndefined.filter(layout => layout.layoutId === currentLayoutId)[0]));
             }
         }
     }, [userLayouts]);

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from 'react-redux';
-import { selectedLayoutId, isLayoutsTrayOpen, currentLayout } from '../../actions';
+import { selectedLayoutId, isLayoutsTrayOpen, currentLayout, deletedLayoutId } from '../../actions';
 import firebase from 'firebase';
 
 const LayoutsTray = () => {
@@ -38,12 +38,21 @@ const LayoutsTray = () => {
         }
     }, [userLayouts]);
 
-    const deleteFromLayout = e => {
+    const deleteFromLayout = async e => {
         const confirmDelete = window.confirm("Delete layout?");
 
         if(confirmDelete) {
-            // console.log(e.target.parentNode.parentNode.getAttribute('layoutid'));
-            // console.log('deleteFromLayout');
+            dispatch(deletedLayoutId(e.target.parentNode.parentNode.getAttribute('layoutid')));
+            const clickedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
+            
+            const updatedUserLayoutIds = userLayoutIds.filter(layoutId => layoutId !== clickedLayoutId);
+
+            await userDataRef.doc(currentUserId).update({
+                layouts: updatedUserLayoutIds
+            }).then(() => {
+                dispatch(selectedLayoutId(updatedUserLayoutIds[0]));
+                userLayoutDataRef.doc(clickedLayoutId).delete();
+            });
         }
     }
 
@@ -225,6 +234,7 @@ const LayoutsTray = () => {
             <div className='layoutsTrayContainer' style={styles.layoutsTrayContainer}>
                 <div style={styles.layoutsListContainer} className='layoutsListContainer'>
                     {userLayouts.map((layout, index) => (
+                        layout ? 
                         <div layoutid={layout.layoutId} key={index} style={{...styles.layoutContainer, ...currentLayoutId === layout.layoutId ? styles.layoutSelected : ''}} className='layoutContainer'>
                             <div onClick={switchLayouts} style={styles.layoutNameContainer} className='layoutNameContainer'>
                                 <input onChange={updateLayoutNameField} type='text' value={editEnabled && layoutIdBeingEdited === layout.layoutId ? layoutName : layout.layoutName} style={{...styles.layoutName, ...editEnabled ? styles.editEnabled : ''}} className='layoutName'/>
@@ -240,7 +250,7 @@ const LayoutsTray = () => {
                                     <FontAwesomeIcon style={{...styles.svg, ...styles.deleteIcon}} icon="trash-alt" />
                                 </div>
                             </div>
-                        </div>
+                        </div>: null
                     ))}
                 </div>
                 <div style={styles.newLayoutButtonsContainer} className='newLayoutButtonsContainer'>

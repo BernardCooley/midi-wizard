@@ -21,7 +21,8 @@ const allReducers = combineReducers({
     layouts: workspaceDevices.layouts,
     currentLayout: workspaceDevices.currentLayout,
     layoutIds: workspaceDevices.layoutIds,
-    isLayoutsTrayOpen: workspaceDevices.isLayoutsTrayOpen
+    isLayoutsTrayOpen: workspaceDevices.isLayoutsTrayOpen,
+    deletedLayoutId: workspaceDevices.deletedLayoutId
 });
 
 export default allReducers;
