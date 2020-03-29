@@ -166,9 +166,11 @@ const UserDevice = (deviceDetails) => {
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
-                <div style={{...styles.deviceActionContainer, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} onClick={addToWorkspace}>
+                {!inCurrentWorkspace ?
+                    <div style={styles.deviceActionContainer} onClick={addToWorkspace}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
-                </div>
+                    </div>: null
+                }
             </div>
             <img style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
             <div style={styles.deviceTitle}>{currentDevice ? currentDevice.deviceName : ''}</div>
