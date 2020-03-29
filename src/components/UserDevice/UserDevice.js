@@ -95,27 +95,22 @@ const UserDevice = (deviceDetails) => {
     }
 
     const deleteDevice = e => {
-        const confirmDelete = window.confirm("Delete from device tray?");
+        const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
-        if(confirmDelete) {
-            const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
+        if(doesDeviceExistInLayouts(clickedDeviceId)) {
+            let deviceInLayoutsMessage = 'This device exists in the following layouts:'
 
-            if(doesDeviceExistInLayouts(clickedDeviceId)) {
-                let deviceInLayoutsMessage = 'This device exists in the following layouts:'
+            getLayoutsThatContainDevice(clickedDeviceId).forEach(layoutName => {
+                deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n${layoutName} `
+            });
 
-                getLayoutsThatContainDevice(clickedDeviceId).forEach(layoutName => {
-                    deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n${layoutName} `
-                });
+            deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n\nDelete anyway?`
 
-                deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n\nDelete anyway?`
-
-
-                const confirmDeleteFromAllLayouts = window.confirm(deviceInLayoutsMessage);
-
-                if(confirmDeleteFromAllLayouts) {
-                    deleteFromDB(clickedDeviceId);
-                }
-            }else {
+            if(window.confirm(deviceInLayoutsMessage)) {
+                deleteFromDB(clickedDeviceId);
+            }
+        }else {
+            if(window.confirm("Delete from device tray?")) {
                 deleteFromDB(clickedDeviceId);
             }
         }
