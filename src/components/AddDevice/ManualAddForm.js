@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { toggleAddDeviceForm } from '../../actions';
 import firebase from '../../firebase';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ManualAddForm = () => {
 
@@ -15,6 +17,10 @@ const ManualAddForm = () => {
     const { handleSubmit, register, errors } = useForm();
     const userDevices = useSelector(state => state.userDevices);
     const currentUserId = useSelector(state => state.currentUserId);
+
+    const notify = message => {
+        toast(message);
+    };
 
     const searchManufacturers = e => {
         const searchTerm = e.target.value;
@@ -56,20 +62,21 @@ const ManualAddForm = () => {
     const addToStockDevices = async newDevice => {
         const newDocumentRef = await stockDeviceDtaRef.doc();
         await newDocumentRef.set(newDevice);
-        newDevice['deviceId'] = newDocumentRef.id;
-        newDocumentRef.set(newDevice);
+        newDevice['deviceId'] = await newDocumentRef.id;
+        await newDocumentRef.set(newDevice);
         return newDocumentRef.id;
     }
 
     const addToUserDevices = async (newDocId) => {
-        const updatedDevices = [...userDevices, newDocId];
+        const updatedDevices = [...userDevices, await newDocId];
 
         userDataRef.doc(currentUserId).update(
             {
                 'devices': updatedDevices
+        }).then(() => {
+            dispatch(toggleAddDeviceForm(false));
+            notify('Device added');
         });
-        dispatch(toggleAddDeviceForm(false));
-        alert('Device added');
     }
 
     const styles = {
@@ -149,6 +156,7 @@ const ManualAddForm = () => {
 
     return (
         <div style={styles.manualAddFormContainer} className='manualAddFormContainer'>
+            <ToastContainer />
             <h2>No results found... add manually</h2>
             <form onSubmit={handleSubmit(submitNewDevice)} style={styles.manualAddDeviceForm} className='manualAddDeviceForm' autoComplete="off">
                 <div style={styles.detailsContainer} className='detailsContainer'>

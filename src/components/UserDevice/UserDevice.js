@@ -4,6 +4,8 @@ import firebase from 'firebase';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt, faNetworkWired);
@@ -34,6 +36,10 @@ const UserDevice = (deviceDetails) => {
         setCurrentDevice(getDeviceFromStock(deviceId));
     }, [deviceId]);
 
+    const notify = message => {
+        toast(message);
+    };
+
     const getDeviceFromStock = deviceId => {
         return stockDevices.filter(device => device.deviceId === deviceId)[0];
     }
@@ -49,11 +55,13 @@ const UserDevice = (deviceDetails) => {
         if(!isDeviceAlreadyInLayout(currentLayout, newLayoutDevice)) {
             const updatedLayoutDevices = [...currentLayout.devices, newLayoutDevice];
 
-            userLayoutDataRef.doc(currentLayout.layoutId).set({
+            await userLayoutDataRef.doc(currentLayout.layoutId).set({
                 'layoutId': currentLayout.layoutId,
                 'layoutName': currentLayout.layoutName,
                 'devices': updatedLayoutDevices
-            });
+            }).then(() => {
+                notify('Device added to layout');
+            })
         }
     }
 
@@ -144,6 +152,8 @@ const UserDevice = (deviceDetails) => {
 
             await userLayoutDataRef.doc(layoutDevice.layoutId).update({
                 devices: newLayoutDevices
+            }).then(() => {
+                notify('Device deleted');
             });
         })
     }
@@ -226,6 +236,7 @@ const UserDevice = (deviceDetails) => {
 
     return (
         <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={{...styles.deviceContainer, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>
+            <ToastContainer />
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
