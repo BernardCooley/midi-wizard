@@ -101,7 +101,16 @@ const UserDevice = (deviceDetails) => {
             const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
             if(doesDeviceExistInLayouts(clickedDeviceId)) {
-                const confirmDeleteFromAllLayouts = window.confirm("This device is added to atlease one layout. Delete anyway?");
+                let deviceInLayoutsMessage = 'This device exists in the following layouts:'
+
+                getLayoutsThatContainDevice(clickedDeviceId).forEach(layoutName => {
+                    deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n${layoutName} `
+                });
+
+                deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n\nDelete anyway?`
+
+
+                const confirmDeleteFromAllLayouts = window.confirm(deviceInLayoutsMessage);
 
                 if(confirmDeleteFromAllLayouts) {
                     deleteFromDB(clickedDeviceId);
@@ -161,6 +170,19 @@ const UserDevice = (deviceDetails) => {
             inCurrentLayout = layoutDeviceIds.includes(currentDevice.deviceId)
         }
         return inCurrentLayout;
+    }
+
+    const getLayoutsThatContainDevice = deviceId => {
+        const matchedLayouts = []
+
+        userLayouts.forEach(layout => {
+            layout.devices.forEach(device => {
+                if(device.deviceId === deviceId) {
+                    matchedLayouts.push(layout.layoutName);
+                }
+            })
+        });
+        return matchedLayouts;
     }
 
     const styles = {
