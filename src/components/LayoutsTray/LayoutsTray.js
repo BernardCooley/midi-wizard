@@ -20,6 +20,7 @@ const LayoutsTray = () => {
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
     const currentUserId = useSelector(state => state.currentUserId);
     const userLayoutIds = useSelector(state => state.layoutIds);
+    const selectedLayout = useSelector(state => state.currentLayout);
 
     const [firstLoad, setFirstLoad] = useState(true);
     const [editEnabled, setEditEnabled] = useState(false);
@@ -82,17 +83,20 @@ const LayoutsTray = () => {
     }
 
     const addNewLayout = () => {
-        addNewLayoutToUserLayouts(addNewLayoutToLayouts());
-    }
-
-    const addNewLayoutToLayouts = async () => {
-        const newDocumentRef = await userLayoutDataRef.doc();
-
         const newLayout = {
             devices: [],
-            layoutId: newDocumentRef.id,
+            layoutId: '',
             layoutName: 'New layout'
         }
+
+        addNewLayoutToUserLayouts(addNewLayoutToLayouts(false, newLayout));
+    }
+
+    const addNewLayoutToLayouts = async (createCopy, newLayout) => {
+        const newDocumentRef = await userLayoutDataRef.doc();
+
+        newLayout.layoutId = newDocumentRef.id;
+        newLayout.layoutName = createCopy ? `${newLayout.layoutName} new` : newLayout.layoutName;
 
         await newDocumentRef.set(newLayout);
         return newDocumentRef.id;
@@ -104,6 +108,10 @@ const LayoutsTray = () => {
         await userDataRef.doc(currentUserId).update({
             layouts: userLayoutIds
         });
+    }
+
+    const copyLayout = () => {
+        addNewLayoutToUserLayouts(addNewLayoutToLayouts(true, selectedLayout));
     }
 
     const styles = {
@@ -119,11 +127,12 @@ const LayoutsTray = () => {
             MozTransition:'0.6s',
         },
         layoutsTrayContainer: {
-            height: '250px',
+            height: '305px',
             width: 'auto',
             backgroundColor: 'white',
             padding: '10px',
-            overflowX: 'auto'
+            overflow: 'hidden',
+            position: 'relative'
         },
         layoutsTabOpenClose: {
             transform: 'rotate(-90deg)',
@@ -143,7 +152,11 @@ const LayoutsTray = () => {
             flexDirection: 'column',
             height: '90%',
             justifyContent:' flex-start',
-            alignItems:' flex-start'
+            alignItems:' flex-start',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+            position: 'absolute',
+            top: '40px'
         },
         layoutContainer: {
             width: '100%',
@@ -181,7 +194,7 @@ const LayoutsTray = () => {
             color: 'green'
         },
         hidden: {
-            right: '-215px'
+            right: '-210px'
         },
         layoutSelected: {
             border: '1px solid lightgreen'
@@ -189,10 +202,20 @@ const LayoutsTray = () => {
         editEnabled: {
             pointerEvents: 'all'
         },
-        newLayoutButton: {
+        newLayoutButtonsContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            position: 'relative'
+        },
+        newLayoutButtons: {
             height: '25px',
-            width: '90px',
             fontSize: '13px'
+        },
+        createNewLayoutButton: {
+            width: '90px'
+        },
+        copyLayoutButton: {
+            width: '100px'
         }
     }
 
@@ -220,7 +243,10 @@ const LayoutsTray = () => {
                         </div>
                     ))}
                 </div>
-                <button onClick={addNewLayout} style={styles.newLayoutButton} className='newLayoutButton'>New layout</button>
+                <div style={styles.newLayoutButtonsContainer} className='newLayoutButtonsContainer'>
+                    <button onClick={addNewLayout} style={{...styles.createNewLayoutButton, ...styles.newLayoutButtons}} className='createNewLayoutButton'>New layout</button>
+                    <button onClick={copyLayout} style={{...styles.copyLayoutButton, ...styles.newLayoutButtons}} className='createNewLayoutButton'>Copy to new</button>
+                </div>
             </div>
         </div>
     )
