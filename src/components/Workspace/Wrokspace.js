@@ -16,7 +16,6 @@ const Workspace = () => {
 
     useEffect(() => {
         if(userLayouts.length > 0) {
-            console.log(currentLayoutId);
             if(currentLayoutId) {
                 dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
             }
