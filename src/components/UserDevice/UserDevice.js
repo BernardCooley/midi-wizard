@@ -38,7 +38,7 @@ const UserDevice = (deviceDetails) => {
         return stockDevices.filter(device => device.deviceId === deviceId)[0];
     }
 
-    const addToWorkspace = async e => {
+    const addToLayout = async e => {
         const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
         const selectedDevice = stockDevices.filter(device => device.deviceId === clickedDeviceId)[0];
 
@@ -62,7 +62,8 @@ const UserDevice = (deviceDetails) => {
             'deviceId': stockDevice.deviceId,
             'midi': setMidiForNewLayoutDevice(stockDevice),
             'audio': setAudioForNewLayoutDevice(stockDevice),
-            'deviceName': stockDevice.deviceName
+            'deviceName': stockDevice.deviceName,
+            'layoutId': layoutId
         }
     }
 
@@ -93,18 +94,64 @@ const UserDevice = (deviceDetails) => {
         return layout.devices.filter(device => device.deviceId === selectedDevice.deviceId).length > 0;
     }
 
-    const deleteDevice = async e => {
+    const deleteDevice = e => {
         const confirmDelete = window.confirm("Delete from device tray?");
 
         if(confirmDelete) {
             const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
 
-            const newUserDeviceList = userDevices.filter(deviceId => deviceId !== clickedDeviceId);
+            if(doesDeviceExistInLayouts(clickedDeviceId)) {
+                const confirmDeleteFromAllLayouts = window.confirm("This device is added to atlease one layout. Delete anyway?");
 
-            await userDataRef.doc(userId).update({
-                devices: newUserDeviceList
-            });
+                if(confirmDeleteFromAllLayouts) {
+                    deleteFromDB(clickedDeviceId);
+                }
+            }else {
+                deleteFromDB(clickedDeviceId);
+            }
         }
+    }
+
+    const deleteFromDB = async deviceIdToDelete => {
+        const newUserDeviceList = userDevices.filter(deviceId => deviceId !== deviceIdToDelete);
+
+        await userDataRef.doc(userId).update({
+            devices: newUserDeviceList
+        }).then(() => {
+            removeDeviceFromLayouts(deviceIdToDelete);
+        });
+    }
+
+    const removeDeviceFromLayouts = async deviceIdToDelete => {
+        const filteredDevices = []
+
+        userLayouts.map(layout => {
+            const dev = layout.devices.filter(device => device.deviceId === deviceIdToDelete)[0];
+
+            if(dev) {
+                filteredDevices.push(dev);
+            }
+        });
+
+        filteredDevices.forEach(async layoutDevice => {
+            const layoutDevices = userLayouts.filter(layout => layout.layoutId === layoutDevice.layoutId)[0];
+
+            const newLayoutDevices = layoutDevices.devices.filter(device => device !== layoutDevice);
+
+            await userLayoutDataRef.doc(layoutDevice.layoutId).update({
+                devices: newLayoutDevices
+            });
+        })
+    }
+
+    const doesDeviceExistInLayouts = deviceId => {
+        let doesExist = false;
+        userLayouts.forEach(layout => {
+            if(layout.devices.filter(device => device.deviceId === deviceId).length > 0) {
+                doesExist = true;
+            }
+        })
+        return doesExist;
     }
 
     const isDeviceInCurrentLayout = () => {
@@ -167,7 +214,7 @@ const UserDevice = (deviceDetails) => {
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
                 {!inCurrentWorkspace ?
-                    <div style={styles.deviceActionContainer} onClick={addToWorkspace}>
+                    <div style={styles.deviceActionContainer} onClick={addToLayout}>
                     <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
                     </div>: null
                 }
