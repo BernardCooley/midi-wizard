@@ -4,10 +4,14 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectedLayoutId, isLayoutsTrayOpen, currentLayout } from '../../actions';
+import firebase from 'firebase';
 
 const LayoutsTray = () => {
 
     library.add(faTrashAlt, faEdit, faCheck);
+
+    const db = firebase.firestore();
+    const userLayoutDataRef = db.collection('UserLayouts');
 
     const dispatch = useDispatch();
     const userLayouts = useSelector(state => state.layouts);
@@ -16,6 +20,7 @@ const LayoutsTray = () => {
     const [firstLoad, setFirstLoad] = useState(true);
     const [editEnabled, setEditEnabled] = useState(false);
     const [layoutIdBeingEdited, setLayoutIdBeingEdited] = useState('');
+    const [layoutName, setLayoutName] = useState('');
 
     useEffect(() => {
         if(userLayouts.length > 0) {
@@ -23,6 +28,7 @@ const LayoutsTray = () => {
                 dispatch(currentLayout(userLayouts[0]))
                 dispatch(selectedLayoutId(userLayouts[0].layoutId));
                 setFirstLoad(false);
+                setLayoutName(userLayouts[0].layoutName);
             }
         }
     }, [userLayouts]);
@@ -31,18 +37,31 @@ const LayoutsTray = () => {
         const confirmDelete = window.confirm("Delete layout?");
 
         if(confirmDelete) {
-            console.log(e.target.parentNode.parentNode.getAttribute('layoutid'));
-            console.log('deleteFromLayout');
+            // console.log(e.target.parentNode.parentNode.getAttribute('layoutid'));
+            // console.log('deleteFromLayout');
         }
     }
 
     const renameLayout = e => {
         if(!editEnabled) {
             setEditEnabled(true);
-            setLayoutIdBeingEdited(e.target.parentNode.parentNode.getAttribute('layoutid'));
+            const editedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
+            setLayoutIdBeingEdited(editedLayoutId);
+            setLayoutName(userLayouts.filter(layout => layout.layoutId === editedLayoutId)[0].layoutName);
         }else {
+            updateLayoutName(layoutName);
             setEditEnabled(false);
         }
+    }
+
+    const updateLayoutName = async newLayoutName => {
+        await userLayoutDataRef.doc(layoutIdBeingEdited).update({
+            layoutName: newLayoutName
+        });
+    }
+
+    const updateLayoutNameField = e => {
+        setLayoutName(e.target.value);
     }
 
     const toggleLayoutsTray = () => {
@@ -56,10 +75,6 @@ const LayoutsTray = () => {
             dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
             toggleLayoutsTray();
         }
-    }
-
-    const updateLayoutName = e => {
-        console.log(e.target.value);
     }
 
     const styles = {
@@ -155,7 +170,7 @@ const LayoutsTray = () => {
                     {userLayouts.map((layout, index) => (
                         <div layoutid={layout.layoutId} key={index} style={{...styles.layoutContainer, ...currentLayoutId === layout.layoutId ? styles.layoutSelected : ''}} className='layoutContainer'>
                             <div onClick={switchLayouts} style={styles.layoutNameContainer} className='layoutNameContainer'>
-                                <input onChange={updateLayoutName} type='text' value={layout.layoutName} style={{...styles.layoutName, ...editEnabled ? styles.editEnabled : ''}} className='layoutName'/>
+                                <input onChange={updateLayoutNameField} type='text' value={editEnabled && layoutIdBeingEdited === layout.layoutId ? layoutName : layout.layoutName} style={{...styles.layoutName, ...editEnabled ? styles.editEnabled : ''}} className='layoutName'/>
                             </div>
                             <div style={styles.layoutActions} className='layoutActions'>
                                 <div style={styles.layoutDeviceActionContainer} onClick={renameLayout} className='layoutDeviceActionContainer'>
