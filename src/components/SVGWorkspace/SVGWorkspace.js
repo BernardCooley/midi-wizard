@@ -8,8 +8,8 @@ const SVGWorkspace = props => {
     useEffect(() => {
         if(props.layout.devices) {
             const svg = select(svgRef.current);
-            svg
-            .selectAll('rect')
+
+            svg.selectAll('rect')
             .data(props.layout.devices)
             .join('rect')
             .attr('width', 100)
@@ -17,7 +17,14 @@ const SVGWorkspace = props => {
             .attr('x', (d, i) => i * 200)
             .attr('y', 100)
             .attr('stroke', 'red')
-            .attr('fill', 'lightgray')
+            .attr('fill', 'lightgray');
+
+            svg.selectAll('text')
+            .data(props.layout.devices)
+            .join('text')
+            .text(d => d.deviceName)
+            .attr('x', (d, i) => i * 200)
+            .attr('y', 220)
         }
     }, [data, props.layout.devices]);
 
