@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import LayoutsTray from '../LayoutsTray/LayoutsTray';
 import { currentLayout } from '../../actions';
+import SVGWorkspace from '../SVGWorkspace/SVGWorkspace';
 
 const Workspace = () => {
 
@@ -65,17 +66,7 @@ const Workspace = () => {
 
     return (
         <div style={styles.workSpaceContainer}>
-            <div>{layout.layoutName}</div>
-            <div className='layoutDevicesList'>
-                {layout.devices ? layout.devices.map((device, index) => (
-                        <div deviceid={device.deviceId} key={index} style={styles.layoutDevice}>
-                            <div>{device.deviceName}</div>
-                            <button onClick={removeFromLayout} style={styles.deleteButton}>Delete</button>
-                        </div>
-                    )): null
-                }
-            </div>
-
+            <SVGWorkspace layout={layout}/>
             <LayoutsTray/>
         </div>
     )
