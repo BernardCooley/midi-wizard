@@ -40,7 +40,8 @@ const SVGWorkspace = props => {
     const styles = {
         svgWorkspaceContainer: {
             backgroundColor: 'rebeccapurple',
-            width: '100%'
+            width: '100%',
+            padding: '30px'
         }
     }
 
