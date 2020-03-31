@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import UserDevice from '../UserDevice/UserDevice';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
+import firebase from 'firebase';
 
 const UserDeviceList = () => {
 
@@ -14,9 +15,21 @@ const UserDeviceList = () => {
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
 
+    useEffect(() => {
+        getImageUrls();
+    }, [userDevices]);
+
     const toggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
         dispatch(toggleAddDeviceForm(false));
+    }
+
+    const getImageUrls = async () => {
+        userDevices.map(async device => {
+            const deviceImageName = device.imageName ? device.imageName : 'default_device_image.jpg';
+
+            device['imageUrl'] = await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
+        });
     }
 
     const styles = {

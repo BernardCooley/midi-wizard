@@ -11,13 +11,16 @@ const ManualAddForm = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
     const userDataRef = db.collection('UserDeviceData');
+    const imageStorageRef = firebase.storage().ref();
+
     const dispatch = useDispatch();
     const stockDevices = useSelector(state => state.stockDevices);
     const [suggestions, setSuggestions] = useState([]);
+    const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const { handleSubmit, register, errors } = useForm();
     const userDeviceIds = useSelector(state => state.userDeviceIds);
     const currentUserId = useSelector(state => state.currentUserId);
-
+        
     const notify = message => {
         toast(message);
     };
@@ -42,6 +45,8 @@ const ManualAddForm = () => {
     const submitNewDevice = async data => {
         const formData = data;
 
+        const imageName = formData.imageFile.length > 0 ? formData.imageFile[0].name : 'default_device_image.jpg';
+
         const newDevice = {
             'deviceName': formData.deviceName,
             'manufacturer': formData.manufacturer,
@@ -53,10 +58,15 @@ const ManualAddForm = () => {
             'audio': {
                 'ins': Number(formData.audioIns),
                 'outs': Number(formData.audioOuts)
-            }
+            },
+            'imageName': imageName
         }
 
         addToUserDevices(addToStockDevices(newDevice));
+
+        if(formData.imageFile.length > 0) {
+            uploadImage(formData.imageFile[0]);
+        }
     }
 
     const addToStockDevices = async newDevice => {
@@ -79,6 +89,17 @@ const ManualAddForm = () => {
         });
     }
 
+    const uploadImage = async imageFile => {
+        let imageUpload = await imageStorageRef.child('deviceImages').child(imageFile.name)
+
+        await imageUpload.put(imageFile);
+    }
+
+    const clearFileInput = () => {
+        document.querySelector('#imageUploadInput').value = '';
+        setImageFieldPopulated(false);
+    }
+
     const styles = {
         manualAddFormContainer: {
             width: '90%',
@@ -96,6 +117,23 @@ const ManualAddForm = () => {
             flexDirection: 'row',
             alignItems: 'flex-start',
             margin: '10px 0px'
+        },
+        imageUploadContainer: {
+            marginBottom: '30px'
+        },
+        imageUploadLabel: {
+            fontSize: '25px',
+            marginBottom: '10px'
+        },
+        imageUploadInputContainer: {
+            display: 'flex'
+        },
+        clearImageUploadField: {
+            marginRight: '10px'
+        },
+        imageUploadInput: {
+            fontSize: '18px',
+            display: 'flex'
         },
         manufacturerSuggestions: {
             minHeight: '30px'
@@ -151,6 +189,9 @@ const ManualAddForm = () => {
         validationContainer: {
             color: 'red',
             minHeight: '20px'
+        },
+        hidden: {
+            display: 'none'
         }
     }
 
@@ -225,6 +266,16 @@ const ManualAddForm = () => {
                             <label style={styles.checkboxLabel} className='checkboxLabel' htmlFor="midiThru"> Midi thru</label>
                         </div>
                     </div>
+                </div>
+                <div style={styles.imageUploadContainer} className='detailsContainer'>
+                    <div style={styles.imageUploadLabel} className='imageUploadLabel'>Device image</div>
+                    <div style={styles.imageUploadInputContainer} className='inputContainer'>
+                        <input onChange={() => setImageFieldPopulated(true)} id='imageUploadInput' style={styles.imageUploadInput} className='imageUploadInput' name="imageFile" ref={register({
+                            validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
+                        })} type="file" />
+                        <button onClick={clearFileInput} style={{...styles.clearImageUploadField, ...!imageFieldPopulated ? styles.hidden : ''}} className='clearImageUploadField' type="button">X</button>
+                    </div>
+                    <div style={styles.validationContainer} className='validationContainer'>{errors.imageFile && 'Image files must be jpg, jpeg or png'}</div>
                 </div>
                 <button type='submit' style={styles.submitButton} className='submitButton'>Add device</button>
             </form>

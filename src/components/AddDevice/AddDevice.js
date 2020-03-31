@@ -39,7 +39,8 @@ const AddDevice = () => {
             width: '90%',
             maxHeight: '300px',
             position: 'relative',
-            top: '50px'
+            top: '50px',
+            zIndex: '15'
         },
         addDeviceContainer: {
             border: '1px solid lightgray',

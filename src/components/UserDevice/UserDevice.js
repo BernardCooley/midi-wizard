@@ -23,27 +23,14 @@ const UserDevice = (deviceDetails) => {
     const layout = useSelector(state => state.currentLayout);
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
-    const [imageUrl, setImageUrl] = useState([]);
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
     }, [layout]);
 
-    useEffect(() => {
-        getImageUrl();
-    }, []);
-
     const notify = message => {
         toast(message);
     };
-
-    const getImageUrl = async () => {
-        const deviceImageName = device.imageName ? device.imageName : 'default_device_image';
-
-        const deviceImageUrl = await firebase.storage().ref().child(`deviceImages/${deviceImageName}.jpg`).getDownloadURL();
-
-        setImageUrl(deviceImageUrl);
-    }
 
     const addToLayout = async (clickedDeviceId, position) => {
         const selectedDevice = stockDevices.filter(device => device.deviceId === clickedDeviceId)[0];
@@ -252,7 +239,7 @@ const UserDevice = (deviceDetails) => {
                     <FontAwesomeIcon className='deleteIcon' style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
             </div>
-            <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src={imageUrl} alt=''></img>
+            <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src={device.imageUrl} alt=''></img>
             <div style={{...styles.deviceTitle, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>{device ? device.deviceName : ''}</div>
         </div>
     )
