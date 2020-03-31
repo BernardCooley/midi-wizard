@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import firebase from 'firebase';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTrashAlt, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserDevice = (deviceDetails) => {
-    library.add(faTrashAlt, faNetworkWired);
+    library.add(faTrashAlt);
     const db = firebase.firestore();
     const deviceId = deviceDetails.deviceDetails;
 
@@ -213,7 +213,11 @@ const UserDevice = (deviceDetails) => {
             width: '87%',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'relative',
+            top: '10px',
+            right: '14px',
+            zIndex: '11'
         },
         img: {
             height: '130px',
@@ -228,35 +232,28 @@ const UserDevice = (deviceDetails) => {
         deleteIcon: {
             color: 'red'
         },
-        addToWorkspaceIcon: {
-            color: 'green'
-        },
         deviceTitle: {
 
         },
         deviceActionContainer: {
-            cursor: 'pointer'
+            cursor: 'pointer',
+            opacity: '1'
         },
         alreadyInLayout: {
-            outline: '#6990ab solid 1px'
+            opacity: '0.5'
         }
     }
 
     return (
-        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={{...styles.deviceContainer, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>
+        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={styles.deviceContainer}>
             <ToastContainer />
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
-                    <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
+                    <FontAwesomeIcon className='deleteIcon' style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
-                {!inCurrentWorkspace ?
-                    <div style={styles.deviceActionContainer} onClick={addToLayout}>
-                    <FontAwesomeIcon style={{...styles.svg, ...styles.deviceAction, ...styles.addToWorkspaceIcon}} icon="network-wired" />
-                    </div>: null
-                }
             </div>
-            <img deviceid={currentDevice ? currentDevice.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
-            <div style={styles.deviceTitle}>{currentDevice ? currentDevice.deviceName : ''}</div>
+            <img deviceid={currentDevice ? currentDevice.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
+            <div style={{...styles.deviceTitle, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>{currentDevice ? currentDevice.deviceName : ''}</div>
         </div>
     )
 }
