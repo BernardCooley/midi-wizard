@@ -59,7 +59,8 @@ const ManualAddForm = () => {
                 'ins': Number(formData.audioIns),
                 'outs': Number(formData.audioOuts)
             },
-            'imageName': imageName
+            'imageName': imageName,
+            'verified': false
         }
 
         addToUserDevices(addToStockDevices(newDevice));
