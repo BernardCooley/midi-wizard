@@ -26,6 +26,13 @@ export const setStockDevices = stockDevices => {
     };
 };
 
+export const setUserDevicIds = userDeviceIds => {
+    return {
+        type: 'USER_DEVICE_IDS',
+        payload: userDeviceIds
+    };
+};
+
 export const setUserDevices = userDevices => {
     return {
         type: 'USER_DEVICES',

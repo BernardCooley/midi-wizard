@@ -10,39 +10,39 @@ import 'react-toastify/dist/ReactToastify.css';
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt);
     const db = firebase.firestore();
-    const deviceId = deviceDetails.deviceDetails;
+    const device = deviceDetails.deviceDetails;
 
     const userDataRef = db.collection('UserDeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
 
-    // TODO getDownloadURL() returning an object. Extract url and assign to src of image
-    // const deviceImageName = deviceId.imageName ? deviceId.imageName : 'default_device_image.jpg';
-    // const deviceImageUrl = firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
-
     const stockDevices = useSelector(state => state.stockDevices);
-    const userDevices = useSelector(state => state.userDevices);
+    const userDeviceIds = useSelector(state => state.userDeviceIds);
     const userId = useSelector(state => state.currentUserId);
     const layoutId = useSelector(state => state.selectedLayoutId);
     const userLayouts = useSelector(state => state.layouts);
     const layout = useSelector(state => state.currentLayout);
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
-    const [currentDevice, setCurrentDevice] = useState([]);
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
+    const [imageUrl, setImageUrl] = useState([]);
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
     }, [layout]);
 
     useEffect(() => {
-        setCurrentDevice(getDeviceFromStock(deviceId));
-    }, [deviceId]);
+        getImageUrl();
+    }, []);
 
     const notify = message => {
         toast(message);
     };
 
-    const getDeviceFromStock = deviceId => {
-        return stockDevices.filter(device => device.deviceId === deviceId)[0];
+    const getImageUrl = async () => {
+        const deviceImageName = device.imageName ? device.imageName : 'default_device_image';
+
+        const deviceImageUrl = await firebase.storage().ref().child(`deviceImages/${deviceImageName}.jpg`).getDownloadURL();
+
+        setImageUrl(deviceImageUrl);
     }
 
     const addToLayout = async (clickedDeviceId, position) => {
@@ -134,7 +134,7 @@ const UserDevice = (deviceDetails) => {
     }
 
     const deleteFromDB = async deviceIdToDelete => {
-        const newUserDeviceList = userDevices.filter(deviceId => deviceId !== deviceIdToDelete);
+        const newUserDeviceList = userDeviceIds.filter(deviceId => deviceId !== deviceIdToDelete);
 
         await userDataRef.doc(userId).update({
             devices: newUserDeviceList
@@ -167,10 +167,10 @@ const UserDevice = (deviceDetails) => {
         })
     }
 
-    const doesDeviceExistInLayouts = deviceId => {
+    const doesDeviceExistInLayouts = dev => {
         let doesExist = false;
         userLayouts.forEach(layout => {
-            if(layout.devices.filter(device => device.deviceId === deviceId).length > 0) {
+            if(layout.devices.filter(device => device.deviceId === dev.deviceId).length > 0) {
                 doesExist = true;
             }
         })
@@ -179,19 +179,19 @@ const UserDevice = (deviceDetails) => {
 
     const isDeviceInCurrentLayout = () => {
         let inCurrentLayout = false;
-        if(layout.devices && currentDevice) {
+        if(layout.devices && device) {
             const layoutDeviceIds = layout.devices.map(device => device.deviceId);
-            inCurrentLayout = layoutDeviceIds.includes(currentDevice.deviceId)
+            inCurrentLayout = layoutDeviceIds.includes(device.deviceId)
         }
         return inCurrentLayout;
     }
 
-    const getLayoutsThatContainDevice = deviceId => {
+    const getLayoutsThatContainDevice = dev => {
         const matchedLayouts = []
 
         userLayouts.forEach(layout => {
             layout.devices.forEach(device => {
-                if(device.deviceId === deviceId) {
+                if(device.deviceId === dev.deviceId) {
                     matchedLayouts.push(layout.layoutName);
                 }
             })
@@ -220,7 +220,7 @@ const UserDevice = (deviceDetails) => {
             zIndex: '11'
         },
         img: {
-            height: '130px',
+            width: '150px',
             border: '0'
         },
         svg: {
@@ -245,15 +245,15 @@ const UserDevice = (deviceDetails) => {
     }
 
     return (
-        <div deviceid={currentDevice ? currentDevice.deviceId : ''} style={styles.deviceContainer}>
+        <div deviceid={device ? device.deviceId : ''} style={styles.deviceContainer}>
             <ToastContainer />
             <div style={styles.deviceTrayOptions}>
                 <div style={styles.deviceActionContainer} onClick={deleteDevice}>
                     <FontAwesomeIcon className='deleteIcon' style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
                 </div>
             </div>
-            <img deviceid={currentDevice ? currentDevice.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
-            <div style={{...styles.deviceTitle, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>{currentDevice ? currentDevice.deviceName : ''}</div>
+            <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src={imageUrl} alt=''></img>
+            <div style={{...styles.deviceTitle, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>{device ? device.deviceName : ''}</div>
         </div>
     )
 }

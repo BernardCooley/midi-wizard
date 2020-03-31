@@ -13,7 +13,6 @@ const UserDeviceList = () => {
     const userDevices = useSelector(state => state.userDevices);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
-    const workspaceDevice = false;
 
     const toggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
@@ -81,8 +80,8 @@ const UserDeviceList = () => {
             <button onClick={toggleDeviceTray} style={styles.openCloseButton}>Devices</button>
             <div style={{...styles.deviceListInnerContainer, ...!deviceTrayOpen ? styles.hidden : ''}} className='deviceListInnerContainer'>
                 <div style={{...styles.listContainer, ...!deviceTrayOpen ? styles.hidden : ''}}>
-                    {userDevices.length > 0 ? userDevices.map((deviceDetails, index) => (
-                        <UserDevice key={index} deviceDetails={deviceDetails} workspaceDevice={workspaceDevice}/>
+                    {userDevices.length > 0 ? userDevices.map((device, index) => (
+                        <UserDevice key={index} deviceDetails={device}/>
                     )):null}
                 </div>
                 {!isAddDeviceFormOpen ? 

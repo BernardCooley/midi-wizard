@@ -15,7 +15,7 @@ const ManualAddForm = () => {
     const stockDevices = useSelector(state => state.stockDevices);
     const [suggestions, setSuggestions] = useState([]);
     const { handleSubmit, register, errors } = useForm();
-    const userDevices = useSelector(state => state.userDevices);
+    const userDeviceIds = useSelector(state => state.userDeviceIds);
     const currentUserId = useSelector(state => state.currentUserId);
 
     const notify = message => {
@@ -68,7 +68,7 @@ const ManualAddForm = () => {
     }
 
     const addToUserDevices = async (newDocId) => {
-        const updatedDevices = [...userDevices, await newDocId];
+        const updatedDevices = [...userDeviceIds, await newDocId];
 
         userDataRef.doc(currentUserId).update(
             {

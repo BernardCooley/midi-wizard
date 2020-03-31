@@ -4,7 +4,7 @@ import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevices, isAdmin, layoutIds, layouts } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -20,6 +20,7 @@ function App() {
   const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
   const userLayoutIds = useSelector(state => state.layoutIds);
   const userId = useSelector(state => state.currentUserId);
+  const stockDevices = useSelector(state => state.stockDevices);
 
   useEffect(() => {
     getStockDevices();
@@ -43,7 +44,7 @@ function App() {
       dispatch(setCurrentUserId(user.uid));
       getUsername(user.uid);
       getIsAdmin(user.uid);
-      getUserDevices(user.uid);
+      getUserDeviceIds(user.uid);
     } else {
       dispatch(setIsLoggedIn(false));
       dispatch(setCurrentUserId(''));
@@ -56,11 +57,16 @@ function App() {
     })
   }
 
-  const getUserDevices = async userId => {
+  const getUserDeviceIds = async userId => {
     await userDataRef.doc(userId).onSnapshot(response => {
-
       if (response.data().devices) {
-        dispatch(setUserDevices(response.data().devices))
+        const userDeviceIds = response.data().devices;
+
+        if(stockDevices.length > 0) {
+          const userDevices = stockDevices.filter(device => userDeviceIds.includes(device.deviceId));
+          dispatch(setUserDevices(userDevices));
+        }
+        dispatch(setUserDevicIds(userDeviceIds));
       }
     })
   }

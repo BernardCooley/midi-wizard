@@ -10,13 +10,13 @@ const StockSearchResults = props => {
 
     const dispatch = useDispatch();
     const stockDevices = useSelector(state => state.stockDevices);
-    const userDevices = useSelector(state => state.userDevices);
+    const userDeviceIds = useSelector(state => state.userDeviceIds);
     const userId = useSelector(state => state.currentUserId);
     const searchResults = useSelector(state => state.searchResults);
 
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
-    }, [props.searchTerm, userDevices]);
+    }, [props.searchTerm, userDeviceIds]);
     
     const getSearchResults = searchTerm => {
         const results = stockDevices.filter(device => 
@@ -24,7 +24,7 @@ const StockSearchResults = props => {
             device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
         results.forEach(device => {
-            device.inDeviceTray = userDevices.filter(userDeviceId => userDeviceId === device.deviceId).length > 0 ? true : false;
+            device.inDeviceTray = userDeviceIds.filter(userDeviceId => userDeviceId === device.deviceId).length > 0 ? true : false;
         });
         return results;
     }
@@ -34,13 +34,13 @@ const StockSearchResults = props => {
         
         if(!doesUserAlreadyHaveDevice(deviceId)) {
             await userDataRef.doc(userId).update({
-                devices: [...userDevices, deviceId]
+                devices: [...userDeviceIds, deviceId]
             });
         }
     }
 
     const doesUserAlreadyHaveDevice = deviceId => {
-        return userDevices.filter(userDeviceId => userDeviceId === deviceId).length > 0 ? true : false;
+        return userDeviceIds.filter(userDeviceId => userDeviceId === deviceId).length > 0 ? true : false;
     }
 
     const styles = {

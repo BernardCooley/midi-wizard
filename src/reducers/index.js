@@ -11,6 +11,7 @@ const allReducers = combineReducers({
     isLoginRegisterOpen: authReducers.toggleLoginRegister,
     isAdmin: authReducers.isAdmin,
     stockDevices: deviceReducers.stockDevices,
+    userDeviceIds: deviceReducers.userDeviceIds,
     userDevices: deviceReducers.userDevices,
     isAddDeviceFormOpen: deviceReducers.toggleAddDeviceForm,
     isDeviceTrayOpen: deviceReducers.isDeviceTrayOpen,
