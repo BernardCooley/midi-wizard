@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleAdminConsole } from '../../actions';
+import AdminConsoleDevices from '../../components/AdminConsoleDevices/AdminConsoleDevices';
 
 const AdminConsole = () => {
 
@@ -12,13 +13,13 @@ const AdminConsole = () => {
 
     const styles = {
         adminConsoleContainer: {
-
+            paddingTop: '50px'
         }
     }
 
     return (
-        <div className='adminConsoleContainer'>
-            Admin Console
+        <div style={styles.adminConsoleContainer} className='adminConsoleContainer'>
+            <AdminConsoleDevices/>
             <button onClick={closeAdminConsole}>Close</button>
         </div>
     )
