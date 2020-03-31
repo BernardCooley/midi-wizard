@@ -24,24 +24,23 @@ const SVGWorkspace = props => {
             .join('rect')
             .attr('width', deviceContainerSize.width)
             .attr('height', deviceContainerSize.height)
-            .attr('x', (d, i) => i * deviceCoordinates.x)
-            .attr('y', deviceCoordinates.y)
+            .attr('x', d => d.svg.x - deviceContainerSize.width)
+            .attr('y', d => d.svg.y)
             .attr('fill', 'lightgray');
 
             svg.selectAll('text')
             .data(props.layout.devices)
             .join('text')
             .text(d => d.deviceName)
-            .attr('x', (d, i) => i * deviceCoordinates.x)
-            .attr('y', deviceCoordinates.y*2.2)
+            .attr('x', d => d.svg.x - deviceContainerSize.width)
+            .attr('y', d => d.svg.y)
         }
     }, [data, props.layout.devices]);
 
     const styles = {
         svgWorkspaceContainer: {
             backgroundColor: 'rebeccapurple',
-            width: '100%',
-            padding: '30px'
+            width: '100%'
         }
     }
 

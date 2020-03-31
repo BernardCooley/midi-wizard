@@ -27,6 +27,7 @@ const UserDevice = (deviceDetails) => {
     const layout = useSelector(state => state.currentLayout);
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
     const [currentDevice, setCurrentDevice] = useState([]);
+    const [clickedDeviceId, setClickedDeviceId] = useState([]);
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
@@ -44,11 +45,10 @@ const UserDevice = (deviceDetails) => {
         return stockDevices.filter(device => device.deviceId === deviceId)[0];
     }
 
-    const addToLayout = async e => {
-        const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
+    const addToLayout = async (clickedDeviceId, position) => {
         const selectedDevice = stockDevices.filter(device => device.deviceId === clickedDeviceId)[0];
 
-        const newLayoutDevice = createNewLayoutDeviceFromStockDevice(selectedDevice);
+        const newLayoutDevice = createNewLayoutDeviceFromStockDevice(selectedDevice, position);
 
         const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
 
@@ -59,19 +59,28 @@ const UserDevice = (deviceDetails) => {
                 'layoutId': currentLayout.layoutId,
                 'layoutName': currentLayout.layoutName,
                 'devices': updatedLayoutDevices
-            }).then(() => {
-                notify('Device added to layout');
             })
         }
     }
 
-    const createNewLayoutDeviceFromStockDevice = stockDevice => {
+    const dragDevice = e => {
+        setClickedDeviceId(e.target.getAttribute('deviceid'));
+        
+    }
+
+    const dropDevice = e => {
+        e = e || window.event;
+        addToLayout(clickedDeviceId, [e.pageX, e.pageY]);
+    }
+
+    const createNewLayoutDeviceFromStockDevice = (stockDevice, position) => {
         return {
             'deviceId': stockDevice.deviceId,
             'midi': setMidiForNewLayoutDevice(stockDevice),
             'audio': setAudioForNewLayoutDevice(stockDevice),
             'deviceName': stockDevice.deviceName,
-            'layoutId': layoutId
+            'layoutId': layoutId,
+            'svg': {'x' : position[0], 'y': position[1]}
         }
     }
 
@@ -208,8 +217,7 @@ const UserDevice = (deviceDetails) => {
         },
         img: {
             height: '130px',
-            border: '0',
-            pointerEvents: 'none'
+            border: '0'
         },
         svg: {
             pointerEvents: 'none'
@@ -247,7 +255,7 @@ const UserDevice = (deviceDetails) => {
                     </div>: null
                 }
             </div>
-            <img style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
+            <img deviceid={currentDevice ? currentDevice.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={styles.img} src='https://firebasestorage.googleapis.com/v0/b/midi-wizard-dev.appspot.com/o/deviceImages%2Fdefault_device_image.jpg?alt=media&token=3dfcdcc8-855c-4b68-b3f5-41cc1e13e2c7' alt=''></img>
             <div style={styles.deviceTitle}>{currentDevice ? currentDevice.deviceName : ''}</div>
         </div>
     )
