@@ -47,6 +47,8 @@ const ManualAddForm = () => {
 
         const imageName = formData.imageFile.length > 0 ? formData.imageFile[0].name : 'default_device_image.jpg';
 
+        const imgeUrl = await firebase.storage().ref().child(`deviceImages/${imageName}`).getDownloadURL();
+
         const newDevice = {
             'deviceName': formData.deviceName,
             'manufacturer': formData.manufacturer,
@@ -60,6 +62,7 @@ const ManualAddForm = () => {
                 'outs': Number(formData.audioOuts)
             },
             'imageName': imageName,
+            'imageUrl': imgeUrl,
             'verified': false
         }
 
@@ -203,7 +206,6 @@ const ManualAddForm = () => {
             <form onSubmit={handleSubmit(submitNewDevice)} style={styles.manualAddDeviceForm} className='manualAddDeviceForm' autoComplete="off">
                 <div style={styles.detailsContainer} className='detailsContainer'>
                     <div style={styles.inputContainer} className='inputContainer'>
-                        
                         <div style={styles.validationContainer} className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
                         <input style={styles.inputField} placeholder="Manufacturer" name="manufacturer" onChange={searchManufacturers} ref={register({
                             required: 'Please enter manufacturer name'
