@@ -214,6 +214,10 @@ function App() {
                 Header: 'Midi thru',
                 accessor: 'midi.thru'
             },
+            {
+                Header: 'Image url',
+                accessor: 'imageUrl'
+            },
         ],
         []
     )
@@ -265,9 +269,43 @@ function App() {
 
         updatedDevices.forEach(async device => {
             if(device) {
-                await stockDeviceDtaRef.doc(device.deviceId).set(device);
+                await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
             }
         });
+    }
+
+    const formatData = device => {
+        const formattedDevice = {}
+        Object.keys(device).map(key => {
+            switch(key) {
+                case 'midi.in':
+                    device.midi.in = device[key]
+                    delete device["midi.in"]
+                    break;
+                case 'midi.out':
+                    device.midi.out = device[key]
+                    delete device['midi.out']
+                    break;
+                case 'midi.thru':
+                    device.midi.thru = device[key]
+                    delete device['midi.thru']
+                    break;
+                case 'audio.ins':
+                    device.audio.ins = device[key]
+                    delete device['audio.ins']
+                    break;
+                case 'audio.outs':
+                    device.audio.outs = device[key]
+                    delete device['audio.outs']
+                    break;
+                default:
+                    break;
+            }
+            if(device[key] !== undefined) {
+                formattedDevice[key] = device[key];
+            }
+        })
+        return formattedDevice
     }
 
     return (
