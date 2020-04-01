@@ -9,7 +9,7 @@ const AdminConsoleDevices = () => {
     // change imageUrl to append current access token
     // remove imageName from stock devices
     // adjust code to get imageUrl instead of looking for image with image name
-    // add checkbox for midi elements
+    // fields resetting when a different one is clicked
 
     const columns = [
         {
@@ -23,7 +23,7 @@ const AdminConsoleDevices = () => {
             selector: 'manufacturer',
             cell: data => 
                 <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='manufacturer' value={editDeviceId === data.deviceId && editField === 'manufacturer' ? editedFieldValue : data.manufacturer} style={styles.inputField}/>
+                    <input onBlur={clickAway()} onClick={focusField} onChange={updateFieldValue} fieldName='manufacturer' value={editDeviceId === data.deviceId && editField === 'manufacturer' ? editedFieldValue : data.manufacturer} style={styles.inputField}/>
                 </div>,
             sortable: true
         },
@@ -59,7 +59,7 @@ const AdminConsoleDevices = () => {
             selector: 'midiOut',
             cell: data => 
                 <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='midiOut' value={editDeviceId === data.deviceId && editField === 'midiOut' ? editedFieldValue : data.midiOut} style={styles.inputField}/>
+                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiOut' checked={editDeviceId === data.deviceId && editField === 'midiOut' ? isCheckbocChecked : data.midiOut}/>
                 </div>,
             sortable: true
         },
@@ -68,7 +68,7 @@ const AdminConsoleDevices = () => {
             selector: 'midiIn',
             cell: data => 
                 <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='midiIn' value={editDeviceId === data.deviceId && editField === 'midiIn' ? editedFieldValue : data.midiIn} style={styles.inputField}/>
+                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiIn' checked={editDeviceId === data.deviceId && editField === 'midiIn' ? isCheckbocChecked : data.midiIn}/>
                 </div>,
             sortable: true
         },
@@ -77,7 +77,7 @@ const AdminConsoleDevices = () => {
             selector: 'midiThru',
             cell: data => 
                 <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='midiThru' value={editDeviceId === data.deviceId && editField === 'midiThru' ? editedFieldValue : data.midiThru} style={styles.inputField}/>
+                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiThru' checked={editDeviceId === data.deviceId && editField === 'midiThru' ? isCheckbocChecked : data.midiThru}/>
                 </div>,
             sortable: true
         },
@@ -102,16 +102,40 @@ const AdminConsoleDevices = () => {
     const [editDeviceId, setEditDeviceId] = useState('');
     const [editField, setEditField] = useState('');
     const [editedFieldValue, setEditedFieldValue] = useState('');
+    const [editedCheckboxValue, setEditedCheckboxValue] = useState(false);
+    const [isCheckbocChecked, setIsCheckbocChecked] = useState(false);
 
     useEffect(() => {
         setGridData();
     }, [stockDevices]);
+
+    const clickAway = () => {
+        console.log(editedFieldValue);
+        console.log('--------');
+    }
 
     const focusField = e => {
         setEditedFieldValue(e.target.value);
         setEditDeviceId(e.target.parentNode.getAttribute('deviceid'));
         setEditField(e.target.getAttribute('fieldName'));
     }
+
+    const toggleCheckbox = e => {
+        setEditDeviceId(e.target.parentNode.getAttribute('deviceid'));
+        setEditField(e.target.getAttribute('fieldName'));
+
+        if(!isCheckbocChecked) {
+            setIsCheckbocChecked(true);
+        }else {
+            setIsCheckbocChecked(false);
+        }
+    }
+
+    var toNodeList = function(element){
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(element.cloneNode());
+        return fragment.childNodes;
+      };
 
     const updateFieldValue = e => {
         setEditedFieldValue(e.target.value);
