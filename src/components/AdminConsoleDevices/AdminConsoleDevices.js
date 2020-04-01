@@ -1,3 +1,8 @@
+// TODO filter by verified and unverified
+// Allow admin to change photo
+
+
+
 import React from 'react'
 import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table';
@@ -65,7 +70,20 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
         setValue(initialValue)
     }, [initialValue])
 
-    return <input style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+    const stockDevices = useSelector(state => state.stockDevices);
+    const deviceIds = []
+
+    stockDevices.forEach(d => {
+        deviceIds.push(d.deviceId);
+    })
+
+    if(value.toString().includes('firebasestorage.googleapis.com')) {
+        return <img src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
+    }else if(deviceIds.includes(value)) {
+        return <input disabled style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+    }else {
+        return <input style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+    }
 }
 
 // Set our editable cell renderer as the default Cell renderer
@@ -256,10 +274,6 @@ function App() {
         updatedData();
     }, [data])
 
-    // Let's add a data resetter/randomizer to help
-    // illustrate that flow...
-    const resetData = () => setData(originalData);
-
     const updatedData = () => {
         const updatedDevices = stockDevices.map((device, index) => {
             if(device !== data[index]) {
@@ -269,7 +283,11 @@ function App() {
 
         updatedDevices.forEach(async device => {
             if(device) {
-                await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
+                const confirmUpdate = window.confirm("Update devices?");
+
+                if(confirmUpdate) {
+                    await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
+                }
             }
         });
     }
@@ -310,7 +328,6 @@ function App() {
 
     return (
         <Styles>
-            <button onClick={resetData}>Reset Data</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
         </Styles>
     )
