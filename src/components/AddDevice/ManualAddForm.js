@@ -63,7 +63,8 @@ const ManualAddForm = () => {
             },
             'imageName': imageName,
             'imageUrl': imgeUrl,
-            'verified': false
+            'verified': false,
+            'deviceTypes': formData.deviceType
         }
 
         addToUserDevices(addToStockDevices(newDevice));

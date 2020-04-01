@@ -1,249 +1,281 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react'
+import styled from 'styled-components'
+import { useTable, usePagination } from 'react-table';
+import { useSelector } from 'react-redux';
 import firebase from 'firebase';
-import DataTable from 'react-data-table-component';
 
-const AdminConsoleDevices = () => {
+const Styles = styled.div`
+  padding: 1rem;
 
-    // TODO fix input field so it can be edited correctly
-    // change imageUrl to append current access token
-    // remove imageName from stock devices
-    // adjust code to get imageUrl instead of looking for image with image name
-    // fields resetting when a different one is clicked
+  table {
+    border-spacing: 0;
+    border: 1px solid black;
+    margin: auto;
 
-    const columns = [
-        {
-            name: 'Device id',
-            selector: 'deviceId',
-            cell: data => <div>{data.deviceId}</div>,
-            sortable: true
-        },
-        {
-            name: 'Manufacturer',
-            selector: 'manufacturer',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onBlur={clickAway()} onClick={focusField} onChange={updateFieldValue} fieldName='manufacturer' value={editDeviceId === data.deviceId && editField === 'manufacturer' ? editedFieldValue : data.manufacturer} style={styles.inputField}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Device name',
-            selector: 'deviceName',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='deviceName' value={editDeviceId === data.deviceId && editField === 'deviceName' ? editedFieldValue : data.deviceName} style={styles.inputField}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Audio outs',
-            selector: 'audioOuts',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='audioOuts' value={editDeviceId === data.deviceId && editField === 'audioOuts' ? editedFieldValue : data.audioOuts} style={styles.inputField}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Audio ins',
-            selector: 'audioIns',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={focusField} onChange={updateFieldValue} fieldName='audioIns' value={editDeviceId === data.deviceId && editField === 'audioIns' ? editedFieldValue : data.audioIns} style={styles.inputField}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Midi out',
-            selector: 'midiOut',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiOut' checked={editDeviceId === data.deviceId && editField === 'midiOut' ? isCheckbocChecked : data.midiOut}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Midi in',
-            selector: 'midiIn',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiIn' checked={editDeviceId === data.deviceId && editField === 'midiIn' ? isCheckbocChecked : data.midiIn}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Midi thru',
-            selector: 'midiThru',
-            cell: data => 
-                <div deviceid={data.deviceId} style={styles.inputFieldContainer} className='inputFieldContainer'>
-                    <input onClick={toggleCheckbox} type='checkbox' fieldName='midiThru' checked={editDeviceId === data.deviceId && editField === 'midiThru' ? isCheckbocChecked : data.midiThru}/>
-                </div>,
-            sortable: true
-        },
-        {
-            name: 'Image',
-            selector: 'image',
-            sortable: true,
-            cell: data => <img src={data.image} style={styles.img} />
-        },
-        {
-            name: 'Verify',
-            selector: 'verify',
-            cell: data => <button onClick={verifyDevice} deviceid={data.deviceId}>Verify</button>
+    tr {
+      :last-child {
+        td {
+          border-bottom: 0;
         }
-      ];
-
-      const db = firebase.firestore();
-      const stockDeviceDtaRef = db.collection('DeviceData');
-    const dispatch = useDispatch();
-    const stockDevices = useSelector(state => state.stockDevices);
-    const [data, setData] = useState([]);
-    const [editDeviceId, setEditDeviceId] = useState('');
-    const [editField, setEditField] = useState('');
-    const [editedFieldValue, setEditedFieldValue] = useState('');
-    const [editedCheckboxValue, setEditedCheckboxValue] = useState(false);
-    const [isCheckbocChecked, setIsCheckbocChecked] = useState(false);
-
-    useEffect(() => {
-        setGridData();
-    }, [stockDevices]);
-
-    const clickAway = () => {
-        console.log(editedFieldValue);
-        console.log('--------');
+      }
     }
 
-    const focusField = e => {
-        setEditedFieldValue(e.target.value);
-        setEditDeviceId(e.target.parentNode.getAttribute('deviceid'));
-        setEditField(e.target.getAttribute('fieldName'));
+    th,
+    td {
+      margin: 0;
+      padding: 0.5rem;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+
+      :last-child {
+        border-right: 0;
+      }
+
+      input {
+        font-size: 1rem;
+        padding: 0;
+        margin: 0;
+        border: 0;
+      }
+    }
+  }
+
+  .pagination {
+    padding: 0.5rem;
+  }
+`
+
+// Create an editable cell renderer
+// This is a custom function that we supplied to our table instance
+const EditableCell = ({value: initialValue, row: { index }, column: { id }, updateMyData, }) => {
+    // We need to keep and update the state of the cell normally
+    const [value, setValue] = React.useState(initialValue)
+
+    const onChange = e => {
+        setValue(e.target.value)
     }
 
-    const toggleCheckbox = e => {
-        setEditDeviceId(e.target.parentNode.getAttribute('deviceid'));
-        setEditField(e.target.getAttribute('fieldName'));
-
-        if(!isCheckbocChecked) {
-            setIsCheckbocChecked(true);
-        }else {
-            setIsCheckbocChecked(false);
-        }
+    // We'll only update the external data when the input is blurred
+    const onBlur = () => {
+        updateMyData(index, id, value)
     }
 
-    var toNodeList = function(element){
-        var fragment = document.createDocumentFragment();
-        fragment.appendChild(element.cloneNode());
-        return fragment.childNodes;
-      };
+    // If the initialValue is changed external, sync it up with our state
+    React.useEffect(() => {
+        setValue(initialValue)
+    }, [initialValue])
 
-    const updateFieldValue = e => {
-        setEditedFieldValue(e.target.value);
-    }
+    return <input style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+}
 
-    const setGridData = () => {
-        const dataArray = [];
-        stockDevices.forEach(device => {
-            const deviceData = {};
+// Set our editable cell renderer as the default Cell renderer
+const defaultColumn = {
+    Cell: EditableCell,
+}
 
-            if(!device.verified) {
-                deviceData['deviceId'] = device.deviceId;
-                deviceData['manufacturer'] = device.manufacturer;
-                deviceData['deviceName'] = device.deviceName;
-                deviceData['audioOuts'] = device.audio.outs;
-                deviceData['audioIns'] = device.audio.ins;
-                deviceData['midiOut'] = device.midi.out.toString();
-                deviceData['midiIn'] = device.midi.in.toString();
-                deviceData['midiThru'] = device.midi.thru.toString();
-                deviceData['image'] = device.imageUrl
-                dataArray.push(deviceData);
-            }
-        });
-        setData(dataArray);
-    }
-
-    const verifyDevice = e => {
-        const updatedFieldValues = {};
-        const deviceId = e.target.getAttribute('deviceid');
-
-        const deviceFields = document.querySelectorAll(`[deviceid='${deviceId}']`);
-
-        deviceFields.forEach(field => {
-            if(field.querySelector('input')) {
-                const fieldName = field.querySelector('input').getAttribute('fieldname');
-                const fieldValue = field.querySelector('input').value;
-
-                updatedFieldValues[fieldName] = fieldValue;
-            }
-        });
-
-        updateStockDevice(updatedFieldValues, deviceId);
-    }
-
-    const updateStockDevice = async (fieldValues, deviceId) => {
-        const updatedStockDevice = stockDevices.filter(device => device.deviceId === deviceId)[0];
-
-        updatedStockDevice.deviceName = fieldValues.deviceName;
-        updatedStockDevice.manufacturer = fieldValues.manufacturer;
-        updatedStockDevice.audio.ins = fieldValues.audioIns;
-        updatedStockDevice.audio.outs = fieldValues.audioOuts;
-        updatedStockDevice.midi.out = fieldValues.midiOut;
-        updatedStockDevice.midi.in = fieldValues.midiIn;
-        updatedStockDevice.midi.thru = fieldValues.midiThru;
-        updatedStockDevice.verified = true;
-
-
-        await stockDeviceDtaRef.doc(deviceId).update({
-            'deviceName': updatedStockDevice.deviceName,
-            'manufacturer': updatedStockDevice.manufacturer,
-            'audio': updatedStockDevice.audio,
-            'midi': updatedStockDevice.midi,
-            'verified': true
-        });
-    }
-
-    const styles = {
-        img: {
-            width: '150px'
+// Be sure to pass our updateMyData and the skipPageReset option
+function Table({ columns, data, updateMyData, skipPageReset }) {
+    // For this example, we're using pagination to illustrate how to stop
+    // the current page from resetting when our data changes
+    // Otherwise, nothing is different here.
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        prepareRow,
+        page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        state: { pageIndex, pageSize },
+    } = useTable(
+        {
+            columns,
+            data,
+            defaultColumn,
+            // use the skipPageReset option to disable page resetting temporarily
+            autoResetPage: !skipPageReset,
+            // updateMyData isn't part of the API, but
+            // anything we put into these options will
+            // automatically be available on the instance.
+            // That way we can call this function from our
+            // cell renderer!
+            updateMyData,
         },
-        inputFieldContainer: {
-            
-        },
-        inputField: {
-            border: 'none',
-            fontSize: '14px',
-            width: 'auto'
-        },
-        customStyles: {
-            rows: {
-                style: {
-                    minHeight: '72px',
-                    height: 'auto'
-                }
-            },
-            headCells: {
-                style: {
-                    paddingLeft: '8px',
-                    paddingRight: '8px',
-                    maxWidth: '70px !important'
-                },
-            },
-            cells: {
-                style: {
-                    paddingLeft: '8px',
-                    paddingRight: '8px',
-                    maxWidth: '70px !important',
-                    padding: '10px 0'
-                },
-            },
-        }
-    }
+        usePagination
+    )
 
+    // Render the UI for your table
     return (
-        <div className='adminConsoleDeivcesContainer'>
-            <DataTable title="Stock devices" columns={columns} height='100px' width='100px' data={data} customStyles={styles.customStyles}/>
-        </div>
+        <>
+            <table {...getTableProps()}>
+                <thead>
+                    {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <th style={{width: "30px"}} {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            ))}
+                        </tr>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {page.map((row, i) => {
+                        prepareRow(row)
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+            <div className="pagination">
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                    {'<<'}
+                </button>{' '}
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    {'<'}
+                </button>{' '}
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                    {'>'}
+                </button>{' '}
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                    {'>>'}
+                </button>{' '}
+                <span>
+                    Page{' '}
+                    <strong>
+                        {pageIndex + 1} of {pageOptions.length}
+                    </strong>{' '}
+                </span>
+                <span>
+                    | Go to page:{' '}
+                    <input type="number" style={{ width: '100px' }} defaultValue={pageIndex + 1} onChange={e => {
+                        const page = e.target.value ? Number(e.target.value) - 1 : 0
+                        gotoPage(page)
+                    }}
+                    />
+                </span>{' '}
+                <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)) }}>
+                    {[10, 20, 30, 40, 50].map(pageSize => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+            </div>
+        </>
     )
 }
 
-export default AdminConsoleDevices;
+function App() {
+    const db = firebase.firestore();
+    const stockDeviceDtaRef = db.collection('DeviceData');
+    const stockDevices = useSelector(state => state.stockDevices);
+
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: 'Device id',
+                accessor: 'deviceId'
+            },
+            {
+                Header: 'Manufacturer',
+                accessor: 'manufacturer'
+            },
+            {
+                Header: 'Device name',
+                accessor: 'deviceName'
+            },
+            {
+                Header: 'Audio outs',
+                accessor: 'audio.outs'
+            },
+            {
+                Header: 'Audio ins',
+                accessor: 'audio.ins'
+            },
+            {
+                Header: 'Midi out',
+                accessor: 'midi.out'
+            },
+            {
+                Header: 'Midi in',
+                accessor: 'midi.in'
+            },
+            {
+                Header: 'Midi thru',
+                accessor: 'midi.thru'
+            },
+        ],
+        []
+    )
+
+    const [data, setData] = React.useState(() => stockDevices)
+    const [originalData] = React.useState(data)
+    const [skipPageReset, setSkipPageReset] = React.useState(false)
+
+    // We need to keep the table from resetting the pageIndex when we
+    // Update data. So we can keep track of that flag with a ref.
+
+    // When our cell renderer calls updateMyData, we'll use
+    // the rowIndex, columnId and new value to update the
+    // original data
+    const updateMyData = (rowIndex, columnId, value) => {
+        // We also turn on the flag to not reset the page
+        setSkipPageReset(true)
+        setData(old =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    return {
+                        ...old[rowIndex],
+                        [columnId]: value,
+                    }
+                }
+                return row
+            })
+        )
+    }
+
+    // After data chagnes, we turn the flag back off
+    // so that if data actually changes when we're not
+    // editing it, the page is reset
+    React.useEffect(() => {
+        setSkipPageReset(false);
+        updatedData();
+    }, [data])
+
+    // Let's add a data resetter/randomizer to help
+    // illustrate that flow...
+    const resetData = () => setData(originalData);
+
+    const updatedData = () => {
+        const updatedDevices = stockDevices.map((device, index) => {
+            if(device !== data[index]) {
+                return data[index];
+            }
+        });
+
+        updatedDevices.forEach(async device => {
+            if(device) {
+                await stockDeviceDtaRef.doc(device.deviceId).set(device);
+            }
+        });
+    }
+
+    return (
+        <Styles>
+            <button onClick={resetData}>Reset Data</button>
+            <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
+        </Styles>
+    )
+}
+
+export default App
