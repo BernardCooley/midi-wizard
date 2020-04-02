@@ -46,6 +46,14 @@ const deviceReducers = {
             default:
                 return state;
         }
+    },
+    gettingData: (state = false, action) => {
+        switch(action.type) {
+            case 'GETTING_DATA':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

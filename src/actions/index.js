@@ -148,3 +148,10 @@ export const deviceIdBeingEdited = id => {
         payload: id
     };
 };
+
+export const gettingData = isGettingData => {
+    return {
+        type: 'GETTING_DATA',
+        payload: isGettingData
+    };
+};

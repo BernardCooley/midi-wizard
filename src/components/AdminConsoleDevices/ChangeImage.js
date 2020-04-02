@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from "react-hook-form";
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleEditingImage } from '../../actions';
+import { toggleEditingImage, gettingData } from '../../actions';
 import { ToastContainer, toast } from 'react-toastify';
 
 const Styles = styled.div`
@@ -15,17 +15,39 @@ const Styles = styled.div`
         width: 500px;
         transform: translate(-50%, -50%);
         background-color: red;
-    }
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        align-items: center;
+        background-color: #767676eb;
+        -webkit-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
+        box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
 
-    img {
-        width: 80%;
-        margin: auto;
-        position: relative;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, 0);
-    }
+        .closeButton {
+            position: absolute;
+            right: 3px;
+            top: 3px;
+        }
 
+        .manualAddDeviceForm {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            .imageUploadInput {
+                font-size: 16px;
+                cursor:pointer;
+            }
+        }
+
+        .previewImage {
+            width: 80%;
+            margin: 15px;
+        }
+    }
 `
 
 const ChangeImage = () => {
@@ -45,27 +67,42 @@ const ChangeImage = () => {
         toast(message);
     };
 
-    const clearFileInput = () => {
+    const closeForm = () => {
         document.querySelector('#imageUploadInput').value = '';
         setImageFieldPopulated(false);
         setFilePath('');
+        dispatch(toggleEditingImage(false));
     }
 
     const updateImage = async data => {
         const formData = data;
         const imageName = formData.imageFile[0].name;
-        const existingImageName = stockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
 
-        uploadImage(formData.imageFile[0]).then(snapshot => {
-            snapshot.ref.getDownloadURL().then(downloadURL => {
-                deleteExistingImage(existingImageName).then(() => {
-                    updateDeviceDetails(imageName, downloadURL).then(() => {
-                        notify('Image uploaded');
-                        dispatch(toggleEditingImage(false));
-                    }); 
+        if(!doesImageExist(imageName)) {
+            dispatch(toggleEditingImage(false));
+            dispatch(gettingData(true));
+            const existingImageName = stockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
+
+            uploadImage(formData.imageFile[0]).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(downloadURL => {
+                    deleteExistingImage(existingImageName).then(() => {
+                        updateDeviceDetails(imageName, downloadURL).then(() => {
+                            notify('Image uploaded');
+                            dispatch(gettingData(false));
+                        }); 
+                    });
                 });
             });
-        })
+        }else {
+            alert('Image already uploaded. Please choose another');
+        }
+    }
+
+    const doesImageExist = imageName => {
+        const allImageNames = stockDevices.map(device => {
+            return device.imageName
+        });
+        return allImageNames.includes(imageName);
     }
 
     const setPreview = data => {
@@ -98,18 +135,17 @@ const ChangeImage = () => {
         <Styles>
             <ToastContainer />
             <div className='changeImageContainer'>
+                <button className='closeButton' onClick={closeForm}>X</button>
                 <form onSubmit={handleSubmit(updateImage)} className='manualAddDeviceForm' autoComplete="off">
                     <input onChange={handleSubmit(onChangeHandler)} id='imageUploadInput' className='imageUploadInput' name="imageFile" ref={register({
-                        validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
-                    })} type="file" />
+                            validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
+                        })} type="file" />
+                    <img className='previewImage' src={filePath ? filePath : ''}/>
                     {imageFieldPopulated ?
-                        <div>
-                            <button onClick={clearFileInput} className='clearImageUploadField' type="button">X</button> 
-                            <button type='submit' className='submitButton'>Update image</button>
-                        </div>: null
+                        <button type='submit' className='submitButton'>Update image</button>
+                        : null
                     }
                 </form>
-                <img className='previewImage' src={filePath ? filePath : ''}/>
             </div>
         </Styles>
     )

@@ -26,7 +26,8 @@ const allReducers = combineReducers({
     deletedLayoutId: workspaceDevices.deletedLayoutId,
     toggleVarifiedDevices: adminConsoleReducers.toggleVarifiedDevices,
     toggleEditingImage: adminConsoleReducers.toggleEditingImage,
-    deviceIdBeingEdited: adminConsoleReducers.deviceIdBeingEdited
+    deviceIdBeingEdited: adminConsoleReducers.deviceIdBeingEdited,
+    gettingData: deviceReducers.gettingData
 });
 
 export default allReducers;

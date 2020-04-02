@@ -1,7 +1,7 @@
 // TODO filter by verified and unverified
 // Allow admin to change photo
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { useTable, usePagination } from 'react-table';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,6 +9,8 @@ import firebase from 'firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import { toggleVarifiedDevices, toggleEditingImage, deviceIdBeingEdited } from '../../actions';
 import ChangeImage from './ChangeImage';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from 'react-loader-spinner';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -47,12 +49,19 @@ const Styles = styled.div`
   }
 
   .enlargedImage {
+    height: 80%;
+    width: auto !important;
+  }
+
+  .centerElement {
     position: absolute;
     top: 50%;
     left: 50%;
-    height: 80%;
-    width: auto !important;
     transform: translate(-50%, -50%);
+  }
+
+  .spinner {
+      z-index: 25;
   }
 
   .deviceImage {
@@ -83,7 +92,7 @@ const Styles = styled.div`
   }
 `
 const EditableCell = ({value: initialValue, row: { index }, column: { id }, updateMyData, }) => {
-    const [value, setValue] = React.useState(initialValue);
+    const [value, setValue] = useState(initialValue);
     const dispatch = useDispatch();
 
     const onChange = e => {
@@ -98,7 +107,7 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
         updateMyData(index, id, value)
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         setValue(initialValue)
     }, [initialValue])
 
@@ -119,11 +128,13 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
 
         if(image.classList.contains('enlargedImage')) {
             image.classList.remove('enlargedImage');
+            image.classList.remove('centerElement');
             document.querySelector('table').classList.remove('disableClicking');
         }else {
             document.querySelector('table').classList.add('disableClicking');
             image.classList.add('enableClicking');
             image.classList.add('enlargedImage');
+            image.classList.add('centerElement');
         }
     }
 
@@ -239,13 +250,11 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 const AdminConsoleTable = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
-    const idVerifiedOnly = useSelector(state => state.toggleVarifiedDevices);
     const stockDevices = useSelector(state => state.stockDevices);
     const isImageBeingEdited = useSelector(state => state.toggleEditingImage);
-    const dispatch = useDispatch();
-    const [data, setData] = React.useState(() => stockDevices);
-    const [originalData] = React.useState(data);
-    const [skipPageReset, setSkipPageReset] = React.useState(false);
+    const isGettingData = useSelector(state => state.gettingData);
+    const [data, setData] = useState(() => stockDevices);
+    const [skipPageReset, setSkipPageReset] = useState(false);
 
     const columns = React.useMemo(
         () => [
@@ -308,9 +317,13 @@ const AdminConsoleTable = () => {
         )
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         setSkipPageReset(false);
-    }, [data])
+    }, [data]);
+
+    useEffect(() => {
+        setData(stockDevices);
+    }, [stockDevices]);
 
     const notify = message => {
         toast(message);
@@ -367,6 +380,9 @@ const AdminConsoleTable = () => {
 
     return (
         <Styles>
+            {isGettingData ? 
+                <Loader className='centerElement spinner' type="Puff" color="#00BFFF" height={100} width={100} timeout={3000}/>: null
+            }
             <ToastContainer />
             <button onClick={updatedData} className='saveButton'>Save devices</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
