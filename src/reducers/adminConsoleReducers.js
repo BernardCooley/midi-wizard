@@ -6,6 +6,14 @@ const adminConsoleReducers = {
             default:
                 return state;
         }
+    },
+    toggleVarifiedDevices: (state = true, action) => {
+        switch(action.type) {
+            case 'TOGGLE_VERIFIED_DEVICES':
+                return !state;
+            default:
+                return state;
+        }
     }
 }
 

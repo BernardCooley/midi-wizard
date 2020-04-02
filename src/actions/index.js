@@ -128,3 +128,9 @@ export const deletedLayoutId = layoutId => {
         payload: layoutId
     };
 };
+
+export const toggleVarifiedDevices = () => {
+    return {
+        type: 'TOGGLE_VERIFIED_DEVICES'
+    };
+};

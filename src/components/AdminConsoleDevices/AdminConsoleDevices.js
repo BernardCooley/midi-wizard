@@ -4,8 +4,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
+import { ToastContainer, toast } from 'react-toastify';
+import { toggleVarifiedDevices } from '../../actions';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -81,7 +83,6 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
 
     const onChange = e => {
         if(e.target.getAttribute('fieldtype') === 'checkbox') {
-            console.log(e.target.checked);
             setValue(e.target.checked);
         }else {
             setValue(e.target.value)
@@ -89,7 +90,6 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     }
 
     const onBlur = () => {
-        console.log(index, id, value);
         updateMyData(index, id, value)
     }
 
@@ -226,7 +226,9 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 const AdminConsoleTable = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
+    const idVerifiedOnly = useSelector(state => state.toggleVarifiedDevices);
     const stockDevices = useSelector(state => state.stockDevices);
+    const dispatch = useDispatch();
 
     const columns = React.useMemo(
         () => [
@@ -297,6 +299,10 @@ const AdminConsoleTable = () => {
         setSkipPageReset(false);
     }, [data])
 
+    const notify = message => {
+        toast(message);
+    };
+
     const updatedData = () => {
         const updatedDevices = stockDevices.map((device, index) => {
             if(device !== data[index]) {
@@ -306,11 +312,8 @@ const AdminConsoleTable = () => {
 
         updatedDevices.forEach(async device => {
             if(device) {
-                const confirmUpdate = window.confirm("Update devices?");
-
-                if(confirmUpdate) {
-                    await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
-                }
+                await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
+                notify('Devices saved');
             }
         });
     }
@@ -351,6 +354,7 @@ const AdminConsoleTable = () => {
 
     return (
         <Styles>
+            <ToastContainer />
             <button onClick={updatedData}>Save devices</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
         </Styles>

@@ -23,7 +23,8 @@ const allReducers = combineReducers({
     currentLayout: workspaceDevices.currentLayout,
     layoutIds: workspaceDevices.layoutIds,
     isLayoutsTrayOpen: workspaceDevices.isLayoutsTrayOpen,
-    deletedLayoutId: workspaceDevices.deletedLayoutId
+    deletedLayoutId: workspaceDevices.deletedLayoutId,
+    toggleVarifiedDevices: adminConsoleReducers.toggleVarifiedDevices
 });
 
 export default allReducers;
