@@ -76,11 +76,16 @@ const Styles = styled.div`
         pointer-events: auto;
     }
 
-    .saveButton {
+    .tableButtons {
         height: 40px;
-        width: 100px;
         font-size: 13px;
         margin-bottom: 10px;
+        padding: 0 15px;
+    }
+
+    .tableButtonsContainer {
+        display: flex;
+        justify-content: space-between;
     }
 
     button {
@@ -255,6 +260,7 @@ const AdminConsoleTable = () => {
     const isGettingData = useSelector(state => state.gettingData);
     const [data, setData] = useState(() => stockDevices);
     const [skipPageReset, setSkipPageReset] = useState(false);
+    const [showingAll, setShowingAll] = useState(false);
 
     const columns = React.useMemo(
         () => [
@@ -325,6 +331,14 @@ const AdminConsoleTable = () => {
         setData(stockDevices);
     }, [stockDevices]);
 
+    useEffect(() => {
+        if(showingAll) {
+            setData(stockDevices);
+        }else {
+            setData(data.filter(d => d.verified === false));
+        }
+    }, [showingAll]);
+
     const notify = message => {
         toast(message);
     };
@@ -342,6 +356,10 @@ const AdminConsoleTable = () => {
                 notify('Devices saved');
             }
         });
+    }
+
+    const showAllDevices = () => {
+        setShowingAll(!showingAll);
     }
 
     const formatData = device => {
@@ -384,7 +402,14 @@ const AdminConsoleTable = () => {
                 <Loader className='centerElement spinner' type="Puff" color="#00BFFF" height={100} width={100} timeout={3000}/>: null
             }
             <ToastContainer />
-            <button onClick={updatedData} className='saveButton'>Save devices</button>
+            <div className='tableButtonsContainer'>
+                <button onClick={updatedData} className='tableButtons'>Save devices</button>
+                <button onClick={showAllDevices} className='tableButtons'>
+                    {!showingAll ? 
+                        'Show all' : 'Show unverified'
+                    }
+                </button>
+            </div>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
             {isImageBeingEdited ? 
                 <ChangeImage/>: null
