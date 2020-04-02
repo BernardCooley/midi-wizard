@@ -118,7 +118,7 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     }
 
     if(value === 'true' || value === 'false' || value === true || value === false) {
-        return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' ? true : false} style={{width: "100px"}} onChange={onChange} onBlur={onBlur}/>
+        return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' || value === true ? true : false} style={{width: "100px"}} onChange={onChange} onBlur={onBlur}/>
     }else if(value.toString().includes('firebasestorage.googleapis.com')) {
         return <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
     }else if(deviceIds.includes(value)) {
@@ -226,7 +226,7 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 const AdminConsoleTable = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
-    const stockDevices = useSelector(state => state.stockDevices.filter(device => device.verified === false));
+    const stockDevices = useSelector(state => state.stockDevices);
 
     const columns = React.useMemo(
         () => [
