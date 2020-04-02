@@ -2,12 +2,13 @@
 // Allow admin to change photo
 
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components';
 import { useTable, usePagination } from 'react-table';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import { toggleVarifiedDevices } from '../../actions';
+import ChangeImage from './ChangeImage';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -46,7 +47,7 @@ const Styles = styled.div`
   }
 
   .enlargedImage {
-    position: absolute; /* or absolute */
+    position: absolute;
     top: 50%;
     left: 50%;
     height: 80%;
@@ -66,11 +67,14 @@ const Styles = styled.div`
         pointer-events: auto;
     }
 
-    button {
+    .saveButton {
         height: 40px;
         width: 100px;
         font-size: 13px;
         margin-bottom: 10px;
+    }
+
+    button {
         cursor: pointer;
     }
 
@@ -120,7 +124,10 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     if(value === 'true' || value === 'false' || value === true || value === false) {
         return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' || value === true ? true : false} style={{width: "100px"}} onChange={onChange} onBlur={onBlur}/>
     }else if(value.toString().includes('firebasestorage.googleapis.com')) {
-        return <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
+        return  <div>
+                    <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
+                    <button>Change</button>
+                </div>
     }else if(deviceIds.includes(value)) {
         return <div style={{width: "100px", wordWrap: "break-word"}}>{value}</div>
     }else {
@@ -355,8 +362,9 @@ const AdminConsoleTable = () => {
     return (
         <Styles>
             <ToastContainer />
-            <button onClick={updatedData}>Save devices</button>
+            <button onClick={updatedData} className='saveButton'>Save devices</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
+            <ChangeImage/>
         </Styles>
     )
 }
