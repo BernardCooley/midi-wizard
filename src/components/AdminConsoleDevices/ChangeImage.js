@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from "react-hook-form";
 import firebase from '../../firebase';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleEditingImage } from '../../actions';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Styles = styled.div`
     .changeImageContainer {
@@ -29,10 +32,18 @@ const ChangeImage = () => {
 
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
+
+    const dispatch = useDispatch();
     const imageStorageRef = firebase.storage().ref();
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const [filePath, setFilePath] = useState('');
     const { handleSubmit, register, errors } = useForm();
+    const idBeingEdited = useSelector(state => state.deviceIdBeingEdited);
+    const stockDevices = useSelector(state => state.stockDevices);
+
+    const notify = message => {
+        toast(message);
+    };
 
     const clearFileInput = () => {
         document.querySelector('#imageUploadInput').value = '';
@@ -42,16 +53,19 @@ const ChangeImage = () => {
 
     const updateImage = async data => {
         const formData = data;
-
-        console.log(formData.imageFile[0]);
-
         const imageName = formData.imageFile[0].name;
+        const existingImageName = stockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
 
-        // uploadImage(formData.imageFile[0]).then(() => {
-        //     updateDeviceDetails().then(() => {
-        //         deleteExistingImage();
-        //     })
-        // })
+        uploadImage(formData.imageFile[0]).then(snapshot => {
+            snapshot.ref.getDownloadURL().then(downloadURL => {
+                deleteExistingImage(existingImageName).then(() => {
+                    updateDeviceDetails(imageName, downloadURL).then(() => {
+                        notify('Image uploaded');
+                        dispatch(toggleEditingImage(false));
+                    }); 
+                });
+            });
+        })
     }
 
     const setPreview = data => {
@@ -64,24 +78,25 @@ const ChangeImage = () => {
     }
 
     const uploadImage = async imageFile => {
-        let imageUpload = await imageStorageRef.child('deviceImages').child(imageFile.name)
+        const imageUpload = await imageStorageRef.child('deviceImages').child(imageFile.name);
 
         return await imageUpload.put(imageFile);
     }
 
-    const updateDeviceDetails = async deviceId => {
-
-        return await stockDeviceDtaRef.doc(deviceId).update({
-
+    const updateDeviceDetails = async (imageName, imageUrl) => {
+        return await stockDeviceDtaRef.doc(idBeingEdited).update({
+            'imageName': imageName,
+            'imageUrl': imageUrl
         });
     }
 
-    const deleteExistingImage = async () => {
-
+    const deleteExistingImage = async existingImageName => {
+        return await imageStorageRef.child(`deviceImages/${existingImageName}`).delete();
     }
 
     return (
         <Styles>
+            <ToastContainer />
             <div className='changeImageContainer'>
                 <form onSubmit={handleSubmit(updateImage)} className='manualAddDeviceForm' autoComplete="off">
                     <input onChange={handleSubmit(onChangeHandler)} id='imageUploadInput' className='imageUploadInput' name="imageFile" ref={register({

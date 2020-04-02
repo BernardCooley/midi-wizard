@@ -7,7 +7,7 @@ import { useTable, usePagination } from 'react-table';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import { ToastContainer, toast } from 'react-toastify';
-import { toggleVarifiedDevices } from '../../actions';
+import { toggleVarifiedDevices, toggleEditingImage, deviceIdBeingEdited } from '../../actions';
 import ChangeImage from './ChangeImage';
 
 const Styles = styled.div`
@@ -83,7 +83,8 @@ const Styles = styled.div`
   }
 `
 const EditableCell = ({value: initialValue, row: { index }, column: { id }, updateMyData, }) => {
-    const [value, setValue] = React.useState(initialValue)
+    const [value, setValue] = React.useState(initialValue);
+    const dispatch = useDispatch();
 
     const onChange = e => {
         if(e.target.getAttribute('fieldtype') === 'checkbox') {
@@ -108,6 +109,11 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
         deviceIds.push(d.deviceId);
     })
 
+    const openImageUploadForm = e => {
+        dispatch(toggleEditingImage(true));
+        dispatch(deviceIdBeingEdited(e.target.parentNode.parentNode.parentNode.getAttribute('deviceid')));
+    }
+
     const enlargeImage = e => {
         const image = e.target;
 
@@ -126,7 +132,7 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     }else if(value.toString().includes('firebasestorage.googleapis.com')) {
         return  <div>
                     <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
-                    <button>Change</button>
+                    <button onClick={openImageUploadForm}>Change</button>
                 </div>
     }else if(deviceIds.includes(value)) {
         return <div style={{width: "100px", wordWrap: "break-word"}}>{value}</div>
@@ -182,7 +188,7 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                     {page.map((row, i) => {
                         prepareRow(row)
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr {...row.getRowProps()} deviceid={data[i].deviceId}>
                                 {row.cells.map(cell => {
                                     return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 })}
@@ -235,7 +241,11 @@ const AdminConsoleTable = () => {
     const stockDeviceDtaRef = db.collection('DeviceData');
     const idVerifiedOnly = useSelector(state => state.toggleVarifiedDevices);
     const stockDevices = useSelector(state => state.stockDevices);
+    const isImageBeingEdited = useSelector(state => state.toggleEditingImage);
     const dispatch = useDispatch();
+    const [data, setData] = React.useState(() => stockDevices);
+    const [originalData] = React.useState(data);
+    const [skipPageReset, setSkipPageReset] = React.useState(false);
 
     const columns = React.useMemo(
         () => [
@@ -282,10 +292,6 @@ const AdminConsoleTable = () => {
         ],
         []
     )
-
-    const [data, setData] = React.useState(() => stockDevices);
-    const [originalData] = React.useState(data)
-    const [skipPageReset, setSkipPageReset] = React.useState(false)
 
     const updateMyData = (rowIndex, columnId, value) => {
         setSkipPageReset(true)
@@ -364,7 +370,9 @@ const AdminConsoleTable = () => {
             <ToastContainer />
             <button onClick={updatedData} className='saveButton'>Save devices</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
-            <ChangeImage/>
+            {isImageBeingEdited ? 
+                <ChangeImage/>: null
+            }
         </Styles>
     )
 }

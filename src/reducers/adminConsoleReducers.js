@@ -14,6 +14,22 @@ const adminConsoleReducers = {
             default:
                 return state;
         }
+    },
+    toggleEditingImage: (state = false, action) => {
+        switch(action.type) {
+            case 'TOGGLE_EDITING_IMAGE':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    deviceIdBeingEdited: (state = '', action) => {
+        switch(action.type) {
+            case 'DEVICE_ID_BEING_EDITED':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

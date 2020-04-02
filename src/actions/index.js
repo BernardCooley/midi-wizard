@@ -134,3 +134,17 @@ export const toggleVarifiedDevices = () => {
         type: 'TOGGLE_VERIFIED_DEVICES'
     };
 };
+
+export const toggleEditingImage = edtingImage => {
+    return {
+        type: 'TOGGLE_EDITING_IMAGE',
+        payload: edtingImage
+    };
+};
+
+export const deviceIdBeingEdited = id => {
+    return {
+        type: 'DEVICE_ID_BEING_EDITED',
+        payload: id
+    };
+};
