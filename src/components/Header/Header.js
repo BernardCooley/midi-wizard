@@ -13,8 +13,12 @@ const Header = () => {
         firebase.auth().signOut();
     }
 
-    const openAdminConsole = () => {
-        dispatch(toggleAdminConsole(true));
+    const openCloseAdminConsole = () => {
+        if(!isAdminConsoleOpen) {
+            dispatch(toggleAdminConsole(true));
+        }else {
+            dispatch(toggleAdminConsole(false));
+        }
     }
 
     const styles = {
@@ -31,7 +35,12 @@ const Header = () => {
             height: '100%',
             margin: '0 10px',
             cursor: 'pointer',
-            width: '100%'
+            width: '100%',
+            outline: 'none'
+        },
+        adminOpen: {
+            backgroundColor: '#383838',
+            color: 'white'
         },
         appTitle: {
             color: 'white'
@@ -52,7 +61,9 @@ const Header = () => {
     return (
         <div style={styles.headerContainer}>
             <div style={styles.buttonContainer}>
-                {isAdmin && !isAdminConsoleOpen ? <button  style={styles.button} onClick={openAdminConsole}>Admin console</button> : null}
+                {isAdmin ? 
+                    <button  style={{...styles.button, ...isAdminConsoleOpen ? styles.adminOpen : ''}} onClick={openCloseAdminConsole}>Admin console</button>: null
+                }
             </div>
             <div style={styles.titleContainer}>
                 <h1 style={styles.appTitle}>Studio Designer</h1>
