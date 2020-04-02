@@ -64,6 +64,14 @@ const Styles = styled.div`
         pointer-events: auto;
     }
 
+    button {
+        height: 40px;
+        width: 100px;
+        font-size: 13px;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
   .pagination {
     padding: 0.5rem;
   }
@@ -72,10 +80,16 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     const [value, setValue] = React.useState(initialValue)
 
     const onChange = e => {
-        setValue(e.target.value)
+        if(e.target.getAttribute('fieldtype') === 'checkbox') {
+            console.log(e.target.checked);
+            setValue(e.target.checked);
+        }else {
+            setValue(e.target.value)
+        }
     }
 
     const onBlur = () => {
+        console.log(index, id, value);
         updateMyData(index, id, value)
     }
 
@@ -103,12 +117,14 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
         }
     }
 
-    if(value.toString().includes('firebasestorage.googleapis.com')) {
+    if(value === 'true' || value === 'false' || value === true || value === false) {
+        return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' ? true : false} style={{width: "100px"}} onChange={onChange} onBlur={onBlur}/>
+    }else if(value.toString().includes('firebasestorage.googleapis.com')) {
         return <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
     }else if(deviceIds.includes(value)) {
-        return <input disabled style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+        return <div style={{width: "100px", wordWrap: "break-word"}}>{value}</div>
     }else {
-        return <input style={{width: "120px"}} value={value} onChange={onChange} onBlur={onBlur} />
+        return <input style={{width: "100px"}} value={value} onChange={onChange} onBlur={onBlur} />
     }
 }
 
@@ -210,7 +226,7 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 const AdminConsoleTable = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
-    const stockDevices = useSelector(state => state.stockDevices);
+    const stockDevices = useSelector(state => state.stockDevices.filter(device => device.verified === false));
 
     const columns = React.useMemo(
         () => [
@@ -250,11 +266,15 @@ const AdminConsoleTable = () => {
                 Header: 'Image url',
                 accessor: 'imageUrl'
             },
+            {
+                Header: 'Verified',
+                accessor: 'verified'
+            },
         ],
         []
     )
 
-    const [data, setData] = React.useState(() => stockDevices)
+    const [data, setData] = React.useState(() => stockDevices);
     const [originalData] = React.useState(data)
     const [skipPageReset, setSkipPageReset] = React.useState(false)
 
@@ -275,7 +295,6 @@ const AdminConsoleTable = () => {
 
     React.useEffect(() => {
         setSkipPageReset(false);
-        updatedData();
     }, [data])
 
     const updatedData = () => {
@@ -332,6 +351,7 @@ const AdminConsoleTable = () => {
 
     return (
         <Styles>
+            <button onClick={updatedData}>Save devices</button>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
         </Styles>
     )
