@@ -12,7 +12,7 @@ const Styles = styled.div`
     .layoutsTrayOuterContainer {
         position: fixed;
         top: 50%;
-        right: 0;
+        right: -5px;
         transform: translate(0, -50%);
         display: flex;
         align-items: center;
@@ -22,7 +22,7 @@ const Styles = styled.div`
 
         .layoutsTabOpenClose {
             transform: rotate(-90deg);
-            background-color: white;
+            background-color: #383838;
             height: 30px;
             border: none;
             width: 120px;
@@ -32,6 +32,12 @@ const Styles = styled.div`
             cursor: pointer;
             position: relative;
             right: -45px;
+            color: white;
+
+            &.open:hover {
+                background-color: white;
+                color: #383838;
+            }
         }
 
         .layoutsTrayContainer {
@@ -41,6 +47,7 @@ const Styles = styled.div`
             padding: 10px;
             overflow: hidden;
             position: relative;
+            background-color: #383838;
 
             .layoutsListContainer {
                 display: flex;
@@ -68,6 +75,8 @@ const Styles = styled.div`
                             pointer-events: none;
                             border: none;
                             font-size: 14px;
+                            background-color: #383838;
+                            color: white;
                         }
 
                         .editEnabled {
@@ -114,6 +123,15 @@ const Styles = styled.div`
                 .newLayoutButtons {
                     height: 25px;
                     font-size: 13px;
+                    cursor: pointer;
+                    outline: none;
+                    background-color: #383838;
+                    color: white;
+
+                    &:hover {
+                        background-color: white;
+                        color: #383838;
+                    }
                 }
 
                 .copyLayoutButton {
@@ -248,7 +266,7 @@ const LayoutsTray = () => {
     return (
         <Styles>
             <div className={`layoutsTrayOuterContainer ${!layoutsTrayOpen ? 'hidden' : ''}`}>
-                <button onClick={toggleLayoutsTray} className='layoutsTabOpenClose' onClick={toggleLayoutsTray}>Layouts</button>
+                <button onClick={toggleLayoutsTray} className={`layoutsTabOpenClose ${!layoutsTrayOpen ? 'open' : ''}`} onClick={toggleLayoutsTray}>Layouts</button>
                 <div className='layoutsTrayContainer'>
                     <div className='layoutsListContainer'>
                         {userLayouts.map((layout, index) => (

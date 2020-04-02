@@ -49,6 +49,11 @@ const Styles = styled.div`
                 border-radius: 5px 5px 0 0;
                 cursor: pointer;
                 color: white;
+
+                &.open:hover {
+                    background-color: white;
+                    color: #383838;
+                }
             }
 
             .deviceListInnerContainer {
@@ -116,7 +121,7 @@ const UserDeviceList = () => {
         <Styles>
             <div className='deviceTrayContainer'>
                 <div className={`devicesListContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
-                    <button onClick={toggleDeviceTray} className='openCloseButton'>Devices</button>
+                    <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
                     <div className={`deviceListInnerContainer ${!deviceTrayOpen ? 'hidden' : ''}`}>
                         <div className={`listContainer ${!deviceTrayOpen ? 'hidden' : ''}`}>
                             {userDevices.length > 0 ? userDevices.map((device, index) => (

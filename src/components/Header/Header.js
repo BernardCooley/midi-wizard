@@ -36,6 +36,11 @@ const Styles = styled.div`
             font-size: 16px;
             background-color: #383838;
             color: white;
+
+            &:hover {
+                background-color: white;
+                color: #383838;
+            }
         }
 
         .buttonHighlighed {
