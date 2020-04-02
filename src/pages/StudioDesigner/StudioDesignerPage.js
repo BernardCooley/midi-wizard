@@ -18,13 +18,6 @@ const StudioDesignerPage = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             backgroundColor: 'lightgreen'
-        },
-        deviceTrayContainer: {
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center'
         }
     }
 
@@ -34,9 +27,7 @@ const StudioDesignerPage = () => {
                 <AddDevice/> :
                 <Workspace/>
             }
-            <div style={styles.deviceTrayContainer} className={deviceTrayOpen ? '': 'deviceContainerClosed'}>
-                <UserDeviceList className='deviceListOuterContainer'/>
-            </div>
+            <UserDeviceList/>
         </div>
     )
 }
