@@ -1,5 +1,11 @@
 import React from 'react';
 import firebase from '../../../firebase';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    
+`
 
 const Login = () => {
 
@@ -10,18 +16,16 @@ const Login = () => {
         firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
-    const styles = {
-
-    }
-
     return (
-        <div className="loginFormContainer">
-            <form className="loginForm" onSubmit={login}>
-                <input type="email" placeholder="Email" name="email"></input>
-                <input type="password" placeholder="Password" name="password"></input>
-                <button type="submit">Log in</button>
-            </form>
-        </div>
+        <Styles>
+            <div className="loginFormContainer">
+                <form className="loginForm" onSubmit={login}>
+                    <input type="email" placeholder="Email" name="email"></input>
+                    <input type="password" placeholder="Password" name="password"></input>
+                    <button type="submit">Log in</button>
+                </form>
+            </div>
+        </Styles>
     )
 }
 

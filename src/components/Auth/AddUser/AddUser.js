@@ -1,5 +1,17 @@
 import React from 'react';
 import firebase from '../../../firebase';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .addUserForm {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        margin: auto;
+        padding: 50px;
+    }
+`
 
 const AddUser = () => {
     const db = firebase.firestore();
@@ -28,25 +40,17 @@ const AddUser = () => {
         })
     }
 
-    const styles = {
-        addUserForm: {
-            display: 'flex',
-            flexDirection: 'column',
-            width: '300px',
-            margin: 'auto',
-            padding: '50px'
-        }
-    }
-
     return(
-        <div className="addUserContainer">
-            <form style={styles.addUserForm} onSubmit={addUser}>
-                <input type="text" placeholder="Username" name="username"></input>
-                <input type="email" placeholder="Email" name="email"></input>
-                <input type="password" placeholder="Password" name="password"></input>
-                <button type="submit">Create account</button>
-            </form>
-        </div>
+        <Styles>
+            <div className="addUserContainer">
+                <form className='addUserForm' onSubmit={addUser}>
+                    <input type="text" placeholder="Username" name="username"></input>
+                    <input type="email" placeholder="Email" name="email"></input>
+                    <input type="password" placeholder="Password" name="password"></input>
+                    <button type="submit">Create account</button>
+                </form>
+            </div>
+        </Styles>
     )
 
 }
