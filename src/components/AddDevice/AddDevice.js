@@ -37,7 +37,7 @@ const AddDevice = () => {
     const styles = {
         addDeviceOuterContainer: {
             width: '90%',
-            maxHeight: '300px',
+            maxHeight: '500px',
             position: 'relative',
             top: '50px',
             zIndex: '15'
@@ -50,9 +50,9 @@ const AddDevice = () => {
             zIndex: '10',
             height: '100%',
             overflowY: 'scroll',
-            ebkitBoxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)',
-            MozBoxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)',
-            boxShadow: '4px 4px 5px 0px rgba(0,0,0,0.75)'
+            WebkitBoxShadow: '8px 10px 19px -2px rgba(0,0,0,0.76)',
+            MozBoxShadow: '8px 10px 19px -2px rgba(0,0,0,0.76)',
+            boxShadow: '8px 10px 19px -2px rgba(0,0,0,0.76)'
         },
         svg: {
             position: 'relative',

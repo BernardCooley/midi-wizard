@@ -1,17 +1,26 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import firebase from '../../firebase';
 import { setSearchResults } from '../../actions';
+import SearchResultsCard from './SearchResultsCard';
+import styled from 'styled-components';
+
+const Styles = styled.div`
+    .stockSearchResultsContainer {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+    }
+`
 
 const StockSearchResults = props => {
-
-    const db = firebase.firestore();
-    const userDataRef = db.collection('UserDeviceData');
 
     const dispatch = useDispatch();
     const stockDevices = useSelector(state => state.stockDevices);
     const userDeviceIds = useSelector(state => state.userDeviceIds);
-    const userId = useSelector(state => state.currentUserId);
     const searchResults = useSelector(state => state.searchResults);
 
     useEffect(() => {
@@ -29,53 +38,14 @@ const StockSearchResults = props => {
         return results;
     }
 
-    const addToUserDevices = async e => {
-        const deviceId = e.target.parentNode.getAttribute('deviceid');
-        
-        if(!doesUserAlreadyHaveDevice(deviceId)) {
-            await userDataRef.doc(userId).update({
-                devices: [...userDeviceIds, deviceId]
-            });
-        }
-    }
-
-    const doesUserAlreadyHaveDevice = deviceId => {
-        return userDeviceIds.filter(userDeviceId => userDeviceId === deviceId).length > 0 ? true : false;
-    }
-
-    const styles = {
-        stockSearchResultsContainer: {
-
-        },
-        resultContainer: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid gray'
-        },
-        result: {
-            margin: '10px',
-            fontSize: '20px'
-        },
-        button: {
-            cursor: 'pointer',
-            height: '30px',
-            width: '100px'
-        }
-    }
-
     return (
-        <div style={styles.stockSearchResultsContainer}>
-            {
-                searchResults.map((device, index) => (
-                    <div key={index} deviceid={device.deviceId} style={styles.resultContainer}>
-                        <div style={styles.result}>{device.manufacturer} - {device.deviceName}</div>
-                        {device.inDeviceTray}
-                        <button style={styles.button} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
-                    </div>
-                ))
-            }
-        </div>
+        <Styles>
+            <div className='stockSearchResultsContainer'>
+                {searchResults.length > 0 ? searchResults.map((device, index) => (
+                    <SearchResultsCard key={index} device={device}/>
+                )): null}
+            </div>
+        </Styles>
     )
 }
 
