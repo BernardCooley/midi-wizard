@@ -17,6 +17,12 @@ const Styles = styled.div`
             justify-content: center;
             align-items: center;
             scrollbar-color: red;
+            position: fixed;
+            bottom: -50px;
+            transition:0.6s;
+            -webkit-transition:0.6s;
+            -moz-transition:0.6s;
+            right: 0;
 
         .devicesListContainer {
             display: flex;
@@ -30,12 +36,6 @@ const Styles = styled.div`
             -moz-box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
             box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
             color: white;
-            position: fixed;
-            bottom: -50px;
-
-            &.closed {
-                bottom: -28px !important;
-            }
 
             .openCloseButton {
                 position: relative;
@@ -85,11 +85,11 @@ const Styles = styled.div`
                     }
                 }
             }
-            .hidden {
-                display: none;
-            }
         }
     }
+    .closed {
+                bottom: -253px;
+            }
 `
 
 const UserDeviceList = () => {
@@ -119,11 +119,11 @@ const UserDeviceList = () => {
 
     return (
         <Styles>
-            <div className='deviceTrayContainer'>
-                <div className={`devicesListContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+            <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+                <div className='devicesListContainer'>
                     <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
-                    <div className={`deviceListInnerContainer ${!deviceTrayOpen ? 'hidden' : ''}`}>
-                        <div className={`listContainer ${!deviceTrayOpen ? 'hidden' : ''}`}>
+                    <div className='deviceListInnerContainer'>
+                        <div className='listContainer'>
                             {userDevices.length > 0 ? userDevices.map((device, index) => (
                                 <UserDevice key={index} deviceDetails={device}/>
                             )):null}
