@@ -33,6 +33,7 @@ const Styles = styled.div`
             position: relative;
             right: -45px;
             color: white;
+            z-index: 10;
 
             &.open:hover {
                 background-color: white;
@@ -48,6 +49,9 @@ const Styles = styled.div`
             overflow: hidden;
             position: relative;
             background-color: #383838;
+            -webkit-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.9);
+            -moz-box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.9);
+            box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.9);
 
             .layoutsListContainer {
                 display: flex;
