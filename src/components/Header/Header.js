@@ -24,6 +24,20 @@ const Styles = styled.div`
             height: 100%;
             display: flex;
             justify-content: flex-start;
+
+            .unverifiedNumber {
+                color: white;
+                border: 1px solid white;
+                padding: 5px;
+                border-radius: 10px;
+                background-color: crimson;
+                cursor: pointer;
+
+                &:hover {
+                background-color: white;
+                color: #383838;
+            }
+            }
         }
 
         .button {
@@ -85,10 +99,20 @@ const Header = () => {
     const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
     const currentUsername = useSelector(state => state.currentUsername);
     const [firstName, setFirstName] = useState('');
+    const stockDevices = useSelector(state => state.stockDevices);
+    const [numberOfUnverifiedDevices, setNumberOfUnverifiedDevices] = useState('');
 
     useEffect(() => {
         setFirstName(getFirstName());
     }, [currentUsername]);
+
+    useEffect(() => {
+        setNumberOfUnverifiedDevices(getUnverifiedDevices());
+    }, [stockDevices]);
+
+    const getUnverifiedDevices = () => {
+        return stockDevices.filter(device => device.verified === false).length;
+    }
 
     const logout = () => {
         firebase.auth().signOut();
@@ -113,6 +137,7 @@ const Header = () => {
                     {isAdmin ? 
                         <button className={`button ${isAdminConsoleOpen ? 'buttonHighlighed' : ''}`} onClick={openCloseAdminConsole}>Admin console</button>: null
                     }
+                    <div onClick={openCloseAdminConsole} className='unverifiedNumber'>{numberOfUnverifiedDevices}</div>
                 </div>
                 <div className='titleContainer'>
                     <div className='appTitle'>Studio Designer</div>
