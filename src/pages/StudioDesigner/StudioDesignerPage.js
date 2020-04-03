@@ -1,34 +1,35 @@
 import React from 'react';
 import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Workspace from '../../components/Workspace/Wrokspace';
 import AddDevice from '../../components/AddDevice/AddDevice';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .studioDesignerContainer {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        background-color: lightgreen;
+    }
+`
 
 const StudioDesignerPage = () => {
-
-    const dispatch = useDispatch();
-    const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
 
-    const styles = {
-        studioDesignerContainer: {
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: 'lightgreen'
-        }
-    }
-
     return(
-        <div style={styles.studioDesignerContainer}>
-            {isAddDeviceFormOpen ? 
-                <AddDevice/> :
-                <Workspace/>
-            }
-            <UserDeviceList/>
-        </div>
+        <Styles>
+            <div className='studioDesignerContainer'>
+                {isAddDeviceFormOpen ? 
+                    <AddDevice/> :
+                    <Workspace/>
+                }
+                <UserDeviceList/>
+            </div>
+        </Styles>
     )
 }
 
