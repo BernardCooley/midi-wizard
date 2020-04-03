@@ -1,5 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { select } from 'd3';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .svgWorkspaceContainer {
+        background-color: rebeccapurple;
+        width: 100%;
+    }
+`
 
 const SVGWorkspace = props => {
     const svgRef = useRef();
@@ -37,17 +46,10 @@ const SVGWorkspace = props => {
         }
     }, [data, props.layout.devices]);
 
-    const styles = {
-        svgWorkspaceContainer: {
-            backgroundColor: 'rebeccapurple',
-            width: '100%'
-        }
-    }
-
     return (
-        <React.Fragment>
-            <svg ref={svgRef} id='svgWorkspace' style={styles.svgWorkspaceContainer} className='svgWorkspaceContainer'></svg>
-        </React.Fragment>
+        <Styles>
+            <svg ref={svgRef} id='svgWorkspace' className='svgWorkspaceContainer'></svg>
+        </Styles>
     )
 }
 

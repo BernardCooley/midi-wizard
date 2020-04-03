@@ -1,21 +1,25 @@
 import React from 'react';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .footerContainer {
+        margin-top: 20px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+`
 
 const Footer = () => {
-
-
-    const styles = {
-        footerContainer: {
-            marginTop: '20px',
-            position: 'absolute',
-            bottom: '0',
-            width: '100%'
-        }
-    }
+    
 
     return (
-        <div style={styles.footerContainer}>
-            Footer
-        </div>
+        <Styles>
+            <div className='footerContainer'>
+                Footer
+            </div>
+        </Styles>
     )
 }
 

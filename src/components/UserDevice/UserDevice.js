@@ -6,6 +6,61 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .deviceContainer {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 5px 10px;
+        padding: 5px;
+
+        .deviceTrayOptions {
+            width: 87%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            top: 10px;
+            right: 14px;
+            z-index: 11;
+
+            .deviceActionContainer {
+                cursor: pointer;
+                opacity: 1;
+
+                .deleteIcon {
+                    color: red;
+                }
+                
+                .svg {
+                    pointer-events: none;
+                }
+                
+                .deviceAction {
+                    font-size: 18px;
+                }
+            }
+        }
+
+        .img {
+            width: 150px;
+            border: 0;
+        }
+
+        .alreadyInLayout {
+            opacity: 0.5;
+        }
+
+        .deviceTitle {
+
+        }
+    }
+`
 
 const UserDevice = (deviceDetails) => {
     library.add(faTrashAlt);
@@ -186,62 +241,19 @@ const UserDevice = (deviceDetails) => {
         return matchedLayouts;
     }
 
-    const styles = {
-        deviceContainer: {
-            height: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: '5px 10px',
-            padding: '5px'
-        },
-        deviceTrayOptions: {
-            width: '87%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            position: 'relative',
-            top: '10px',
-            right: '14px',
-            zIndex: '11'
-        },
-        img: {
-            width: '150px',
-            border: '0'
-        },
-        svg: {
-            pointerEvents: 'none'
-        },
-        deviceAction: {
-            fontSize: '18px'
-        },
-        deleteIcon: {
-            color: 'red'
-        },
-        deviceTitle: {
-
-        },
-        deviceActionContainer: {
-            cursor: 'pointer',
-            opacity: '1'
-        },
-        alreadyInLayout: {
-            opacity: '0.5'
-        }
-    }
-
     return (
-        <div deviceid={device ? device.deviceId : ''} style={styles.deviceContainer}>
-            <ToastContainer />
-            <div style={styles.deviceTrayOptions}>
-                <div style={styles.deviceActionContainer} onClick={deleteDevice}>
-                    <FontAwesomeIcon className='deleteIcon' style={{...styles.svg, ...styles.deviceAction, ...styles.deleteIcon}} icon="trash-alt" />
+        <Styles>
+            <div deviceid={device ? device.deviceId : ''} className='deviceContainer'>
+                <ToastContainer />
+                <div className='deviceTrayOptions'>
+                    <div className='deviceActionContainer' onClick={deleteDevice}>
+                        <FontAwesomeIcon className='deleteIcon svg deviceAction' icon="trash-alt" />
+                    </div>
                 </div>
+                <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={device.imageUrl} alt=''></img>
+                <div className={`deviceTitle ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`}>{device ? device.deviceName : ''}</div>
             </div>
-            <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} style={{...styles.img, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}} src={device.imageUrl} alt=''></img>
-            <div style={{...styles.deviceTitle, ...inCurrentWorkspace ? styles.alreadyInLayout : ''}}>{device ? device.deviceName : ''}</div>
-        </div>
+        </Styles>
     )
 }
 
