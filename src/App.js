@@ -21,10 +21,6 @@ const Styles = styled.div`
     .loggedOutContainer {
 
     }
-
-    .hidden {
-      display: none;
-    }
   }
 `
 
