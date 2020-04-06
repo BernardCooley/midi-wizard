@@ -69,7 +69,7 @@ function App() {
   });
 
   const getUsername = async userId => {
-    return await userDataRef.doc(userId).onSnapshot(response => {
+    return userDataRef.doc(userId).onSnapshot(response => {
       if(response.data()) {
         dispatch(setCurrentUsername(response.data().username));
       }
@@ -77,7 +77,7 @@ function App() {
   }
 
   const getUserDeviceIds = async userId => {
-    await userDataRef.doc(userId).onSnapshot(response => {
+    userDataRef.doc(userId).onSnapshot(response => {
       if (response.data() && response.data().devices) {
         const userDeviceIds = response.data().devices;
 
@@ -91,14 +91,14 @@ function App() {
   }
 
   const getStockDevices = async () => {
-    await allDeviceDataRef.onSnapshot(response => {
+    allDeviceDataRef.onSnapshot(response => {
       const data = response.docs.map(doc => doc.data());
       dispatch(setStockDevices(data));
     });
   }
 
   const getLayoutIds = async uid => {
-    await userDataRef.doc(uid).onSnapshot(response => {
+    userDataRef.doc(uid).onSnapshot(response => {
       if(response.data()) {
         dispatch(layoutIds(response.data().layouts));
       }
@@ -117,7 +117,7 @@ function App() {
 
   const triggerGetLayouts = async () => {
     for (const id of userLayoutIds) {
-      await userLayoutDataRef.doc(id).onSnapshot(response => {
+      userLayoutDataRef.doc(id).onSnapshot(response => {
         getLayouts();
       });
     }
@@ -128,7 +128,7 @@ function App() {
       if(response.data()) {
         dispatch(isAdmin(response.data().admin));
       }
-      return await response;
+      return response;
   }
 
   return (

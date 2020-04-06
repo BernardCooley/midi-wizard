@@ -1,8 +1,9 @@
 import authReducers from './authReducers';
 import deviceReducers from './devicesReducers';
 import adminConsoleReducers from './adminConsoleReducers';
-import workspaceDevices from './wrokspaceReducers';
+import workspaceDevices from './workspaceReducers';
 import { combineReducers } from 'redux';
+import workspaceReducers from './workspaceReducers';
 
 const allReducers = combineReducers({
     isLoggedIn: authReducers.isLoggedInReducer,

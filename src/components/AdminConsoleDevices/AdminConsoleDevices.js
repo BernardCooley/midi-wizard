@@ -255,6 +255,8 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 const AdminConsoleTable = () => {
     const db = firebase.firestore();
     const stockDeviceDtaRef = db.collection('DeviceData');
+    const userLayoutDataRef = db.collection('UserLayouts');
+    const userDeviceDataRef = db.collection('UserDeviceData');
     const stockDevices = useSelector(state => state.stockDevices);
     const isImageBeingEdited = useSelector(state => state.toggleEditingImage);
     const isGettingData = useSelector(state => state.gettingData);
@@ -396,6 +398,37 @@ const AdminConsoleTable = () => {
         return formattedDevice
     }
 
+    const cleanLayouts = () => {
+        getStockLayouts().then(stockLayoutIds => {
+            getUserLayouts().then(userLayoutIds => {
+                const missingLayouts = stockLayoutIds.map(id => {
+                    if(!userLayoutIds.includes(id)) {
+                        return id;
+                    }
+                }).filter(layoutId => layoutId);
+                return missingLayouts;
+            }).then(missingLayoutsResp => {
+                missingLayoutsResp.forEach(async id => {
+                    await userLayoutDataRef.doc(id).delete();
+                })
+            })
+        });
+    }
+
+    const getStockLayouts = async () => {
+        const response = await userLayoutDataRef.get();
+        return response.docs.map(doc => doc.data().layoutId);
+    }
+
+    const getUserLayouts = async () => {
+        let userLayoutIds = []
+        const response = await userDeviceDataRef.get();
+        response.docs.map(doc => {
+            userLayoutIds = [...userLayoutIds, ...doc.data().layouts];
+        });
+        return userLayoutIds;
+      }
+
     return (
         <Styles>
             {isGettingData ? 
@@ -414,6 +447,7 @@ const AdminConsoleTable = () => {
             {isImageBeingEdited ? 
                 <ChangeImage/>: null
             }
+            <button onClick={cleanLayouts}>Clean layouts</button>
         </Styles>
     )
 }
