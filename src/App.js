@@ -57,9 +57,11 @@ function App() {
     if (user) {
       dispatch(setIsLoggedIn(true));
       dispatch(setCurrentUserId(user.uid));
-      getUsername(user.uid);
-      getIsAdmin(user.uid);
-      getUserDeviceIds(user.uid);
+      getUsername(user.uid).then(() => {
+        getIsAdmin(user.uid).then(() => {
+          getUserDeviceIds(user.uid);
+        });
+      });
     } else {
       dispatch(setIsLoggedIn(false));
       dispatch(setCurrentUserId(''));
@@ -67,14 +69,16 @@ function App() {
   });
 
   const getUsername = async userId => {
-    await userDataRef.doc(userId).onSnapshot(response => {
-      dispatch(setCurrentUsername(response.data().username));
-    })
+    return await userDataRef.doc(userId).onSnapshot(response => {
+      if(response.data()) {
+        dispatch(setCurrentUsername(response.data().username));
+      }
+    });
   }
 
   const getUserDeviceIds = async userId => {
     await userDataRef.doc(userId).onSnapshot(response => {
-      if (response.data().devices) {
+      if (response.data() && response.data().devices) {
         const userDeviceIds = response.data().devices;
 
         if(stockDevices.length > 0) {
@@ -95,7 +99,9 @@ function App() {
 
   const getLayoutIds = async uid => {
     await userDataRef.doc(uid).onSnapshot(response => {
-      dispatch(layoutIds(response.data().layouts));
+      if(response.data()) {
+        dispatch(layoutIds(response.data().layouts));
+      }
     });
   }
 
@@ -119,7 +125,10 @@ function App() {
 
   const getIsAdmin = async userId => {
       const response = await userDataRef.doc(userId).get();
-      dispatch(isAdmin(response.data().admin));
+      if(response.data()) {
+        dispatch(isAdmin(response.data().admin));
+      }
+      return await response;
   }
 
   return (

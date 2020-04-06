@@ -155,3 +155,9 @@ export const gettingData = isGettingData => {
         payload: isGettingData
     };
 };
+
+export const resetState = () => {
+    return {
+        type: 'RESET_STATE'
+    };
+};

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAdminConsole } from '../../actions';
+import { toggleAdminConsole, resetState } from '../../actions';
 import styled from 'styled-components';
 
 const Styles = styled.div`
@@ -115,7 +115,9 @@ const Header = () => {
     }
 
     const logout = () => {
-        firebase.auth().signOut();
+        firebase.auth().signOut().then(() => {
+            dispatch(resetState());
+        })
     }
 
     const getFirstName = () => {
@@ -135,9 +137,12 @@ const Header = () => {
             <div className='headerContainer'>
                 <div className='buttonContainer'>
                     {isAdmin ? 
-                        <button className={`button ${isAdminConsoleOpen ? 'buttonHighlighed' : ''}`} onClick={openCloseAdminConsole}>Admin console</button>: null
+                        <>
+                            <button className={`button ${isAdminConsoleOpen ? 'buttonHighlighed' : ''}`} onClick={openCloseAdminConsole}>Admin console</button>
+                            <div onClick={openCloseAdminConsole} className='unverifiedNumber'>{numberOfUnverifiedDevices}</div>
+                        </>
+                        : null
                     }
-                    <div onClick={openCloseAdminConsole} className='unverifiedNumber'>{numberOfUnverifiedDevices}</div>
                 </div>
                 <div className='titleContainer'>
                     <div className='appTitle'>Studio Designer</div>

@@ -30,4 +30,12 @@ const allReducers = combineReducers({
     gettingData: deviceReducers.gettingData
 });
 
-export default allReducers;
+const rootReducer = (state, action) => {
+    if (action.type === 'RESET_STATE') {
+      state = undefined;
+    }
+  
+    return allReducers(state, action);
+};
+
+export default rootReducer;

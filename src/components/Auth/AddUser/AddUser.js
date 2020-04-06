@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from '../../../firebase';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 
 const Styles = styled.div`
@@ -16,28 +17,88 @@ const Styles = styled.div`
 const AddUser = () => {
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
+    const userLayoutDataRef = db.collection('UserLayouts');
+    const userId = useSelector(state => state.currentUserId);
 
     const addUser = async e => {
-        let username = e.target.username.value;
-        let password = e.target.password.value;
-        let email = e.target.email.value;
         e.preventDefault();
+        const username = e.target.username.value;
+        const password = e.target.password.value;
+        const email = e.target.email.value;
+        const rollBackData = [];
 
-        const signUp = await firebase.auth().createUserWithEmailAndPassword(e.target.email.value, e.target.password.value);
-        createUserInDatabase(signUp.user.uid, username);
-        signIn(email, password);
+        // Sign up with email and password
+        await signUp(email, password).then(signUpResp => {
+            rollBackData.push(signUpResp);
+            // create new layout document
+            createNewLayoutDoc().then(createNewLayoutDocResp => {
+                rollBackData.push(createNewLayoutDocResp);
+                const newLayoutDocId = createNewLayoutDocResp.id;
+                // add default data to newly created layout
+                populateNewLayout(newLayoutDocId).then(() => {
+                    // add signed up user to database
+                    createUserInDatabase(signUpResp.user.uid, username, newLayoutDocId).then(createUserInDatabaseResp => {
+                        console.log(email, password);
+                        rollBackData.push(createUserInDatabaseResp);
+                    }).catch(error => {
+                        console.error(error);
+                        rollBack(rollBackData);
+                    });
+                }).catch(error => {
+                    console.error(error);
+                    rollBack(rollBackData);
+                });
+            }).catch(error => {
+                console.error(error);
+                rollBack(rollBackData);
+            });
+        }).catch(error => {
+            console.error(error);
+            rollBack(rollBackData);
+        });
     }
 
-    const signIn = async (email, password) => {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+    const rollBack = rollBackData => {
+        rollBackData.forEach((data, index) => {
+            switch(index) {
+                case 0:
+                    data.user.delete();
+                    break;
+                case 1:
+                    userLayoutDataRef.doc(rollBackData[index].id).delete();
+                    break;
+                case 2:
+                    userDeviceDataRef.doc(userId).delete();
+            };
+        });
     }
 
-    const createUserInDatabase = async (userId, username) => {
-        userDeviceDataRef.doc(userId).set({
+    const signUp = async (email, password) => {
+        return await firebase.auth().createUserWithEmailAndPassword(email, password);
+    }
+
+    const createUserInDatabase = async (userId, username, layoutId) => {
+        const newUser = {
             devices: [],
             username: username,
+            admin: false,
+            layouts: [layoutId],
             admin: false
-        })
+        }
+        return await userDeviceDataRef.doc(userId).set(newUser);
+    }
+
+    const populateNewLayout = async layoutId => {
+        const newLayout = {
+            devices: [],
+            layoutId: layoutId,
+            layoutName: 'Default'
+        }
+        return await userLayoutDataRef.doc(layoutId).set(newLayout);
+    }
+
+    const createNewLayoutDoc = async () => {
+        return await userLayoutDataRef.doc();
     }
 
     return(

@@ -29,7 +29,7 @@ const Workspace = () => {
 
     useEffect(() => {
         if(userLayouts.length > 0) {
-            if(currentLayoutId && currentLayoutId !== currentDeletedLayoutId) {
+            if(userLayouts !== 'undefined' && currentLayoutId && currentLayoutId !== currentDeletedLayoutId) {
                 const removedUndefined = userLayouts.filter(layout => layout);
                 dispatch(currentLayout(removedUndefined.filter(layout => layout.layoutId === currentLayoutId)[0]));
             }
