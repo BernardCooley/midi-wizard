@@ -183,20 +183,25 @@ const LayoutsTray = () => {
     }, [userLayouts]);
 
     const deleteFromLayout = async e => {
-        const confirmDelete = window.confirm("Delete layout?");
+        const clickedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
 
-        if(confirmDelete) {
-            dispatch(deletedLayoutId(e.target.parentNode.parentNode.getAttribute('layoutid')));
-            const clickedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
-            
-            const updatedUserLayoutIds = userLayoutIds.filter(layoutId => layoutId !== clickedLayoutId);
+        if(clickedLayoutId !== currentLayoutId) {
+            const confirmDelete = window.confirm("Delete layout?");
 
-            await userDataRef.doc(currentUserId).update({
-                layouts: updatedUserLayoutIds
-            }).then(() => {
-                dispatch(selectedLayoutId(updatedUserLayoutIds[0]));
-                userLayoutDataRef.doc(clickedLayoutId).delete();
-            });
+            if(confirmDelete) {
+                dispatch(deletedLayoutId(e.target.parentNode.parentNode.getAttribute('layoutid')));
+                
+                const updatedUserLayoutIds = userLayoutIds.filter(layoutId => layoutId !== clickedLayoutId);
+
+                await userDataRef.doc(currentUserId).update({
+                    layouts: updatedUserLayoutIds
+                }).then(() => {
+                    dispatch(selectedLayoutId(updatedUserLayoutIds[0]));
+                    userLayoutDataRef.doc(clickedLayoutId).delete();
+                });
+            }
+        }else {
+            alert('Currently selected layout cannot be deleted.');
         }
     }
 
