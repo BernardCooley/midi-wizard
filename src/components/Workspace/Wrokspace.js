@@ -4,6 +4,19 @@ import firebase from 'firebase';
 import LayoutsTray from '../LayoutsTray/LayoutsTray';
 import { currentLayout } from '../../actions';
 import SVGWorkspace from '../SVGWorkspace/SVGWorkspace';
+import styled from 'styled-components';
+
+
+const Styles = styled.div`
+    .workSpaceContainer {
+        background-color: lightblue;
+        width: 100%;
+        height: 100%;
+        padding: 20px 0;
+        display: flex;
+        padding-top: 50px;
+    }
+`
 
 const Workspace = () => {
 
@@ -65,10 +78,12 @@ const Workspace = () => {
     }
 
     return (
-        <div style={styles.workSpaceContainer}>
-            <SVGWorkspace layout={layout}/>
-            <LayoutsTray/>
-        </div>
+        <Styles>
+            <div className='workSpaceContainer'>
+                <SVGWorkspace layout={layout}/>
+                <LayoutsTray/>
+            </div>
+        </Styles>
     )
 }
 

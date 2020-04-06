@@ -63,6 +63,10 @@ const Styles = styled.div`
                 position: relative;
                 top: -35px;
 
+                .trayOpen {
+                    bottom: 165px;
+                }
+
                 .listContainer {
                     display: flex;
                     align-items: center;

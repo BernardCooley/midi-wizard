@@ -11,11 +11,12 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
     .addDeviceOuterContainer {
-        width: 90%;
-        max-height: 500px;
+        width: 90vw;
+        height: 500px;
         position: relative;
         top: 50px;
         z-index: 15;
+        margin: auto;
 
         .svg {
             position: relative;
