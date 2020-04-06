@@ -67,8 +67,8 @@ const SearchResultsCard = props => {
     }
 
     const addToUserDevices = async e => {
-        const deviceId = e.target.parentNode.getAttribute('deviceid');
-        
+        const deviceId = e.target.getAttribute('deviceid');
+
         if(!doesUserAlreadyHaveDevice(deviceId)) {
             await userDataRef.doc(userId).update({
                 devices: [...userDeviceIds, deviceId]
@@ -86,7 +86,7 @@ const SearchResultsCard = props => {
                 <div className='manufacturer'>{device.manufacturer}</div>
                 <div className='deviceName'>{device.deviceName}</div>
                 <img src={imageUrl} className='cardImage'></img>
-                <button className='addButton' disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
+                <button deviceid={device.deviceId} className='addButton' disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
             </div>
         </Styles>
     )

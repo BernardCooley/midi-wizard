@@ -62,7 +62,6 @@ const Styles = styled.div`
                 width: 98%;
                 position: relative;
                 top: -35px;
-                height: 300px;
 
                 .trayOpen {
                     bottom: 165px;
