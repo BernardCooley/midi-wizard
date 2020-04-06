@@ -60,23 +60,6 @@ const Workspace = () => {
         }
     }
 
-    const styles = {
-        workSpaceContainer: {
-            backgroundColor: 'lightblue',
-            width: '100%',
-            height: '100%',
-            padding: '20px 0',
-            display: 'flex',
-            paddingTop: '50px'
-        },
-        layoutDevicesList: {
-            
-        },
-        layoutDevice: {
-            display: 'flex'
-        }
-    }
-
     return (
         <Styles>
             <div className='workSpaceContainer'>
