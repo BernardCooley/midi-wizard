@@ -154,7 +154,7 @@ const UserDevice = (deviceDetails) => {
     }
 
     const deleteDevice = e => {
-        const clickedDeviceId = e.target.parentNode.parentNode.getAttribute('deviceid');
+        const clickedDeviceId = e.target.getAttribute('deviceid');
 
         if(doesDeviceExistInLayouts(clickedDeviceId)) {
             let deviceInLayoutsMessage = 'This device exists in the following layouts:'
@@ -212,7 +212,7 @@ const UserDevice = (deviceDetails) => {
     const doesDeviceExistInLayouts = dev => {
         let doesExist = false;
         userLayouts.forEach(layout => {
-            if(layout.devices.filter(device => device.deviceId === dev.deviceId).length > 0) {
+            if(layout.devices.filter(device => device.deviceId === dev).length > 0) {
                 doesExist = true;
             }
         })
@@ -221,7 +221,7 @@ const UserDevice = (deviceDetails) => {
 
     const isDeviceInCurrentLayout = () => {
         let inCurrentLayout = false;
-        if(layout.devices && device) {
+        if(layout.devices && layout.devices.length > 0 && device) {
             const layoutDeviceIds = layout.devices.map(device => device.deviceId);
             inCurrentLayout = layoutDeviceIds.includes(device.deviceId)
         }
@@ -246,7 +246,7 @@ const UserDevice = (deviceDetails) => {
             <div deviceid={device ? device.deviceId : ''} className='deviceContainer'>
                 <ToastContainer />
                 <div className='deviceTrayOptions'>
-                    <div className='deviceActionContainer' onClick={deleteDevice}>
+                    <div deviceid={device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
                         <FontAwesomeIcon className='deleteIcon svg deviceAction' icon="trash-alt" />
                     </div>
                 </div>
