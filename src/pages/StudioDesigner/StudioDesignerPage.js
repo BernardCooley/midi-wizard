@@ -1,7 +1,7 @@
 import React from 'react';
 import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
 import { useSelector } from 'react-redux';
-import Workspace from '../../components/Workspace/Wrokspace';
+import Workspace from '../../components/Workspace/Workspace';
 import AddDevice from '../../components/AddDevice/AddDevice';
 import styled from 'styled-components';
 
