@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
     .landingPageContainer {
-
+        height: 100%;
 
         .loginRegisterContainer {
             width: 50%;

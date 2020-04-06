@@ -6,6 +6,7 @@ import styled from 'styled-components';
 const Styles = styled.div`
     .adminConsoleContainer {
         padding-top: 50px;
+        height: 100%;
     }
 `
 

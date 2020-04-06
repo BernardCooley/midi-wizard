@@ -15,7 +15,7 @@ const Styles = styled.div`
     height: 99%;
 
     .loggedInContainer {
-      height: 100vh;
+      height: 100%;
     }
 
     .loggedOutContainer {
