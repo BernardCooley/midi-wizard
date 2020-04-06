@@ -62,6 +62,7 @@ const Styles = styled.div`
                 width: 98%;
                 position: relative;
                 top: -35px;
+                height: 300px;
 
                 .trayOpen {
                     bottom: 165px;
@@ -123,7 +124,7 @@ const UserDeviceList = () => {
 
     return (
         <Styles>
-            <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+            <div className={`deviceTrayContainer ${!deviceTrayOpen && userDevices.length > 0 ? 'closed' : ''}`}>
                 <div className='devicesListContainer'>
                     <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
                     <div className='deviceListInnerContainer'>
