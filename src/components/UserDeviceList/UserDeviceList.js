@@ -18,7 +18,7 @@ const Styles = styled.div`
             align-items: center;
             scrollbar-color: red;
             position: fixed;
-            bottom: -50px;
+            bottom: -30px;
             transition:0.6s;
             -webkit-transition:0.6s;
             -moz-transition:0.6s;
@@ -92,7 +92,7 @@ const Styles = styled.div`
         }
     }
     .closed {
-                bottom: -253px;
+                bottom: -237px;
             }
 `
 
