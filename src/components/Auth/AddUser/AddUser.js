@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import firebase from '../../../firebase';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ const AddUser = () => {
     const userDeviceDataRef = db.collection('UserDeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
     const userId = useSelector(state => state.currentUserId);
+    const [emailSentMessage, setEmailSentMessage] = useState('');
 
     const addUser = async e => {
         e.preventDefault();
@@ -40,6 +41,12 @@ const AddUser = () => {
                     createUserInDatabase(signUpResp.user.uid, username, newLayoutDocId).then(createUserInDatabaseResp => {
                         console.log(email, password);
                         rollBackData.push(createUserInDatabaseResp);
+                        signUpResp.user.sendEmailVerification().then(function() {
+                            setEmailSentMessage('Verification email sent. Please check your inbox.');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 3000);
+                        }).catch(function(error) {});
                     }).catch(error => {
                         console.error(error);
                         rollBack(rollBackData);
@@ -110,6 +117,7 @@ const AddUser = () => {
                     <input type="password" placeholder="Password" name="password"></input>
                     <button type="submit">Create account</button>
                 </form>
+                <div>{emailSentMessage}</div>
             </div>
         </Styles>
     )

@@ -3,7 +3,7 @@ import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -36,6 +36,7 @@ function App() {
   const userLayoutIds = useSelector(state => state.layoutIds);
   const userId = useSelector(state => state.currentUserId);
   const stockDevices = useSelector(state => state.stockDevices);
+  const isUserVerified = useSelector(state => state.isVerified);
 
   useEffect(() => {
     getStockDevices();
@@ -55,6 +56,9 @@ function App() {
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
+      if(user.emailVerified) {
+        dispatch(isVerified(true));
+      }
       dispatch(setIsLoggedIn(true));
       dispatch(setCurrentUserId(user.uid));
       getUsername(user.uid).then(() => {
@@ -134,7 +138,7 @@ function App() {
   return (
     <Styles>
       <div className="App">
-        {isLoggedIn ?
+        {isLoggedIn && isUserVerified ?
           <div className='loggedInContainer'>
             <Header />
             {isAdminConsoleOpen ? <AdminConsole /> : <StudioDesignerPage />}

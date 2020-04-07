@@ -161,3 +161,10 @@ export const resetState = () => {
         type: 'RESET_STATE'
     };
 };
+
+export const isVerified = isVerified => {
+    return {
+        type: 'IS_VERIFIED',
+        payload: isVerified
+    };
+};

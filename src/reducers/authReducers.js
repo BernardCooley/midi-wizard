@@ -38,6 +38,14 @@ const authReducers = {
             default:
                 return state;
         }
+    },
+    isVerified: (state = false, action) => {
+        switch(action.type) {
+            case 'IS_VERIFIED':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 
