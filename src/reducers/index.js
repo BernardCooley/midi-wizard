@@ -29,7 +29,8 @@ const allReducers = combineReducers({
     toggleEditingImage: adminConsoleReducers.toggleEditingImage,
     deviceIdBeingEdited: adminConsoleReducers.deviceIdBeingEdited,
     gettingData: deviceReducers.gettingData,
-    isVerified: authReducers.isVerified
+    isVerified: authReducers.isVerified,
+    isManageAccountPageOpen: authReducers.isManageAccountPageOpen
 });
 
 const rootReducer = (state, action) => {

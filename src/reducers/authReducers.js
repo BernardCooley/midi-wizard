@@ -46,6 +46,14 @@ const authReducers = {
             default:
                 return state;
         }
+    },
+    isManageAccountPageOpen: (state = false, action) => {
+        switch(action.type) {
+            case 'IS_MANAGE_ACCOUNT_PAGE_OPEN':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

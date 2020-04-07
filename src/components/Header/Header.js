@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAdminConsole, resetState } from '../../actions';
+import { toggleAdminConsole, resetState, isManageAccountPageOpen } from '../../actions';
 import styled from 'styled-components';
 
 const Styles = styled.div`
@@ -87,6 +87,11 @@ const Styles = styled.div`
 
             .userName {
                 color: #cecece;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
             }
         }
     }
@@ -132,6 +137,10 @@ const Header = () => {
         }
     }
 
+    const openAccountPage = () => {
+        dispatch(isManageAccountPageOpen(true));
+    }
+
     return (
         <Styles>
             <div className='headerContainer'>
@@ -148,7 +157,7 @@ const Header = () => {
                     <div className='appTitle'>Studio Designer</div>
                 </div>
                 <div className='accountActionsContainer'>
-                    <div className='userName'>Welcome {firstName}</div>
+                    <div className='userName' onClick={openAccountPage}>Welcome {firstName}</div>
                     <button className='button' onClick={logout}>Logout</button>
                 </div>
             </div>

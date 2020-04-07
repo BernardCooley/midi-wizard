@@ -168,3 +168,10 @@ export const isVerified = isVerified => {
         payload: isVerified
     };
 };
+
+export const isManageAccountPageOpen = isManageAccountPageOpen => {
+    return {
+        type: 'IS_MANAGE_ACCOUNT_PAGE_OPEN',
+        payload: isManageAccountPageOpen
+    };
+};

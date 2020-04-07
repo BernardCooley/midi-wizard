@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified, isManageAccountPageOpen } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
 import styled from 'styled-components';
+import ManageAccountPage from './pages/ManageAccount/ManageAccountPage';
 
 
 const Styles = styled.div`
@@ -37,10 +38,16 @@ function App() {
   const userId = useSelector(state => state.currentUserId);
   const stockDevices = useSelector(state => state.stockDevices);
   const isUserVerified = useSelector(state => state.isVerified);
+  const manageAccountPageOpen = useSelector(state => state.isManageAccountPageOpen);
+  const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
     getStockDevices();
   }, []);
+
+  useEffect(() => {
+    getCurrentPage();
+  }, [isAdminConsoleOpen, manageAccountPageOpen]);
 
   useEffect(() => {
     if(userId) {
@@ -71,6 +78,19 @@ function App() {
       dispatch(setCurrentUserId(''));
     }
   });
+
+  const getCurrentPage = () => {
+    if(manageAccountPageOpen) {
+      dispatch(isManageAccountPageOpen(true));
+      setCurrentPage('account');
+    }else if(isAdminConsoleOpen) {
+      dispatch(isManageAccountPageOpen(false));
+      setCurrentPage('adminConsole');
+    }else {
+      setCurrentPage('workspace');
+      dispatch(isManageAccountPageOpen(false));
+    }
+  }
 
   const getUsername = async userId => {
     return userDataRef.doc(userId).onSnapshot(response => {
@@ -141,7 +161,18 @@ function App() {
         {isLoggedIn && isUserVerified ?
           <div className='loggedInContainer'>
             <Header />
-            {isAdminConsoleOpen ? <AdminConsole /> : <StudioDesignerPage />}
+
+            {(() => {
+              switch (currentPage) {
+                case 'adminConsole':
+                  return <AdminConsole />;
+                case 'account':
+                  return <ManageAccountPage/>;
+                default:
+                  return <StudioDesignerPage />;
+              }
+            })()}
+
           </div> :
           <div className='loggedOutContainer'>
             <LandingPage />
