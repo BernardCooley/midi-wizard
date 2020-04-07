@@ -34,10 +34,15 @@ const Styles = styled.div`
             right: -45px;
             color: white;
             z-index: 10;
+            background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
 
-            &.open:hover {
-                background-color: white;
-                color: #383838;
+            &:hover {
+                -webkit-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                -moz-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                transition:0.2s;
+                -webkit-transition:0.2s;
+                -moz-transition:0.2s;
             }
         }
 

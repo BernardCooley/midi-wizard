@@ -49,10 +49,18 @@ const Styles = styled.div`
                 border-radius: 5px 5px 0 0;
                 cursor: pointer;
                 color: white;
+                transition:0.2s;
+                -webkit-transition:0.2s;
+                -moz-transition:0.2s;
+                background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
 
-                &.open:hover {
-                    background-color: white;
-                    color: #383838;
+                &:hover {
+                    -webkit-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                    -moz-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                    box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+                    transition:0.2s;
+                    -webkit-transition:0.2s;
+                    -moz-transition:0.2s;
                 }
             }
 
@@ -62,10 +70,7 @@ const Styles = styled.div`
                 width: 98%;
                 position: relative;
                 top: -35px;
-
-                .trayOpen {
-                    bottom: 165px;
-                }
+                height: 208px;
 
                 .listContainer {
                     display: flex;
@@ -75,6 +80,17 @@ const Styles = styled.div`
                     width: 100%;
                     margin: auto;
                     overflow-y: auto;
+                    justify-content: center;
+
+                    .addFirstDevice {
+                        font-size: 30px;
+                        text-align: center;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
                 }
 
                 .openAddDeviceFormButton {
@@ -92,8 +108,11 @@ const Styles = styled.div`
         }
     }
     .closed {
-                bottom: -237px;
-            }
+        bottom: -237px;
+    }
+    .hidden {
+        display: none;
+    }
 `
 
 const UserDeviceList = () => {
@@ -123,17 +142,21 @@ const UserDeviceList = () => {
 
     return (
         <Styles>
-            <div className={`deviceTrayContainer ${!deviceTrayOpen && userDevices.length > 0 ? 'closed' : ''}`}>
+            <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                 <div className='devicesListContainer'>
                     <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
                     <div className='deviceListInnerContainer'>
-                        <div className='listContainer'>
+                        <div className='listContainer' className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+                            {userDevices.length < 1 ?
+                                <div className='addFirstDevice' onClick={() => dispatch(toggleAddDeviceForm(true))}>Add first device</div>
+                                : null
+                            }
                             {userDevices.length > 0 ? userDevices.map((device, index) => (
                                 <UserDevice key={index} deviceDetails={device}/>
                             )):null}
                         </div>
-                        {!isAddDeviceFormOpen ? 
-                            <div className={`openAddDeviceFormButton ${deviceTrayOpen ? 'trayOpen': ''}`} onClick={() => dispatch(toggleAddDeviceForm(true))}>
+                        {!isAddDeviceFormOpen && userDevices.length > 0 ? 
+                            <div className={'openAddDeviceFormButton'} onClick={() => dispatch(toggleAddDeviceForm(true))}>
                                 <FontAwesomeIcon className='svg' icon="plus" />
                             </div>
                             : 

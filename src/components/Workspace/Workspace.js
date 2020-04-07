@@ -30,15 +30,20 @@ const Workspace = () => {
     useEffect(() => {
         if(userLayouts.length > 0) {
             if(userLayouts !== 'undefined' && currentLayoutId && currentLayoutId !== currentDeletedLayoutId) {
-                const removedUndefined = userLayouts.filter(layout => layout);
-                dispatch(currentLayout(removedUndefined.filter(layout => layout.layoutId === currentLayoutId)[0]));
+                try{
+                    const removedUndefined = userLayouts.filter(layout => layout);
+                    dispatch(currentLayout(removedUndefined.filter(layout => layout.layoutId === currentLayoutId)[0]));
+                }
+                catch(error) {}
             }
         }
     }, [userLayouts]);
 
     useEffect(() => {
         if(userLayouts.length > 0) {
-            dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
+            try{
+                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === currentLayoutId)[0]));
+            }catch (error) {}
         }
     }, [currentLayoutId]);
 
