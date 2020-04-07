@@ -239,9 +239,11 @@ const LayoutsTray = () => {
     const switchLayouts = e => {
         if(!editEnabled) {
             const layoutId = e.target.parentNode.getAttribute('layoutid');
-            dispatch(selectedLayoutId(layoutId));
-            dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
-            toggleLayoutsTray();
+            try {
+                dispatch(selectedLayoutId(layoutId));
+                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
+                toggleLayoutsTray();
+            }catch(error){}
         }
     }
 
