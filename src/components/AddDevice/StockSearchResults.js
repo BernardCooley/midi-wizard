@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchResults } from '../../actions';
 import SearchResultsCard from './SearchResultsCard';
@@ -26,10 +27,10 @@ const StockSearchResults = props => {
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
     }, [props.searchTerm, userDeviceIds]);
-    
+
     const getSearchResults = searchTerm => {
-        const results = stockDevices.filter(device => 
-            device.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        const results = stockDevices.filter(device =>
+            device.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
         results.forEach(device => {
@@ -42,11 +43,15 @@ const StockSearchResults = props => {
         <Styles>
             <div className='stockSearchResultsContainer'>
                 {searchResults.length > 0 ? searchResults.map((device, index) => (
-                    <SearchResultsCard key={index} device={device}/>
-                )): null}
+                    <SearchResultsCard key={index} device={device} />
+                )) : null}
             </div>
         </Styles>
     )
+}
+
+StockSearchResults.propTypes = {
+    searchTerm: PropTypes.string
 }
 
 export default StockSearchResults;

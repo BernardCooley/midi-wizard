@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Styles = styled.div`
     .deviceCardContainer {
@@ -43,7 +44,7 @@ const Styles = styled.div`
     }
 `
 
-const SearchResultsCard = props => {
+const SearchResultsCard = (props) => {
 
     const device = props.device;
     const db = firebase.firestore();
@@ -69,7 +70,7 @@ const SearchResultsCard = props => {
     const addToUserDevices = async e => {
         const deviceId = e.target.getAttribute('deviceid');
 
-        if(!doesUserAlreadyHaveDevice(deviceId)) {
+        if (!doesUserAlreadyHaveDevice(deviceId)) {
             await userDataRef.doc(userId).update({
                 devices: [...userDeviceIds, deviceId]
             });
@@ -90,6 +91,10 @@ const SearchResultsCard = props => {
             </div>
         </Styles>
     )
+}
+
+SearchResultsCard.propTypes = {
+    device: PropTypes.array
 }
 
 export default SearchResultsCard;

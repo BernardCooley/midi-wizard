@@ -59,7 +59,7 @@ const ChangeImage = () => {
     const imageStorageRef = firebase.storage().ref();
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const { handleSubmit, register, errors } = useForm();
+    const { handleSubmit, register } = useForm();
     const idBeingEdited = useSelector(state => state.deviceIdBeingEdited);
     const stockDevices = useSelector(state => state.stockDevices);
 
@@ -78,7 +78,7 @@ const ChangeImage = () => {
         const formData = data;
         const imageName = formData.imageFile[0].name;
 
-        if(!doesImageExist(imageName)) {
+        if (!doesImageExist(imageName)) {
             dispatch(toggleEditingImage(false));
             dispatch(gettingData(true));
             const existingImageName = stockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
@@ -89,11 +89,11 @@ const ChangeImage = () => {
                         updateDeviceDetails(imageName, downloadURL).then(() => {
                             notify('Image uploaded');
                             dispatch(gettingData(false));
-                        }); 
+                        });
                     });
                 });
             });
-        }else {
+        } else {
             alert('Image already uploaded. Please choose another');
         }
     }
@@ -138,9 +138,9 @@ const ChangeImage = () => {
                 <button className='closeButton' onClick={closeForm}>X</button>
                 <form onSubmit={handleSubmit(updateImage)} className='manualAddDeviceForm' autoComplete="off">
                     <input onChange={handleSubmit(onChangeHandler)} id='imageUploadInput' className='imageUploadInput' name="imageFile" ref={register({
-                            validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
-                        })} type="file" />
-                    <img className='previewImage' src={filePath ? filePath : ''}/>
+                        validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
+                    })} type="file" />
+                    <img className='previewImage' src={filePath ? filePath : ''} />
                     {imageFieldPopulated ?
                         <button type='submit' className='submitButton'>Update image</button>
                         : null

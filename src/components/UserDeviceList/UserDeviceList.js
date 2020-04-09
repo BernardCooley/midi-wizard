@@ -146,20 +146,20 @@ const UserDeviceList = () => {
                 <div className='devicesListContainer'>
                     <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
                     <div className='deviceListInnerContainer'>
-                        <div className='listContainer' className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+                        <div className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                             {userDevices.length < 1 ?
                                 <div className='addFirstDevice' onClick={() => dispatch(toggleAddDeviceForm(true))}>Add first device</div>
                                 : null
                             }
                             {userDevices.length > 0 ? userDevices.map((device, index) => (
-                                <UserDevice key={index} deviceDetails={device}/>
-                            )):null}
+                                <UserDevice key={index} deviceDetails={device} />
+                            )) : null}
                         </div>
-                        {!isAddDeviceFormOpen && userDevices.length > 0 ? 
+                        {!isAddDeviceFormOpen && userDevices.length > 0 ?
                             <div className={'openAddDeviceFormButton'} onClick={() => dispatch(toggleAddDeviceForm(true))}>
                                 <FontAwesomeIcon className='svg' icon="plus" />
                             </div>
-                            : 
+                            :
                             null
                         }
                     </div>

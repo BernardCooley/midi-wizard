@@ -177,8 +177,8 @@ const LayoutsTray = () => {
     const [layoutName, setLayoutName] = useState('');
 
     useEffect(() => {
-        if(userLayouts.length > 0) {
-            if(firstLoad) {
+        if (userLayouts.length > 0) {
+            if (firstLoad) {
                 dispatch(currentLayout(userLayouts[0]))
                 dispatch(selectedLayoutId(userLayouts[0].layoutId));
                 setFirstLoad(false);
@@ -190,12 +190,12 @@ const LayoutsTray = () => {
     const deleteFromLayout = async e => {
         const clickedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
 
-        if(clickedLayoutId !== currentLayoutId) {
+        if (clickedLayoutId !== currentLayoutId) {
             const confirmDelete = window.confirm("Delete layout?");
 
-            if(confirmDelete) {
+            if (confirmDelete) {
                 dispatch(deletedLayoutId(e.target.parentNode.parentNode.getAttribute('layoutid')));
-                
+
                 const updatedUserLayoutIds = userLayoutIds.filter(layoutId => layoutId !== clickedLayoutId);
 
                 await userDataRef.doc(currentUserId).update({
@@ -205,18 +205,18 @@ const LayoutsTray = () => {
                     userLayoutDataRef.doc(clickedLayoutId).delete();
                 });
             }
-        }else {
+        } else {
             alert('Currently selected layout cannot be deleted.');
         }
     }
 
     const renameLayout = e => {
-        if(!editEnabled) {
+        if (!editEnabled) {
             setEditEnabled(true);
             const editedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
             setLayoutIdBeingEdited(editedLayoutId);
             setLayoutName(userLayouts.filter(layout => layout.layoutId === editedLayoutId)[0].layoutName);
-        }else {
+        } else {
             updateLayoutName(layoutName);
             setEditEnabled(false);
         }
@@ -237,13 +237,15 @@ const LayoutsTray = () => {
     }
 
     const switchLayouts = e => {
-        if(!editEnabled) {
+        if (!editEnabled) {
             const layoutId = e.target.parentNode.getAttribute('layoutid');
             try {
                 dispatch(selectedLayoutId(layoutId));
                 dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
                 toggleLayoutsTray();
-            }catch(error){}
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 
@@ -282,27 +284,27 @@ const LayoutsTray = () => {
     return (
         <Styles>
             <div className={`layoutsTrayOuterContainer ${!layoutsTrayOpen ? 'hidden' : ''}`}>
-                <button onClick={toggleLayoutsTray} className={`layoutsTabOpenClose ${!layoutsTrayOpen ? 'open' : ''}`} onClick={toggleLayoutsTray}>Layouts</button>
+                <button onClick={toggleLayoutsTray} className={`layoutsTabOpenClose ${!layoutsTrayOpen ? 'open' : ''}`}>Layouts</button>
                 <div className='layoutsTrayContainer'>
                     <div className='layoutsListContainer'>
                         {userLayouts.map((layout, index) => (
-                            layout ? 
-                            <div layoutid={layout.layoutId} key={index} className={`layoutContainer ${currentLayoutId === layout.layoutId ? 'layoutSelected' : ''}`}>
-                                <div onClick={switchLayouts} className='layoutNameContainer'>
-                                    <input onChange={updateLayoutNameField} type='text' value={editEnabled && layoutIdBeingEdited === layout.layoutId ? layoutName : layout.layoutName} className={`layoutName ${editEnabled ? 'editEnabled' : ''}`}/>
-                                </div>
-                                <div className='layoutActions'>
-                                    <div onClick={renameLayout} className='layoutDeviceActionContainer'>
-                                        {editEnabled && layoutIdBeingEdited === layout.layoutId ?
-                                            <FontAwesomeIcon className='svg editIcon' icon="check" />:
-                                            <FontAwesomeIcon className='svg editIcon' icon="edit" />
-                                        }
+                            layout ?
+                                <div layoutid={layout.layoutId} key={index} className={`layoutContainer ${currentLayoutId === layout.layoutId ? 'layoutSelected' : ''}`}>
+                                    <div onClick={switchLayouts} className='layoutNameContainer'>
+                                        <input onChange={updateLayoutNameField} type='text' value={editEnabled && layoutIdBeingEdited === layout.layoutId ? layoutName : layout.layoutName} className={`layoutName ${editEnabled ? 'editEnabled' : ''}`} />
                                     </div>
-                                    <div onClick={deleteFromLayout} className='layoutDeviceActionContainer'>
-                                        <FontAwesomeIcon className='svg deleteIcon' icon="trash-alt" />
+                                    <div className='layoutActions'>
+                                        <div onClick={renameLayout} className='layoutDeviceActionContainer'>
+                                            {editEnabled && layoutIdBeingEdited === layout.layoutId ?
+                                                <FontAwesomeIcon className='svg editIcon' icon="check" /> :
+                                                <FontAwesomeIcon className='svg editIcon' icon="edit" />
+                                            }
+                                        </div>
+                                        <div onClick={deleteFromLayout} className='layoutDeviceActionContainer'>
+                                            <FontAwesomeIcon className='svg deleteIcon' icon="trash-alt" />
+                                        </div>
                                     </div>
-                                </div>
-                            </div>: null
+                                </div> : null
                         ))}
                     </div>
                     <div className='newLayoutButtonsContainer'>

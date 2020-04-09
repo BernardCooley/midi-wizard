@@ -12,16 +12,10 @@ const Styles = styled.div`
 
 const AdminConsole = () => {
 
-    const styles = {
-        adminConsoleContainer: {
-            paddingTop: '50px'
-        }
-    }
-
     return (
         <Styles>
             <div className='adminConsoleContainer'>
-                <AdminConsoleDevices/>
+                <AdminConsoleDevices />
             </div>
         </Styles>
     )

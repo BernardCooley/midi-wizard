@@ -94,7 +94,7 @@ const UserDevice = (deviceDetails) => {
 
         const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
 
-        if(!isDeviceAlreadyInLayout(currentLayout, newLayoutDevice)) {
+        if (!isDeviceAlreadyInLayout(currentLayout, newLayoutDevice)) {
             const updatedLayoutDevices = [...currentLayout.devices, newLayoutDevice];
 
             await userLayoutDataRef.doc(currentLayout.layoutId).set({
@@ -107,7 +107,7 @@ const UserDevice = (deviceDetails) => {
 
     const dragDevice = e => {
         setClickedDeviceId(e.target.getAttribute('deviceid'));
-        
+
     }
 
     const dropDevice = e => {
@@ -122,16 +122,16 @@ const UserDevice = (deviceDetails) => {
             'audio': setAudioForNewLayoutDevice(stockDevice),
             'deviceName': stockDevice.deviceName,
             'layoutId': layoutId,
-            'svg': {'x' : position[0], 'y': position[1]}
+            'svg': { 'x': position[0], 'y': position[1] }
         }
     }
 
     const setMidiForNewLayoutDevice = device => {
         let midi = {};
 
-        if(device.midi.in) {midi['in'] = ''};
-        if(device.midi.out) {midi['out'] = ''};
-        if(device.midi.thru) {midi['thru'] = ''};
+        if (device.midi.in) { midi['in'] = '' }
+        if (device.midi.out) { midi['out'] = '' }
+        if (device.midi.thru) { midi['thru'] = '' }
 
         return midi;
     }
@@ -140,8 +140,8 @@ const UserDevice = (deviceDetails) => {
         const ins = {};
         const outs = {};
 
-        for(let i  = 0; i < device.audio.ins; i++) {ins[i+1] = ''}
-        for(let i  = 0; i < device.audio.outs; i++) {outs[i+1] = ''}
+        for (let i = 0; i < device.audio.ins; i++) { ins[i + 1] = '' }
+        for (let i = 0; i < device.audio.outs; i++) { outs[i + 1] = '' }
 
         return {
             'ins': ins,
@@ -156,7 +156,7 @@ const UserDevice = (deviceDetails) => {
     const deleteDevice = e => {
         const clickedDeviceId = e.target.getAttribute('deviceid');
 
-        if(doesDeviceExistInLayouts(clickedDeviceId)) {
+        if (doesDeviceExistInLayouts(clickedDeviceId)) {
             let deviceInLayoutsMessage = 'This device exists in the following layouts:'
 
             getLayoutsThatContainDevice(clickedDeviceId).forEach(layoutName => {
@@ -165,11 +165,11 @@ const UserDevice = (deviceDetails) => {
 
             deviceInLayoutsMessage = `${deviceInLayoutsMessage}\n\nDelete anyway?`
 
-            if(window.confirm(deviceInLayoutsMessage)) {
+            if (window.confirm(deviceInLayoutsMessage)) {
                 deleteFromDB(clickedDeviceId);
             }
-        }else {
-            if(window.confirm("Delete from device tray?")) {
+        } else {
+            if (window.confirm("Delete from device tray?")) {
                 deleteFromDB(clickedDeviceId);
             }
         }
@@ -191,7 +191,7 @@ const UserDevice = (deviceDetails) => {
         userLayouts.map(layout => {
             const dev = layout.devices.filter(device => device.deviceId === deviceIdToDelete)[0];
 
-            if(dev) {
+            if (dev) {
                 filteredDevices.push(dev);
             }
         });
@@ -212,7 +212,7 @@ const UserDevice = (deviceDetails) => {
     const doesDeviceExistInLayouts = dev => {
         let doesExist = false;
         userLayouts.forEach(layout => {
-            if(layout.devices.filter(device => device.deviceId === dev).length > 0) {
+            if (layout.devices.filter(device => device.deviceId === dev).length > 0) {
                 doesExist = true;
             }
         })
@@ -221,7 +221,7 @@ const UserDevice = (deviceDetails) => {
 
     const isDeviceInCurrentLayout = () => {
         let inCurrentLayout = false;
-        if(layout.devices && layout.devices.length > 0 && device) {
+        if (layout.devices && layout.devices.length > 0 && device) {
             const layoutDeviceIds = layout.devices.map(device => device.deviceId);
             inCurrentLayout = layoutDeviceIds.includes(device.deviceId)
         }
@@ -233,7 +233,7 @@ const UserDevice = (deviceDetails) => {
 
         userLayouts.forEach(layout => {
             layout.devices.forEach(device => {
-                if(device.deviceId === dev.deviceId) {
+                if (device.deviceId === dev.deviceId) {
                     matchedLayouts.push(layout.layoutName);
                 }
             })

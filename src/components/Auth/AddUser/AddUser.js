@@ -41,12 +41,14 @@ const AddUser = () => {
                     createUserInDatabase(signUpResp.user.uid, username, newLayoutDocId).then(createUserInDatabaseResp => {
                         console.log(email, password);
                         rollBackData.push(createUserInDatabaseResp);
-                        signUpResp.user.sendEmailVerification().then(function() {
+                        signUpResp.user.sendEmailVerification().then(function () {
                             setEmailSentMessage('Verification email sent. Please check your inbox.');
                             setTimeout(() => {
                                 window.location.reload();
                             }, 3000);
-                        }).catch(function(error) {});
+                        }).catch(error => {
+                            console.error(error);
+                        });
                     }).catch(error => {
                         console.error(error);
                         rollBack(rollBackData);
@@ -67,7 +69,7 @@ const AddUser = () => {
 
     const rollBack = rollBackData => {
         rollBackData.forEach((data, index) => {
-            switch(index) {
+            switch (index) {
                 case 0:
                     data.user.delete();
                     break;
@@ -76,7 +78,7 @@ const AddUser = () => {
                     break;
                 case 2:
                     userDeviceDataRef.doc(userId).delete();
-            };
+            }
         });
     }
 
@@ -89,8 +91,7 @@ const AddUser = () => {
             devices: [],
             username: username,
             admin: false,
-            layouts: [layoutId],
-            admin: false
+            layouts: [layoutId]
         }
         return await userDeviceDataRef.doc(userId).set(newUser);
     }
@@ -108,7 +109,7 @@ const AddUser = () => {
         return await userLayoutDataRef.doc();
     }
 
-    return(
+    return (
         <Styles>
             <div className="addUserContainer">
                 <form className='addUserForm' onSubmit={addUser}>

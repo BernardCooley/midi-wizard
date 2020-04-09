@@ -1,13 +1,14 @@
 // TODO filter by verified and unverified
 // Allow admin to change photo
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTable, usePagination } from 'react-table';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import { ToastContainer, toast } from 'react-toastify';
-import { toggleVarifiedDevices, toggleEditingImage, deviceIdBeingEdited } from '../../actions';
+import { toggleEditingImage, deviceIdBeingEdited } from '../../actions';
 import ChangeImage from './ChangeImage';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
@@ -96,14 +97,14 @@ const Styles = styled.div`
     padding: 0.5rem;
   }
 `
-const EditableCell = ({value: initialValue, row: { index }, column: { id }, updateMyData, }) => {
+const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, }) => {
     const [value, setValue] = useState(initialValue);
     const dispatch = useDispatch();
 
     const onChange = e => {
-        if(e.target.getAttribute('fieldtype') === 'checkbox') {
+        if (e.target.getAttribute('fieldtype') === 'checkbox') {
             setValue(e.target.checked);
-        }else {
+        } else {
             setValue(e.target.value)
         }
     }
@@ -131,11 +132,11 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
     const enlargeImage = e => {
         const image = e.target;
 
-        if(image.classList.contains('enlargedImage')) {
+        if (image.classList.contains('enlargedImage')) {
             image.classList.remove('enlargedImage');
             image.classList.remove('centerElement');
             document.querySelector('table').classList.remove('disableClicking');
-        }else {
+        } else {
             document.querySelector('table').classList.add('disableClicking');
             image.classList.add('enableClicking');
             image.classList.add('enlargedImage');
@@ -143,17 +144,17 @@ const EditableCell = ({value: initialValue, row: { index }, column: { id }, upda
         }
     }
 
-    if(value === 'true' || value === 'false' || value === true || value === false) {
-        return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' || value === true ? true : false} style={{width: "100px"}} onChange={onChange} onBlur={onBlur}/>
-    }else if(value.toString().includes('firebasestorage.googleapis.com')) {
-        return  <div>
-                    <img className='deviceImage' onClick={enlargeImage} src={value} style={{width: '100%', outline: '1px solid gray'}}></img>
-                    <button onClick={openImageUploadForm}>Change</button>
-                </div>
-    }else if(deviceIds.includes(value)) {
-        return <div style={{width: "100px", wordWrap: "break-word"}}>{value}</div>
-    }else {
-        return <input style={{width: "100px"}} value={value} onChange={onChange} onBlur={onBlur} />
+    if (value === 'true' || value === 'false' || value === true || value === false) {
+        return <input type='checkbox' fieldtype='checkbox' checked={value === 'true' || value === true ? true : false} style={{ width: "100px" }} onChange={onChange} onBlur={onBlur} />
+    } else if (value.toString().includes('firebasestorage.googleapis.com')) {
+        return <div>
+            <img className='deviceImage' onClick={enlargeImage} src={value} style={{ width: '100%', outline: '1px solid gray' }}></img>
+            <button onClick={openImageUploadForm}>Change</button>
+        </div>
+    } else if (deviceIds.includes(value)) {
+        return <div style={{ width: "100px", wordWrap: "break-word" }}>{value}</div>
+    } else {
+        return <input style={{ width: "100px" }} value={value} onChange={onChange} onBlur={onBlur} />
     }
 }
 
@@ -192,21 +193,21 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
         <>
             <table {...getTableProps()}>
                 <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
-                                <th style={{width: "30px"}} {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    {headerGroups.map((headerGroup, index) => (
+                        <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column, index) => (
+                                <th key={index} style={{ width: "30px" }} {...column.getHeaderProps()}>{column.render('Header')}</th>
                             ))}
                         </tr>
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row, i) => {
+                    {page.map((row, index) => {
                         prepareRow(row)
                         return (
-                            <tr {...row.getRowProps()} deviceid={data[i].deviceId}>
-                                {row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                            <tr key={index} {...row.getRowProps()} deviceid={data[index].deviceId}>
+                                {row.cells.map((cell, index) => {
+                                    return <td key={index} {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
@@ -250,6 +251,13 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
             </div>
         </>
     )
+}
+
+Table.propTypes = {
+    columns: PropTypes.array,
+    data: PropTypes.array,
+    updateMyData: PropTypes.array,
+    skipPageReset: PropTypes.array
 }
 
 const AdminConsoleTable = () => {
@@ -334,9 +342,9 @@ const AdminConsoleTable = () => {
     }, [stockDevices]);
 
     useEffect(() => {
-        if(showingAll) {
+        if (showingAll) {
             setData(stockDevices);
-        }else {
+        } else {
             setData(data.filter(d => d.verified === false));
         }
     }, [showingAll]);
@@ -347,13 +355,13 @@ const AdminConsoleTable = () => {
 
     const updatedData = () => {
         const updatedDevices = stockDevices.map((device, index) => {
-            if(device !== data[index]) {
+            if (device !== data[index]) {
                 return data[index];
             }
         });
 
         updatedDevices.forEach(async device => {
-            if(device) {
+            if (device) {
                 await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
                 notify('Devices saved');
             }
@@ -367,7 +375,7 @@ const AdminConsoleTable = () => {
     const formatData = device => {
         const formattedDevice = {}
         Object.keys(device).map(key => {
-            switch(key) {
+            switch (key) {
                 case 'midi.in':
                     device.midi.in = device[key]
                     delete device["midi.in"]
@@ -391,7 +399,7 @@ const AdminConsoleTable = () => {
                 default:
                     break;
             }
-            if(device[key] !== undefined) {
+            if (device[key] !== undefined) {
                 formattedDevice[key] = device[key];
             }
         })
@@ -402,7 +410,7 @@ const AdminConsoleTable = () => {
         getStockLayouts().then(stockLayoutIds => {
             getUserLayouts().then(userLayoutIds => {
                 const missingLayouts = stockLayoutIds.map(id => {
-                    if(!userLayoutIds.includes(id)) {
+                    if (!userLayoutIds.includes(id)) {
                         return id;
                     }
                 }).filter(layoutId => layoutId);
@@ -427,25 +435,25 @@ const AdminConsoleTable = () => {
             userLayoutIds = [...userLayoutIds, ...doc.data().layouts];
         });
         return userLayoutIds;
-      }
+    }
 
     return (
         <Styles>
-            {isGettingData ? 
-                <Loader className='centerElement spinner' type="Puff" color="#00BFFF" height={100} width={100} timeout={3000}/>: null
+            {isGettingData ?
+                <Loader className='centerElement spinner' type="Puff" color="#00BFFF" height={100} width={100} timeout={3000} /> : null
             }
             <ToastContainer />
             <div className='tableButtonsContainer'>
                 <button onClick={updatedData} className='tableButtons'>Save devices</button>
                 <button onClick={showAllDevices} className='tableButtons'>
-                    {!showingAll ? 
+                    {!showingAll ?
                         'Show all' : 'Show unverified'
                     }
                 </button>
             </div>
-            <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset}/>
-            {isImageBeingEdited ? 
-                <ChangeImage/>: null
+            <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset} />
+            {isImageBeingEdited ?
+                <ChangeImage /> : null
             }
             <button onClick={cleanLayouts}>Clean layouts</button>
         </Styles>
