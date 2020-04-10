@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import DeleteAccount from '../../components/Auth/DeleteAccount/DeleteAccount';
-import ChangePassword from '../../components/Auth/ChangePassword/ChangePassword';
+import AccountField from '../../components/Auth/AccountField/AccountField';
 
 
 const Styles = styled.div`
@@ -30,13 +30,18 @@ const Styles = styled.div`
 
 const ManageAccountPage = () => {
 
+    const passwordErrorMessages = ['Password must be 6 character or longer'];
+    const emailErrorMessages = ['Email must not be blank', 'Invalid email address'];
+
+
 
     return (
         <Styles>
             <div className='manageAccountContainer'>
                 <div className='manageAccountInnerContainer'>
                     <DeleteAccount/>
-                    <ChangePassword/>
+                    <AccountField fieldname='password' fieldid='updatePasswordInput' fieldtitle='Update Password' placeholder='New password'/>
+                    <AccountField fieldname='email' fieldid='updateEmailInput' fieldtitle='Update Email Address' placeholder='New email address'/>
                 </div>
             </div>
         </Styles>
