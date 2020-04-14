@@ -50,20 +50,20 @@ function App() {
   }, [isAdminConsoleOpen, manageAccountPageOpen]);
 
   useEffect(() => {
-    if(userId) {
+    if (userId) {
       getLayoutIds(userId);
     }
   }, [userId]);
 
   useEffect(() => {
-    if(userLayoutIds) {
+    if (userLayoutIds) {
       triggerGetLayouts();
     }
   }, [userLayoutIds]);
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
-      if(user.emailVerified) {
+      if (user.emailVerified) {
         dispatch(isVerified(true));
       }
       dispatch(setIsLoggedIn(true));
@@ -80,13 +80,13 @@ function App() {
   });
 
   const getCurrentPage = () => {
-    if(manageAccountPageOpen) {
+    if (manageAccountPageOpen) {
       dispatch(isManageAccountPageOpen(true));
       setCurrentPage('account');
-    }else if(isAdminConsoleOpen) {
+    } else if (isAdminConsoleOpen) {
       dispatch(isManageAccountPageOpen(false));
       setCurrentPage('adminConsole');
-    }else {
+    } else {
       setCurrentPage('workspace');
       dispatch(isManageAccountPageOpen(false));
     }
@@ -94,7 +94,7 @@ function App() {
 
   const getUsername = async userId => {
     return userDataRef.doc(userId).onSnapshot(response => {
-      if(response.data()) {
+      if (response.data()) {
         dispatch(setCurrentUsername(response.data().username));
       }
     });
@@ -105,7 +105,7 @@ function App() {
       if (response.data() && response.data().devices) {
         const userDeviceIds = response.data().devices;
 
-        if(stockDevices.length > 0) {
+        if (stockDevices.length > 0) {
           const userDevices = stockDevices.filter(device => userDeviceIds.includes(device.deviceId));
           dispatch(setUserDevices(userDevices));
         }
@@ -123,7 +123,7 @@ function App() {
 
   const getLayoutIds = async uid => {
     userDataRef.doc(uid).onSnapshot(response => {
-      if(response.data()) {
+      if (response.data()) {
         dispatch(layoutIds(response.data().layouts));
       }
     });
@@ -141,18 +141,18 @@ function App() {
 
   const triggerGetLayouts = async () => {
     for (const id of userLayoutIds) {
-      userLayoutDataRef.doc(id).onSnapshot(response => {
+      userLayoutDataRef.doc(id).onSnapshot(() => {
         getLayouts();
       });
     }
   }
 
   const getIsAdmin = async userId => {
-      const response = await userDataRef.doc(userId).get();
-      if(response.data()) {
-        dispatch(isAdmin(response.data().admin));
-      }
-      return response;
+    const response = await userDataRef.doc(userId).get();
+    if (response.data()) {
+      dispatch(isAdmin(response.data().admin));
+    }
+    return response;
   }
 
   return (
@@ -167,7 +167,7 @@ function App() {
                 case 'adminConsole':
                   return <AdminConsole />;
                 case 'account':
-                  return <ManageAccountPage/>;
+                  return <ManageAccountPage />;
                 default:
                   return <StudioDesignerPage />;
               }

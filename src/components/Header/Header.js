@@ -126,13 +126,14 @@ const Header = () => {
     }
 
     const getFirstName = () => {
-        return currentUsername.replace(/ .*/,'');
+        return currentUsername.replace(/ .*/, '');
     }
 
     const openCloseAdminConsole = () => {
-        if(!isAdminConsoleOpen) {
+        if (!isAdminConsoleOpen) {
+            dispatch(isManageAccountPageOpen(false));
             dispatch(toggleAdminConsole(true));
-        }else {
+        } else {
             dispatch(toggleAdminConsole(false));
         }
     }
@@ -145,7 +146,7 @@ const Header = () => {
         <Styles>
             <div className='headerContainer'>
                 <div className='buttonContainer'>
-                    {isAdmin ? 
+                    {isAdmin ?
                         <>
                             <button className={`button ${isAdminConsoleOpen ? 'buttonHighlighed' : ''}`} onClick={openCloseAdminConsole}>Admin console</button>
                             <div onClick={openCloseAdminConsole} className='unverifiedNumber'>{numberOfUnverifiedDevices}</div>
