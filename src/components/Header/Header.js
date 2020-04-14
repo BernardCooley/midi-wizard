@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAdminConsole, resetState, isManageAccountPageOpen } from '../../actions';
+import { toggleAdminConsole, isManageAccountPageOpen } from '../../actions';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 const Styles = styled.div`
     .headerContainer {
@@ -50,6 +52,7 @@ const Styles = styled.div`
             font-size: 16px;
             background-color: #383838;
             color: white;
+            border: none;
 
             &:hover {
                 background-color: white;
@@ -85,13 +88,19 @@ const Styles = styled.div`
             justify-content: flex-end;
             align-items: center;
 
-            .userName {
-                color: #cecece;
+            .openAccountIcon {
+                color: white;
+                font-size: 30px;
+                margin: 0 10px;
                 cursor: pointer;
 
                 &:hover {
-                    text-decoration: underline;
+                    font-size: 35px;
                 }
+            }
+
+            .userName {
+                color: #cecece;
             }
         }
     }
@@ -100,6 +109,7 @@ const Styles = styled.div`
 const Header = () => {
 
     const dispatch = useDispatch();
+    library.add(faUserCircle);
     const isAdmin = useSelector(state => state.isAdmin);
     const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
     const currentUsername = useSelector(state => state.currentUsername);
@@ -117,12 +127,6 @@ const Header = () => {
 
     const getUnverifiedDevices = () => {
         return stockDevices.filter(device => device.verified === false).length;
-    }
-
-    const logout = () => {
-        firebase.auth().signOut().then(() => {
-            dispatch(resetState());
-        })
     }
 
     const getFirstName = () => {
@@ -158,8 +162,8 @@ const Header = () => {
                     <div className='appTitle'>Studio Designer</div>
                 </div>
                 <div className='accountActionsContainer'>
-                    <div className='userName' onClick={openAccountPage}>Welcome {firstName}</div>
-                    <button className='button' onClick={logout}>Logout</button>
+                    <div className='userName'>Welcome {firstName}</div>
+                    <FontAwesomeIcon onClick={openAccountPage} className='svg openAccountIcon' icon="user-circle" />
                 </div>
             </div>
         </Styles>

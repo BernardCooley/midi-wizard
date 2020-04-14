@@ -5,10 +5,24 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { resetState } from '../../actions';
+import { useDispatch } from 'react-redux';
 
 
 const Styles = styled.div`
     width: 100%;
+
+    .logoutButton {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: white;
+            color: black;
+        }
+    }
 
     button {
         width: 200px;
@@ -97,6 +111,7 @@ const Styles = styled.div`
 
 const AccountDetails = () => {
 
+    const dispatch = useDispatch();
     const user = firebase.auth().currentUser;
     const [fieldToEdit, setFieldToEdit] = useState('');
     const { handleSubmit, register } = useForm();
@@ -135,6 +150,12 @@ const AccountDetails = () => {
         setFieldValue(e.target.value);
     }
 
+    const logout = () => {
+        firebase.auth().signOut().then(() => {
+            dispatch(resetState());
+        })
+    }
+
     return (
         <Styles>
             <form onSubmit={handleSubmit(updateAccountDetails)} className="accountDetailsForm" autoComplete="off" noValidate>
@@ -157,6 +178,7 @@ const AccountDetails = () => {
 
                 <button type="submit" disabled={fieldValue.length < 6}>Save</button>
             </form>
+            <button className='logoutButton' onClick={logout}>Logout</button>
         </Styles>
     )
 }
