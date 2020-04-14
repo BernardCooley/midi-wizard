@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import DeleteAccount from '../../components/Auth/DeleteAccount/DeleteAccount';
-import AccountField from '../../components/Auth/AccountField/AccountField';
+import AccountDetails from '../../components/AccountDetails/AccountDetails';
 
 
 const Styles = styled.div`
@@ -24,24 +23,17 @@ const Styles = styled.div`
             margin: auto;
             justify-content: space-evenly;
             align-items: center;
+            justify-content: flex-start;
         }
     }
 `;
 
 const ManageAccountPage = () => {
-
-    const passwordErrorMessages = ['Password must be 6 character or longer'];
-    const emailErrorMessages = ['Email must not be blank', 'Invalid email address'];
-
-
-
     return (
         <Styles>
             <div className='manageAccountContainer'>
                 <div className='manageAccountInnerContainer'>
-                    <DeleteAccount/>
-                    <AccountField fieldname='password' fieldid='updatePasswordInput' fieldtitle='Update Password' placeholder='New password'/>
-                    <AccountField fieldname='email' fieldid='updateEmailInput' fieldtitle='Update Email Address' placeholder='New email address'/>
+                    <AccountDetails />
                 </div>
             </div>
         </Styles>
