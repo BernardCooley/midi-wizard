@@ -16,6 +16,8 @@ const Styles = styled.div`
         width: 100%;
         opacity: 0.7;
         position: absolute;
+        filter: blur(4px);
+        -webkit-filter: blur(4px);
     }
 
     .landingPageContainer {
