@@ -53,10 +53,10 @@ export const isDeviceTrayOpen = () => {
     };
 };
 
-export const toggleLoginRegister = show => {
+export const currentAuthComponent = componentName => {
     return {
-        type: 'TOGGLE_LOGIN_REGISTER',
-        payload: show
+        type: 'CURRENT_AUTH_COMPONENT',
+        payload: componentName
     };
 };
 

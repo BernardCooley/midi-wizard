@@ -1,36 +1,28 @@
 import React from 'react';
 import firebase from '../../../firebase';
 import styled from 'styled-components';
-import { isVerified, currentAuthComponent } from '../../../actions';
+import { currentAuthComponent } from '../../../actions';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 
 const Styles = styled.div`
-    .loginOptionsContainer {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        align-items: center;
-        margin: auto;
-        flex-wrap: wrap;
 
-        .optionContainer {
-            margin-top: 50px;
+    .optionContainer {
+        margin-top: 50px;
 
-            .optionLink {
-                text-decoration: underline;
-                cursor: pointer;
-                font-weight: bold;
+        .optionLink {
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
 
-                &:hover {
-                    color: green;
-                }
+            &:hover {
+                color: green;
             }
         }
     }
 
-    .loginForm {
+    .passwordResetForm {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -59,7 +51,7 @@ const Styles = styled.div`
         }
 
         .submitButton {
-            width: 150px;
+            width: 200px;
             height: 50px;
             font-size: 20px;
             cursor: pointer;
@@ -77,28 +69,27 @@ const Styles = styled.div`
     }
 `
 
-const Login = () => {
-    const dispatch = useDispatch();
+const PasswordReset = () => {
+
     const { register, handleSubmit, errors } = useForm();
+    const dispatch = useDispatch();
 
-    const login = async data => {
-        firebase.auth().signInWithEmailAndPassword(data.email, data.password).then(signInResponse => {
-            dispatch(isVerified(signInResponse.user.emailVerified));
-        })
+    const sendPasswordResetEmail = data => {
+        firebase.auth().sendPasswordResetEmail(data.email).then(function () {
+            alert('Password reset email sent');
+            window.location.reload();
+        }).catch(error => {
+            console.error(error);
+        });
     }
 
-    const showRegisterForm = () => {
-        dispatch(currentAuthComponent('register'));
-    }
-
-    const showPasswordReset = () => {
-        dispatch(currentAuthComponent('passwordReset'));
+    const showLoginForm = () => {
+        dispatch(currentAuthComponent('login'));
     }
 
     return (
         <Styles>
-            <form onSubmit={handleSubmit(login)} className="loginForm" noValidate>
-
+            <form onSubmit={handleSubmit(sendPasswordResetEmail)} className="passwordResetForm" noValidate>
                 <div className='fieldContainer'>
                     <input className='inputField' type="email" placeholder="Email" name="email" ref={register({
                         required: 'Email address is required',
@@ -110,23 +101,14 @@ const Login = () => {
                     <div className='validationContainer'>{errors.email && errors.email.message}</div>
                 </div>
 
-                <div className='fieldContainer'>
-                    <input className='inputField' type="password" placeholder="Password" name="password" ref={register({
-                        required: 'Password is required'
-                    })}></input>
-                    <div className='validationContainer'>{errors.password && errors.password.message}</div>
-                </div>
-
-                <button className='submitButton' type="submit">Log in</button>
+                <button className='submitButton' type="submit">Reset password</button>
             </form>
 
             <div className='loginOptionsContainer'>
-                // eslint-disable-next-line react/no-unescaped-entities
-                <div className='optionContainer'>Don't have an account? <span className='optionLink' onClick={showRegisterForm}>Register</span></div>
-                <div className='optionContainer'>Forget password? <span className='optionLink' onClick={showPasswordReset}>Reset password</span></div>
+                <div className='optionContainer'><span className='optionLink' onClick={showLoginForm}>Back to login</span></div>
             </div>
         </Styles>
     )
 }
 
-export default Login;
+export default PasswordReset;

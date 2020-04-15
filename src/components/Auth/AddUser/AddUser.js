@@ -1,35 +1,95 @@
 import React, { useState } from 'react';
 import firebase from '../../../firebase';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { currentAuthComponent } from '../../../actions';
 
 
 const Styles = styled.div`
-    .addUserForm {
+    .registerOptionsContainer {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        margin: auto;
+        flex-wrap: wrap;
+
+        .optionContainer {
+            margin-top: 50px;
+
+            .optionLink {
+                text-decoration: underline;
+                cursor: pointer;
+                font-weight: bold;
+
+                &:hover {
+                    color: green;
+                }
+            }
+        }
+    }
+
+    .registerForm {
         display: flex;
         flex-direction: column;
-        width: 300px;
-        margin: auto;
-        padding: 50px;
+        justify-content: center;
+        align-items: center;
+
+        .fieldContainer {
+            width: 100%;
+            margin-bottom: 30px;
+            height: 70px;
+
+            .validationContainer {
+                color: red;
+                min-height: 20px;
+            } 
+
+            .inputField {
+                width: 100%;
+                font-size: 30px;
+                height: 50px;
+                text-align: center;
+                border-radius: 5px;
+                background: transparent;
+                border: 1px solid lightgray;
+                outline: none;
+            }
+        }
+
+        .submitButton {
+            width: 150px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: white;
+            color: #383838;
+            border: 1px solid darkgray;
+            border-radius: 10px;
+
+            &:hover {
+                background-color: #383838;
+                color: white;
+                border: none;
+            }
+        }
     }
 `
 
 const AddUser = () => {
+    const dispatch = useDispatch();
+    const { register, handleSubmit, errors } = useForm();
     const db = firebase.firestore();
     const userDeviceDataRef = db.collection('UserDeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
     const userId = useSelector(state => state.currentUserId);
-    const [emailSentMessage, setEmailSentMessage] = useState('');
 
-    const addUser = async e => {
-        e.preventDefault();
-        const username = e.target.username.value;
-        const password = e.target.password.value;
-        const email = e.target.email.value;
+    const registerUser = async data => {
         const rollBackData = [];
 
         // Sign up with email and password
-        await signUp(email, password).then(signUpResp => {
+        await signUp(data.email, data.password).then(signUpResp => {
             rollBackData.push(signUpResp);
             // create new layout document
             createNewLayoutDoc().then(createNewLayoutDocResp => {
@@ -38,11 +98,11 @@ const AddUser = () => {
                 // add default data to newly created layout
                 populateNewLayout(newLayoutDocId).then(() => {
                     // add signed up user to database
-                    createUserInDatabase(signUpResp.user.uid, username, newLayoutDocId).then(createUserInDatabaseResp => {
-                        console.log(email, password);
+                    createUserInDatabase(signUpResp.user.uid, data.username, newLayoutDocId).then(createUserInDatabaseResp => {
+                        console.log(data.email, data.password);
                         rollBackData.push(createUserInDatabaseResp);
                         signUpResp.user.sendEmailVerification().then(function () {
-                            setEmailSentMessage('Verification email sent. Please check your inbox.');
+                            alert('Verification email sent. Please check your inbox.');
                             setTimeout(() => {
                                 window.location.reload();
                             }, 3000);
@@ -109,16 +169,44 @@ const AddUser = () => {
         return await userLayoutDataRef.doc();
     }
 
+    const showLoginForm = () => {
+        dispatch(currentAuthComponent('login'));
+    }
+
     return (
         <Styles>
-            <div className="addUserContainer">
-                <form className='addUserForm' onSubmit={addUser}>
-                    <input type="text" placeholder="Username" name="username"></input>
-                    <input type="email" placeholder="Email" name="email"></input>
-                    <input type="password" placeholder="Password" name="password"></input>
-                    <button type="submit">Create account</button>
-                </form>
-                <div>{emailSentMessage}</div>
+            <form onSubmit={handleSubmit(registerUser)} className="registerForm" noValidate>
+
+                <div className='fieldContainer'>
+                    <input className='inputField' type="email" placeholder="Email" name="email" ref={register({
+                        required: 'Email address is required',
+                        pattern: {
+                            value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                            message: 'Email address invalid'
+                        }
+                    })}></input>
+                    <div className='validationContainer'>{errors.email && errors.email.message}</div>
+                </div>
+
+                <div className='fieldContainer'>
+                    <input className='inputField' type="text" placeholder="Username" name="username" ref={register({
+                        required: 'Username is required'
+                    })}></input>
+                    <div className='validationContainer'>{errors.username && errors.username.message}</div>
+                </div>
+
+                <div className='fieldContainer'>
+                    <input className='inputField' type="password" placeholder="Password" name="password" ref={register({
+                        required: 'Password is required'
+                    })}></input>
+                    <div className='validationContainer'>{errors.password && errors.password.message}</div>
+                </div>
+
+                <button className='submitButton' type="submit">Log in</button>
+            </form>
+
+            <div className='registerOptionsContainer'>
+                <div className='optionContainer'>Already registered? <span className='optionLink' onClick={showLoginForm}>Log in</span></div>
             </div>
         </Styles>
     )
