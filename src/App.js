@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified, isManageAccountPageOpen } from './actions';
 import firebase from './firebase';
@@ -176,7 +175,6 @@ function App() {
           </div> :
           <div className='loggedOutContainer'>
             <LandingPage />
-            <Footer />
           </div>
         }
       </div>
