@@ -11,6 +11,8 @@ const Styles = styled.div``;
 
 const PasswordReset = () => {
 
+    // eslint-disable-next-line no-useless-escape
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const { register, handleSubmit, errors } = useForm();
     const dispatch = useDispatch();
 
@@ -36,7 +38,7 @@ const PasswordReset = () => {
                             <input className={`inputField ${errors.email ? 'errorBorder' : ''}`} type="email" placeholder="Email" name="email" ref={register({
                                 required: 'Email address is required',
                                 pattern: {
-                                    value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                    value: emailRegex,
                                     message: 'Email address invalid'
                                 }
                             })}></input>

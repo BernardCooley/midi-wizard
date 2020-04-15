@@ -57,6 +57,8 @@ export const AuthFormValidationMessage = styled.div`
 `
 
 export const AuthFormField = styled.div`
+    width: 100%;
+
     .fieldContainer {
         width: 100%;
         margin-bottom: 30px;
