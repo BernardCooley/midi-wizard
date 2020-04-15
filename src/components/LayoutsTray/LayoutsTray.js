@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectedLayoutId, isLayoutsTrayOpen, currentLayout, deletedLayoutId } from '../../actions';
 import firebase from 'firebase';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -32,7 +33,7 @@ const Styles = styled.div`
             cursor: pointer;
             position: relative;
             right: -45px;
-            color: white;
+            color: ${Colors.whiteBlue};
             z-index: 10;
             background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
 
@@ -49,7 +50,7 @@ const Styles = styled.div`
         .layoutsTrayContainer {
             height: 305px;
             width: auto;
-            background-color: white;
+            background-color: ${Colors.whiteBlue};
             padding: 10px;
             overflow: hidden;
             position: relative;
@@ -85,7 +86,7 @@ const Styles = styled.div`
                             border: none;
                             font-size: 14px;
                             background-color: #383838;
-                            color: white;
+                            color: ${Colors.whiteBlue};
                         }
 
                         .editEnabled {
@@ -135,10 +136,10 @@ const Styles = styled.div`
                     cursor: pointer;
                     outline: none;
                     background-color: #383838;
-                    color: white;
+                    color: ${Colors.whiteBlue};
 
                     &:hover {
-                        background-color: white;
+                        background-color: ${Colors.whiteBlue};
                         color: #383838;
                     }
                 }

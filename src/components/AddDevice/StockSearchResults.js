@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setSearchResults } from '../../actions';
 import SearchResultsCard from './SearchResultsCard';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 const Styles = styled.div`
     .stockSearchResultsContainer {
         width: 100%;
         height: 100%;
-        background-color: white;
+        background-color: ${Colors.whiteBlue};
         display: flex;
         flex-wrap: wrap;
         justify-content: center;

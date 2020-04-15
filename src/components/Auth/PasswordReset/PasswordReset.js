@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { currentAuthComponent } from '../../../actions';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { AuthFormContainer, AuthFormField, AuthFormOptions, AuthFormSubmitButton, AuthFormValidationMessage } from '../../../styles/components';
+import { AuthFormContainer, AuthFormField, AuthFormOptions, CustomButton, AuthFormValidationMessage } from '../../../styles/components';
 
 
 const Styles = styled.div``;
@@ -48,9 +48,9 @@ const PasswordReset = () => {
                         </div>
                     </AuthFormField>
 
-                    <AuthFormSubmitButton>
-                        <button className='submitButton' type="submit">Reset password</button>
-                    </AuthFormSubmitButton>
+                    <CustomButton>
+                        <button className='customButton' type="submit">Reset password</button>
+                    </CustomButton>
                 </form>
             </AuthFormContainer>
 

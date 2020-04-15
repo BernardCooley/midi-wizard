@@ -7,6 +7,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import ManualAddForm from '../AddDevice/ManualAddForm';
 import styled from 'styled-components';
+import { CloseIcon } from '../../styles/components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -18,18 +20,9 @@ const Styles = styled.div`
         z-index: 15;
         margin: auto;
 
-        .svg {
-            position: relative;
-            right: 7px;
-            top: 23px;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
         .addDeviceContainer {
-            border: 1px solid lightgray;
-            background-color: white;
+            border: 1px solid ${Colors.lightGray};
+            background-color: ${Colors.whiteBlue};
             padding: 20px;
             position: relative;
             z-index: 10;
@@ -66,9 +59,9 @@ const AddDevice = () => {
     const updateSearchTerm = e => {
         let searchTerm = e.target.value;
 
-        if(searchTerm.length > 2) {
+        if (searchTerm.length > 2) {
             setSearchTerm(searchTerm);
-        }else {
+        } else {
             setSearchTerm('');
         }
     }
@@ -77,17 +70,19 @@ const AddDevice = () => {
         dispatch(toggleAddDeviceForm(open));
     }
 
-    return(
+    return (
         <Styles>
             <div className='addDeviceOuterContainer'>
-                <FontAwesomeIcon className='svg closeIcon' icon="times-circle" />
+                <CloseIcon>
+                    <FontAwesomeIcon className='closeIcon' icon="times-circle" />
+                </CloseIcon>
                 <div className='addDeviceContainer'>
                     <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
-                    <StockSearchResults searchTerm={searchTerm}/>
+                    <StockSearchResults searchTerm={searchTerm} />
 
                     {searchResults.length === 0 ?
-                        <ManualAddForm/> :
+                        <ManualAddForm /> :
                         null
                     }
                 </div>

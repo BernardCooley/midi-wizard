@@ -8,7 +8,6 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
     .workSpaceContainer {
-        background-color: lightblue;
         width: 100vw;
         height: 100vh;
         display: flex;

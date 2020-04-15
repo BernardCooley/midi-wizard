@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import Colors from '../styles/colors';
 
-export const AuthFormSubmitButton = styled.div`
-    .submitButton {
+export const CustomButton = styled.div`
+    .customButton {
         width: 200px;
         height: 50px;
         font-size: 20px;
@@ -11,9 +11,26 @@ export const AuthFormSubmitButton = styled.div`
         color: ${Colors.whiteBlue};
         border: 1px solid ${Colors.whiteBlue};
         border-radius: 10px;
+        outline: none;
 
         &:hover {
             background-color: ${Colors.darkTeal};
+        }
+    }
+`
+
+export const CloseIcon = styled.div`
+    .closeIcon {
+        position: relative;
+        right: 7px;
+        top: 23px;
+        font-size: 30px;
+        cursor: pointer;
+        z-index: 20;
+        color: ${Colors.middleGray};
+
+        &:hover {
+            color: ${Colors.darkTeal};
         }
     }
 `
@@ -76,6 +93,7 @@ export const AuthFormField = styled.div`
             outline: none;
             -webkit-text-fill-color: ${Colors.middleGray};
             -webkit-box-shadow: 0 0 0px 1000px ${Colors.whiteBlue} inset;
+            -webkit-autofill::first-line {font-size: 20px}
         }
 
         .errorBorder {

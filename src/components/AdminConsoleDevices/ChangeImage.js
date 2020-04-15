@@ -5,6 +5,7 @@ import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleEditingImage, gettingData } from '../../actions';
 import { ToastContainer, toast } from 'react-toastify';
+import Colors from '../../styles/colors';
 
 const Styles = styled.div`
     .changeImageContainer {
@@ -14,12 +15,12 @@ const Styles = styled.div`
         height: auto;
         width: 500px;
         transform: translate(-50%, -50%);
-        background-color: red;
+        background-color: ${Colors.red};
         display: flex;
         flex-direction: column;
         padding: 20px;
         align-items: center;
-        background-color: #767676eb;
+        background-color: ${Colors.middleGray};
         -webkit-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
         -moz-box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
         box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);

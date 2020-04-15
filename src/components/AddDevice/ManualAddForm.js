@@ -6,6 +6,7 @@ import firebase from '../../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -98,7 +99,7 @@ const Styles = styled.div`
                 }
 
                 .validationContainer {
-                    color: red;
+                    color: ${Colors.red};
                     min-height: 20px;
                 } 
             }

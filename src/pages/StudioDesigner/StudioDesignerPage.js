@@ -13,21 +13,20 @@ const Styles = styled.div`
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        background-color: lightgreen;
     }
 `
 
 const StudioDesignerPage = () => {
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
 
-    return(
+    return (
         <Styles>
             <div className='studioDesignerContainer'>
-                {isAddDeviceFormOpen ? 
-                    <AddDevice/> :
-                    <Workspace/>
+                {isAddDeviceFormOpen ?
+                    <AddDevice /> :
+                    <Workspace />
                 }
-                <UserDeviceList/>
+                <UserDeviceList />
             </div>
         </Styles>
     )

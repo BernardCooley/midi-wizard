@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { currentAuthComponent } from '../../../actions';
-import { AuthFormContainer, AuthFormField, AuthFormOptions, AuthFormSubmitButton, AuthFormValidationMessage } from '../../../styles/components';
+import { AuthFormContainer, AuthFormField, AuthFormOptions, CustomButton, AuthFormValidationMessage } from '../../../styles/components';
 
 
 const Styles = styled.div``;
@@ -152,9 +152,9 @@ const AddUser = () => {
                         </div>
                     </AuthFormField>
 
-                    <AuthFormSubmitButton>
-                        <button className='submitButton' type="submit">Register</button>
-                    </AuthFormSubmitButton>
+                    <CustomButton>
+                        <button className='customButton' type="submit">Register</button>
+                    </CustomButton>
                 </form>
             </AuthFormContainer>
 

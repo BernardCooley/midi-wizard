@@ -7,6 +7,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { resetState } from '../../actions';
 import { useDispatch } from 'react-redux';
+import { CustomButton } from '../../styles/components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -15,27 +17,7 @@ const Styles = styled.div`
     .logoutButton {
         position: absolute;
         bottom: 10px;
-        left: 10px;
-        cursor: pointer;
-
-        &:hover {
-            background-color: white;
-            color: black;
-        }
-    }
-
-    button {
-        width: 200px;
-        height: 30px;
-        margin: auto;
-        background-color: #383838;
-        border: none;
-        color: white;
-
-        &:disabled {
-            background-color: white;
-            color: lightgray;
-        }
+        right: 10px;
     }
 
     svg {
@@ -47,6 +29,10 @@ const Styles = styled.div`
         flex-direction: column;
         width: 100%;
         margin: auto;
+
+        .saveButton {
+
+        }
 
         .fieldContainer {
             display: flex;
@@ -90,16 +76,16 @@ const Styles = styled.div`
                         cursor: pointer;
 
                         .editIcon {
-                            color: darkgray;
+                            color: ${Colors.lightGray};
                         }
 
                         .checkIcon {
-                            color: black;
+                            color: ${Colors.middleGray};
                         }
                     }
 
                     .validationContainer {
-                        color: red;
+                        color: ${Colors.red};
                         min-height: 25px;
                         width: 100%;
                     } 
@@ -176,9 +162,13 @@ const AccountDetails = () => {
                     </div>
                 </div>
 
-                <button type="submit" disabled={fieldValue.length < 6}>Save</button>
+                <CustomButton>
+                    <button type="submit" className='saveButton customButton' disabled={fieldValue.length < 6}>Save</button>
+                </CustomButton>
             </form>
-            <button className='logoutButton' onClick={logout}>Logout</button>
+            <CustomButton>
+                <button className='logoutButton customButton' onClick={logout}>Logout</button>
+            </CustomButton>
         </Styles>
     )
 }

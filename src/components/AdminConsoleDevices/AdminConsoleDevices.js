@@ -12,13 +12,14 @@ import { toggleEditingImage, deviceIdBeingEdited } from '../../actions';
 import ChangeImage from './ChangeImage';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
+import Colors from '../../styles/colors';
 
 const Styles = styled.div`
   padding: 1rem;
 
   table {
     border-spacing: 0;
-    border: 1px solid black;
+    border: 1px solid ${Colors.middleGray};
     margin: auto;
 
     tr {
@@ -33,8 +34,8 @@ const Styles = styled.div`
     td {
       margin: 0;
       padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
+      border-bottom: 1px solid ${Colors.middleGray};
+      border-right: 1px solid ${Colors.middleGray};
 
       :last-child {
         border-right: 0;

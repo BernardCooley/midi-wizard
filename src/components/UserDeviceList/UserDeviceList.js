@@ -7,6 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
 import firebase from 'firebase';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -35,7 +36,7 @@ const Styles = styled.div`
             -webkit-box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
             -moz-box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
             box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
-            color: white;
+            color: ${Colors.whiteBlue};
 
             .openCloseButton {
                 position: relative;
@@ -48,7 +49,7 @@ const Styles = styled.div`
                 outline: none;
                 border-radius: 5px 5px 0 0;
                 cursor: pointer;
-                color: white;
+                color: ${Colors.whiteBlue};
                 transition:0.2s;
                 -webkit-transition:0.2s;
                 -moz-transition:0.2s;

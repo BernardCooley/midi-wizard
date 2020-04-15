@@ -12,7 +12,7 @@ const Styles = styled.div`
 `
 
 const Footer = () => {
-    
+
 
     return (
         <Styles>

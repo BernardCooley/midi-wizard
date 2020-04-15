@@ -7,6 +7,7 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
@@ -34,7 +35,7 @@ const Styles = styled.div`
                 opacity: 1;
 
                 .deleteIcon {
-                    color: red;
+                    color: ${Colors.red};
                 }
                 
                 .svg {

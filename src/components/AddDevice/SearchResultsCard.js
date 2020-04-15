@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
 import { useSelector } from 'react-redux';
+import Colors from '../../styles/colors';
 
 const Styles = styled.div`
     .deviceCardContainer {
         width: 200px;
-        background-color: floralwhite;
+        background-color: ${Colors.whiteBlueOpaque};
         margin: 10px;
         display: flex;
         flex-direction: column;
@@ -31,7 +32,7 @@ const Styles = styled.div`
 
         .cardImage {
             width: 100%;
-            background-color: lightgray;
+            background-color: ${Colors.lightgray};
             height: auto;
             margin: 10px;
         }

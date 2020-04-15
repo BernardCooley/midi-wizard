@@ -2,11 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { select } from 'd3';
 import styled from 'styled-components';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
     .svgWorkspaceContainer {
-        background-color: rebeccapurple;
+        background-color: ${Colors.darkTeal};
         width: 100vw;
         height: 100vh;
     }

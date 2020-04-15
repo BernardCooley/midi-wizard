@@ -11,7 +11,9 @@ import Colors from '../../styles/colors';
 const Styles = styled.div`
 
     .landingTitle {
-        color: ${Colors.darkTeal};
+        width: 100%;
+        text-align: center;
+        color: ${Colors.white};
     }
 
     .backgroundImage {
@@ -19,10 +21,7 @@ const Styles = styled.div`
         background-size: 100% 100%;
         height: 100vh;
         width: 100%;
-        opacity: 0.7;
         position: absolute;
-        filter: blur(4px);
-        -webkit-filter: blur(4px);
     }
 
     .landingPageContainer {

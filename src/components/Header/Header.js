@@ -5,11 +5,13 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { CustomButton } from '../../styles/components';
+import Colors from '../../styles/colors';
 
 const Styles = styled.div`
     .headerContainer {
         width: 100%;
-        background-color: rebeccapurple;
+        background-color: ${Colors.jet};
         height: 50px;
         display: flex;
         justify-content: space-between;
@@ -27,41 +29,17 @@ const Styles = styled.div`
             display: flex;
             justify-content: flex-start;
 
-            .unverifiedNumber {
-                color: white;
-                border: 1px solid white;
-                padding: 5px;
-                border-radius: 10px;
-                background-color: crimson;
-                cursor: pointer;
-
-                &:hover {
-                background-color: white;
-                color: #383838;
-            }
+            .adminConsoleButton {
+                width: 175px;
+                height: 30px;
+                font-size: 16px;
+                border-radius: 5px;
+                margin-left: 10px;
             }
         }
 
-        .button {
-            height: auto;
-            margin: 0 10px;
-            cursor: pointer;
-            width: auto;
-            outline: none;
-            padding: 8px;
-            font-size: 16px;
-            background-color: #383838;
-            color: white;
-            border: none;
-
-            &:hover {
-                background-color: white;
-                color: #383838;
-            }
-        }
-
-        .buttonHighlighed {
-            outline: 3px solid #2ef12b;
+        .buttonActive {
+            background-color: ${Colors.darkTeal};
         }
 
         .titleContainer {
@@ -73,7 +51,7 @@ const Styles = styled.div`
             align-items: center;
 
             .appTitle {
-                color: white;
+                color: ${Colors.whiteBlue};
                 font-size: 30px;
                 text-align: center;
                 font-weight: bold;
@@ -89,7 +67,7 @@ const Styles = styled.div`
             align-items: center;
 
             .openAccountIcon {
-                color: white;
+                color: ${Colors.whiteBlue};
                 font-size: 30px;
                 margin: 0 10px;
                 cursor: pointer;
@@ -100,7 +78,7 @@ const Styles = styled.div`
             }
 
             .userName {
-                color: #cecece;
+                color: ${Colors.whiteBlue};
             }
         }
     }
@@ -152,8 +130,9 @@ const Header = () => {
                 <div className='buttonContainer'>
                     {isAdmin ?
                         <>
-                            <button className={`button ${isAdminConsoleOpen ? 'buttonHighlighed' : ''}`} onClick={openCloseAdminConsole}>Admin console</button>
-                            <div onClick={openCloseAdminConsole} className='unverifiedNumber'>{numberOfUnverifiedDevices}</div>
+                            <CustomButton>
+                                <button className={`customButton adminConsoleButton ${isAdminConsoleOpen ? 'buttonActive' : ''}`} active={isAdminConsoleOpen ? true : false} onClick={openCloseAdminConsole}>Admin console {numberOfUnverifiedDevices}</button>
+                            </CustomButton>
                         </>
                         : null
                     }
