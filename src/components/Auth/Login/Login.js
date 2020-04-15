@@ -17,6 +17,7 @@ const Styles = styled.div`
 
         .optionContainer {
             margin-top: 50px;
+            color: white;
 
             .optionLink {
                 text-decoration: underline;
@@ -24,7 +25,7 @@ const Styles = styled.div`
                 font-weight: bold;
 
                 &:hover {
-                    color: green;
+                    color: lightgray;
                 }
             }
         }
@@ -52,7 +53,7 @@ const Styles = styled.div`
                 height: 50px;
                 text-align: center;
                 border-radius: 5px;
-                background: transparent;
+                background-color: darkgray;
                 border: 1px solid lightgray;
                 outline: none;
             }

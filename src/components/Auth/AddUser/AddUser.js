@@ -17,6 +17,7 @@ const Styles = styled.div`
 
         .optionContainer {
             margin-top: 50px;
+            color: white;
 
             .optionLink {
                 text-decoration: underline;
@@ -24,7 +25,7 @@ const Styles = styled.div`
                 font-weight: bold;
 
                 &:hover {
-                    color: green;
+                    color: lightgray;
                 }
             }
         }
@@ -52,7 +53,7 @@ const Styles = styled.div`
                 height: 50px;
                 text-align: center;
                 border-radius: 5px;
-                background: transparent;
+                background-color: darkgray;
                 border: 1px solid lightgray;
                 outline: none;
             }
@@ -202,7 +203,7 @@ const AddUser = () => {
                     <div className='validationContainer'>{errors.password && errors.password.message}</div>
                 </div>
 
-                <button className='submitButton' type="submit">Log in</button>
+                <button className='submitButton' type="submit">Register</button>
             </form>
 
             <div className='registerOptionsContainer'>
