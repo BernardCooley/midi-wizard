@@ -121,7 +121,6 @@ const Login = () => {
             </form>
 
             <div className='loginOptionsContainer'>
-                // eslint-disable-next-line react/no-unescaped-entities
                 <div className='optionContainer'>Don't have an account? <span className='optionLink' onClick={showRegisterForm}>Register</span></div>
                 <div className='optionContainer'>Forget password? <span className='optionLink' onClick={showPasswordReset}>Reset password</span></div>
             </div>
