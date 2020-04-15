@@ -7,13 +7,14 @@ import { selectedLayoutId, isLayoutsTrayOpen, currentLayout, deletedLayoutId } f
 import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
+import { TrayTab } from '../../styles/components';
 
 
 const Styles = styled.div`
     .layoutsTrayOuterContainer {
         position: fixed;
         top: 50%;
-        right: -5px;
+        right: 0;
         transform: translate(0, -50%);
         display: flex;
         align-items: center;
@@ -21,35 +22,15 @@ const Styles = styled.div`
         -webkit-transition:0.6s;
         -moz-transition:0.6s;
 
-        .layoutsTabOpenClose {
+        .layoutTab {
             transform: rotate(-90deg);
-            background-color: #383838;
-            height: 30px;
-            border: none;
-            width: 120px;
-            font-size: 20px;
-            outline: none;
             border-radius: 5px 5px 0px 0px;
-            cursor: pointer;
-            position: relative;
             right: -45px;
-            color: ${Colors.whiteBlue};
-            z-index: 10;
-            background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
-
-            &:hover {
-                -webkit-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                -moz-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                transition:0.2s;
-                -webkit-transition:0.2s;
-                -moz-transition:0.2s;
-            }
         }
 
         .layoutsTrayContainer {
             height: 305px;
-            width: auto;
+            width: 212px;
             background-color: ${Colors.whiteBlue};
             padding: 10px;
             overflow: hidden;
@@ -152,7 +133,7 @@ const Styles = styled.div`
     }
 
     .hidden {
-        right: -210px;
+        right: -232px;
     }
 `
 
@@ -285,7 +266,9 @@ const LayoutsTray = () => {
     return (
         <Styles>
             <div className={`layoutsTrayOuterContainer ${!layoutsTrayOpen ? 'hidden' : ''}`}>
-                <button onClick={toggleLayoutsTray} className={`layoutsTabOpenClose ${!layoutsTrayOpen ? 'open' : ''}`}>Layouts</button>
+                <TrayTab>
+                    <button onClick={toggleLayoutsTray} className={`trayTab layoutTab ${!layoutsTrayOpen ? 'open' : ''}`}>Layouts</button>
+                </TrayTab>
                 <div className='layoutsTrayContainer'>
                     <div className='layoutsListContainer'>
                         {userLayouts.map((layout, index) => (

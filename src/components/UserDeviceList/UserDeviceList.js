@@ -8,6 +8,7 @@ import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
 import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
+import { TrayTab } from '../../styles/components';
 
 
 const Styles = styled.div`
@@ -38,31 +39,9 @@ const Styles = styled.div`
             box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.75);
             color: ${Colors.whiteBlue};
 
-            .openCloseButton {
-                position: relative;
+            .deviceTab {
                 top: -29px;
-                background-color: #383838;
-                height: 30px;
-                border: none;
-                width: 120px;
-                font-size: 20px;
-                outline: none;
                 border-radius: 5px 5px 0 0;
-                cursor: pointer;
-                color: ${Colors.whiteBlue};
-                transition:0.2s;
-                -webkit-transition:0.2s;
-                -moz-transition:0.2s;
-                background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
-
-                &:hover {
-                    -webkit-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                    -moz-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                    box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
-                    transition:0.2s;
-                    -webkit-transition:0.2s;
-                    -moz-transition:0.2s;
-                }
             }
 
             .deviceListInnerContainer {
@@ -145,7 +124,9 @@ const UserDeviceList = () => {
         <Styles>
             <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                 <div className='devicesListContainer'>
-                    <button onClick={toggleDeviceTray} className={`openCloseButton ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
+                    <TrayTab>
+                        <button onClick={toggleDeviceTray} className={`trayTab deviceTab ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
+                    </TrayTab>
                     <div className='deviceListInnerContainer'>
                         <div className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                             {userDevices.length < 1 ?

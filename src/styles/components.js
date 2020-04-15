@@ -1,6 +1,32 @@
 import styled from 'styled-components';
 import Colors from '../styles/colors';
 
+
+export const TrayTab = styled.div`
+    .trayTab {
+        position: relative;
+        background-color: #383838;
+        height: 30px;
+        border: none;
+        width: 120px;
+        font-size: 20px;
+        outline: none;
+        cursor: pointer;
+        color: ${Colors.whiteBlue};
+        transition:0.2s;
+        -webkit-transition:0.2s;
+        -moz-transition:0.2s;
+        background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
+        z-index: 10;
+
+        &:hover {
+            -webkit-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+            -moz-box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+            box-shadow: 0px -7px 5px 0px rgba(49, 50, 50, 0.84);
+        }
+    }
+`
+
 export const CustomButton = styled.div`
     .customButton {
         width: 200px;
