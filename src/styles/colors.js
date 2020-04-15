@@ -1,0 +1,10 @@
+const Colors = {
+    darkTeal: '#224454',
+    middleGray: '#5c5e5f',
+    lightGray: '#c4c9cb',
+    whiteBlue: '#f3f7ff',
+    whiteBlueOpaque: 'rgba(245, 248, 255, 0.30)',
+    red: 'red'
+}
+
+export default Colors;

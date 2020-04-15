@@ -5,9 +5,14 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PasswordReset from '../../components/Auth/PasswordReset/PasswordReset';
 import backGroundImage from '../../images/landing_page_cover.jpg';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
+
+    .landingTitle {
+        color: ${Colors.darkTeal};
+    }
 
     .backgroundImage {
         background-repeat: no-repeat;
@@ -38,6 +43,9 @@ const LandingPage = () => {
     return (
         <Styles>
             <img src={backGroundImage} className='backgroundImage'></img>
+
+            <h1 className='landingTitle'>Studio Designer</h1>
+
             <div className='landingPageContainer'>
                 <div className='loginRegisterContainer'>
 
