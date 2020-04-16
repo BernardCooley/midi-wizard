@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { select } from 'd3';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import LayoutDevice from '../SVGWorkspace/LayoutDevice'
+import LayoutDevice from '../SVGWorkspace/LayoutDevice';
+import ConnectionModal from './ConnectionModal';
+import { useSelector } from 'react-redux';
 
 
 const Styles = styled.div`
@@ -12,10 +14,15 @@ const Styles = styled.div`
         width: 100vw;
         height: 100vh;
         padding: 50px;
+        display: flex;
+        flex-wrap: wrap;
     }
 `
 
 const SVGWorkspace = props => {
+
+    const deviceIdToEdit = useSelector(state => state.selectedLayoutDeviceId);
+
     // const svgRef = useRef();
 
     // const [data, setData] = useState([23, 54, 18, 20, 46]);
@@ -59,6 +66,9 @@ const SVGWorkspace = props => {
                 {props.layout.devices ? props.layout.devices.map((device, index) => (
                     <LayoutDevice key={index} device={device}></LayoutDevice>
                 )) : null}
+                {deviceIdToEdit.length > 0 ?
+                    <ConnectionModal deviceid={deviceIdToEdit} devices={props.layout.devices} /> : null
+                }
             </div>
 
         </Styles>
@@ -66,7 +76,7 @@ const SVGWorkspace = props => {
 }
 
 SVGWorkspace.propTypes = {
-    layout: PropTypes.array
+    layout: PropTypes.object
 }
 
 export default SVGWorkspace;

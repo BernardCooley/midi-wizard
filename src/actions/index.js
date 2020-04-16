@@ -175,3 +175,10 @@ export const isManageAccountPageOpen = isManageAccountPageOpen => {
         payload: isManageAccountPageOpen
     };
 };
+
+export const selectedLayoutDeviceId = ID => {
+    return {
+        type: 'SELECTED_LAYOUT_DEVICE_ID',
+        payload: ID
+    };
+};

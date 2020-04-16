@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import Colors from '../styles/colors';
 
 
+export const ConnectionFormSection = styled.div`
+    .connectionFormSection {
+        
+    }
+`;
+
 export const TrayTab = styled.div`
     .trayTab {
         position: relative;

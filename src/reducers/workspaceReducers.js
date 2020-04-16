@@ -1,6 +1,6 @@
 const workspaceReducers = {
     getWorkspaceDevices: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'GET_WORKSPACE_DEVICES':
                 return state = action.payload;
             default:
@@ -8,7 +8,7 @@ const workspaceReducers = {
         }
     },
     selectedLayoutId: (state = '', action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'GET_LAYOUT_ID':
                 return state = action.payload;
             default:
@@ -16,7 +16,7 @@ const workspaceReducers = {
         }
     },
     currentLayout: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'CURRENT_LAYOUT':
                 return state = action.payload;
             default:
@@ -24,7 +24,7 @@ const workspaceReducers = {
         }
     },
     layouts: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'LAYOUTS':
                 return state = action.payload;
             default:
@@ -32,7 +32,7 @@ const workspaceReducers = {
         }
     },
     layoutIds: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'LAYOUT_IDS':
                 return state = action.payload;
             default:
@@ -40,7 +40,7 @@ const workspaceReducers = {
         }
     },
     isLayoutsTrayOpen: (state = false, action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'IS_LAYOUTS_TRAY_OPEN':
                 return !state;
             default:
@@ -48,8 +48,16 @@ const workspaceReducers = {
         }
     },
     deletedLayoutId: (state = false, action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'DELETED_LAYOUT_ID':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    selectedLayoutDeviceId: (state = '', action) => {
+        switch (action.type) {
+            case 'SELECTED_LAYOUT_DEVICE_ID':
                 return state = action.payload;
             default:
                 return state;
