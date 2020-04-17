@@ -182,3 +182,10 @@ export const selectedLayoutDeviceId = ID => {
         payload: ID
     };
 };
+
+export const connectionSelections = selection => {
+    return {
+        type: 'CONNECTION_SELECTIONS',
+        payload: selection
+    };
+};

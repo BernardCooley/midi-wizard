@@ -31,7 +31,8 @@ const allReducers = combineReducers({
   gettingData: deviceReducers.gettingData,
   isVerified: authReducers.isVerified,
   isManageAccountPageOpen: authReducers.isManageAccountPageOpen,
-  selectedLayoutDeviceId: workspaceReducers.selectedLayoutDeviceId
+  selectedLayoutDeviceId: workspaceReducers.selectedLayoutDeviceId,
+  connectionSelections: workspaceReducers.connectionSelections
 });
 
 const rootReducer = (state, action) => {
