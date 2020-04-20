@@ -16,8 +16,9 @@ const Styles = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        position: absolute;
+        position: fixed;
         border-bottom: 1px solid #666666;
+        z-index: 50;
 
         .buttonContainer {
             height: 100%;

@@ -18,8 +18,9 @@ const Styles = styled.div`
         position: absolute;
         top: 100px;
         background-color: ${Colors.whiteBlue};
-        left: 100px;
-        padding: 20px 0;
+        left: 120px;
+        padding: 20px 0 50px 0;
+
 
         .connectionFormSection {
             width: 90%;
@@ -53,6 +54,13 @@ const Styles = styled.div`
                     width: 90%;
                     margin: 30px;
                     display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    .arrowIcon {
+                        font-size: 40px;
+                        color: ${Colors.darkGray};
+                    }
 
                     .imageContainer {
                         display: flex;
@@ -67,25 +75,22 @@ const Styles = styled.div`
 
                     .sourceContainer {
                         height: 100%;
-                        flex-grow: 1;
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        width: auto;
-
-                        
+                        width: 300px;
 
                         .sourceMidiLabel {
                             font-size: 20px;
-                            margin-right: 20px;
+                            margin: 0 20px;
                         }
                     }
 
                     .destinationContainer {
                         height: 100%;
-                        flex-grow: 1;
                         display: flex;
                         align-items: center;
+                        width: 300px;
 
                         .destinationOptionsContainer {
                             width: 95%;
@@ -114,14 +119,23 @@ const Styles = styled.div`
                                         color: ${Colors.whiteBlue}
                                     }
                                 }
-                            }
 
-                            .arrowIcon {
-                                font-size: 40px;
-                                color: ${Colors.darkGray};
+                                .connected {
+                                    transform: scale(1.1);
+                                    background-color: ${Colors.darkTeal};
+                                    color: ${Colors.whiteBlue}
+                                }
                             }
                         }
                     }
+                }
+
+                .midiIn {
+                    flex-direction: row;
+                }
+
+                .midiOutThru {
+                    flex-direction: row-reverse;
                 }
             }
         }
@@ -132,8 +146,6 @@ const Styles = styled.div`
             justify-content: space-evenly;
             align-items: center;
             margin: auto;
-            position: absolute;
-            bottom: 20px;
         }
     }
 `;
@@ -187,7 +199,7 @@ const ConnectionModal = () => {
         const deviceName = e.target.parentNode.getAttribute('devicename');
         const sourceType = e.target.parentNode.getAttribute('sourcetype');
 
-        let layoutDevices = layout.devices.map(device => {
+        let layoutDestDevices = layout.devices.map(device => {
             if (device.deviceName === deviceName) {
                 device.midi[connectionType] = selections[0].deviceName;
             }
@@ -195,10 +207,10 @@ const ConnectionModal = () => {
         });
 
         await userLayoutDataRef.doc(layout.layoutId).update({
-            devices: layoutDevices
+            devices: layoutDestDevices
         });
 
-        layoutDevices = layout.devices.map(device => {
+        const layoutSourceDevices = layout.devices.map(device => {
             if (device.deviceName === selections[0].deviceName) {
                 device.midi[sourceType] = deviceName;
             }
@@ -206,7 +218,7 @@ const ConnectionModal = () => {
         });
 
         await userLayoutDataRef.doc(layout.layoutId).update({
-            devices: layoutDevices
+            devices: layoutSourceDevices
         });
     }
 
@@ -224,10 +236,10 @@ const ConnectionModal = () => {
         )
     }
 
-    const ButtonContainer = props => {
+    const ButtonsContainer = props => {
         const buttons = [];
 
-        ButtonContainer.propTypes = {
+        ButtonsContainer.propTypes = {
             connectiontype: PropTypes.string,
             devicename: PropTypes.string,
             inbutton: PropTypes.string,
@@ -242,10 +254,24 @@ const ConnectionModal = () => {
         return (
             <div sourcetype={props.connectiontype} className='connectionOptionsContainer' devicename={selections[1].deviceName}>
                 {buttons.map((button, index) => (
-                    <button key={index} type='button' className='connectionButton' connectiontype={button} onClick={makeConnection}>Midi {button}</button>
+                    <button key={index} type='button' className={`connectionButton ${isConnected(selections[0].deviceName, selections[1].deviceName, button) ? 'connected' : ''}`} connectiontype={button} onClick={makeConnection}>Midi {button}</button>
                 ))}
             </div>
         )
+    }
+
+    const isConnected = (sourceDeviceName, destinationDeviceName, connectionType) => {
+        const destinationMidiConnections = layout.devices.filter(device => device.deviceName === destinationDeviceName)[0].midi;
+
+        if (connectionType === 'in') {
+            return destinationMidiConnections.in === sourceDeviceName;
+        }
+        if (connectionType === 'out') {
+            return destinationMidiConnections.out === sourceDeviceName;
+        }
+        if (connectionType === 'thru') {
+            return destinationMidiConnections.thru === sourceDeviceName;
+        }
     }
 
     const SourceContainer = props => {
@@ -256,7 +282,7 @@ const ConnectionModal = () => {
         }
 
         return (
-            <div className='sourceContainer'>
+            <div className={`sourceContainer ${props.connectiontype === 'in' ? 'midiIn' : 'midiOutThru'}`}>
                 <div className='sourceMidiLabel'>Midi {props.connectiontype}</div>
                 <div className='imageContainer'>
                     <img className='deviceImage' src={props.imageurl} alt='device image'></img>
@@ -273,40 +299,40 @@ const ConnectionModal = () => {
                     <h2>Midi</h2>
 
                     <div className='connectionSection'>
-                        <div className='selectionOptionsContainer'>
+                        <div className='selectionOptionsContainer midiIn'>
                             <div className='destinationContainer'>
                                 <div className='destinationOptionsContainer'>
                                     <ImageContainer devicename={selections[1].deviceName} imageurl={destinationDeviceImage} />
-                                    <ButtonContainer connectiontype='in' devicename={selections[1].deviceName} outbutton thrubutton />
-                                    <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />
+                                    <ButtonsContainer connectiontype='in' devicename={selections[1].deviceName} outbutton thrubutton />
                                 </div>
                             </div>
+                            <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />
                             <SourceContainer connectiontype='in' devicename={selections[0].deviceName} imageurl={sourceDeviceImage} />
                         </div>
                     </div>
 
                     <div className='connectionSection'>
-                        <div className='selectionOptionsContainer'>
+                        <div className='selectionOptionsContainer midiOutThru'>
                             <div className='destinationContainer'>
-                                <div className='destinationOptionsContainer'>
+                                <div className='destinationOptionsContainer midiOutThru'>
                                     <ImageContainer devicename={selections[1].deviceName} imageurl={destinationDeviceImage} />
-                                    <ButtonContainer connectiontype='out' devicename={selections[1].deviceName} inbutton />
-                                    <FontAwesomeIcon className='svg arrowIcon' icon="arrow-left" />
+                                    <ButtonsContainer connectiontype='out' devicename={selections[1].deviceName} inbutton />
                                 </div>
                             </div>
+                            <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />
                             <SourceContainer connectiontype='out' devicename={selections[0].deviceName} imageurl={sourceDeviceImage} />
                         </div>
                     </div>
 
                     <div className='connectionSection'>
-                        <div className='selectionOptionsContainer'>
+                        <div className='selectionOptionsContainer midiOutThru'>
                             <div className='destinationContainer'>
-                                <div className='destinationOptionsContainer'>
+                                <div className='destinationOptionsContainer midiOutThru'>
                                     <ImageContainer devicename={selections[1].deviceName} imageurl={destinationDeviceImage} />
-                                    <ButtonContainer connectiontype='thru' devicename={selections[1].deviceName} thrubutton />
-                                    <FontAwesomeIcon className='svg arrowIcon' icon="arrow-left" />
+                                    <ButtonsContainer connectiontype='thru' devicename={selections[1].deviceName} inbutton />
                                 </div>
                             </div>
+                            <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />
                             <SourceContainer connectiontype='thru' devicename={selections[0].deviceName} imageurl={sourceDeviceImage} />
                         </div>
                     </div>

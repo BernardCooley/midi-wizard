@@ -15,6 +15,9 @@ const Styles = styled.div`
         margin: 50px;
         cursor: pointer;
         transition: all .2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
 
         &:hover{
             -webkit-box-shadow: 5px 8px 11px 0px ${Colors.black};

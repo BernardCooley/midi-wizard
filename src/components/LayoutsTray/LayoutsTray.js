@@ -50,6 +50,7 @@ const Styles = styled.div`
                 overflow-y: scroll;
                 position: absolute;
                 top: 40px;
+                width: 240px;
 
                 .layoutContainer {
                     width: 100%;

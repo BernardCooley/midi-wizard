@@ -11,11 +11,12 @@ import { useSelector } from 'react-redux';
 const Styles = styled.div`
     .svgWorkspaceContainer {
         background-color: ${Colors.darkTeal};
-        width: 100vw;
+        width: auto;
         height: 100vh;
         padding: 50px;
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
     }
 `
 
