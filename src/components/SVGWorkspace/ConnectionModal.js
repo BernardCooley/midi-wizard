@@ -113,10 +113,15 @@ const Styles = styled.div`
                                     font-size: 20px;
                                     outline: none;
 
-                                    &:hover {
+                                    &:not([disabled]):hover {
                                         transform: scale(1.1);
                                         background-color: ${Colors.darkTeal};
                                         color: ${Colors.whiteBlue}
+                                    }
+
+                                    &:disabled {
+                                        opacity: 0.5;
+                                        cursor: auto;
                                     }
                                 }
 
@@ -169,7 +174,7 @@ const ConnectionModal = () => {
     }, [layout]);
 
     const closeModal = () => {
-        dispatch(selectedLayoutDeviceId(''));
+        // dispatch(selectedLayoutDeviceId(''));
         dispatch(connectionSelections(['', '']));
     }
 
@@ -195,32 +200,82 @@ const ConnectionModal = () => {
         });
     }
 
+    const executeRemoveConnection = async (sourceDevice, sourceMidi, destinationDevice, destinationMidi) => {
+        let updatedLayoutDevices = layout.devices.map(device => {
+            if (device.deviceId === sourceDevice.deviceId) {
+                device.midi[sourceMidi] = '';
+            }
+            return device;
+        });
+
+        updatedLayoutDevices = layout.devices.map(device => {
+            if (device.deviceId === destinationDevice.deviceId) {
+                device.midi[destinationMidi] = '';
+            }
+            return device;
+        });
+
+        await userLayoutDataRef.doc(layout.layoutId).update({
+            devices: updatedLayoutDevices
+        });
+    }
+
+    const removeConnection = async (sourceDevice, destinationDevice, connectionName) => {
+        console.log(sourceDevice, destinationDevice, connectionName);
+
+        // TODO
+
+        if (connectionName === 'sourceOutDestIn') {
+            // source out = ''
+            // dest in = ''
+            executeRemoveConnection(sourceDevice, 'out', destinationDevice, 'in');
+        } else if (connectionName === 'sourceThruDestIn') {
+            // source thru = ''
+            // dest in = ''
+            executeRemoveConnection(sourceDevice, 'thru', destinationDevice, 'in');
+        } else if (connectionName === 'out') {
+            // source in = ''
+            // dest out = ''
+            executeRemoveConnection(sourceDevice, 'in', destinationDevice, 'out');
+        } else if (connectionName === 'thru') {
+            // source in = ''
+            // dest thru = ''
+            executeRemoveConnection(sourceDevice, 'in', destinationDevice, 'thru');
+        }
+
+    }
+
     const makeConnection = async e => {
         const connectionType = e.target.getAttribute('connectiontype');
+        const connectionName = e.target.getAttribute('connectionname');
         const deviceId = e.target.parentNode.getAttribute('deviceid');
         const sourceType = e.target.parentNode.getAttribute('sourcetype');
 
-        let layoutDestDevices = layout.devices.map(device => {
-            if (device.deviceId === deviceId) {
-                device.midi[connectionType] = selections[0].deviceId;
-            }
-            return device;
-        });
+        if (isConnected(selections[0], selections[1], connectionName)) {
+            removeConnection(selections[0], selections[1], connectionName);
+        } else {
+            let layoutDestDevices = layout.devices.map(device => {
+                if (device.deviceId === deviceId) {
+                    device.midi[connectionType] = selections[0].deviceId;
+                }
+                return device;
+            });
 
-        await userLayoutDataRef.doc(layout.layoutId).update({
-            devices: layoutDestDevices
-        });
+            await userLayoutDataRef.doc(layout.layoutId).update({
+                devices: layoutDestDevices
+            });
 
-        const layoutSourceDevices = layout.devices.map(device => {
-            if (device.deviceId === selections[0].deviceId) {
-                device.midi[sourceType] = deviceId;
-            }
-            return device;
-        });
+            const layoutSourceDevices = layout.devices.map(device => {
+                if (device.deviceId === selections[0].deviceId) {
+                    device.midi[sourceType] = deviceId;
+                }
+                return device;
+            });
 
-        await userLayoutDataRef.doc(layout.layoutId).update({
-            devices: layoutSourceDevices
-        });
+            await userLayoutDataRef.doc(layout.layoutId).update({
+                devices: layoutSourceDevices
+            });
+        }
     }
 
     const ImageContainer = props => {
@@ -238,7 +293,7 @@ const ConnectionModal = () => {
     }
 
     const ButtonsContainer = props => {
-        const buttons = [];
+        let button = {};
 
         ButtonsContainer.propTypes = {
             connectiontype: PropTypes.string,
@@ -251,49 +306,57 @@ const ConnectionModal = () => {
         }
 
         if (props.infromoutbutton) {
-            buttons.push(
-                {
-                    'name': 'in',
-                    'type': 'inFromOut',
-                    'sourceDeviceId': props.deviceid
-                }
-            )
+            button = {
+                'name': 'in',
+                'type': 'sourceOutDestIn',
+                'sourceDeviceId': props.deviceid
+            }
         }
         if (props.infromthrubutton) {
-            buttons.push(
-                {
-                    'name': 'in',
-                    'type': 'inFromThru',
-                    'sourceDeviceId': props.deviceid
-                }
-            )
+            button = {
+                'name': 'in',
+                'type': 'sourceThruDestIn',
+                'sourceDeviceId': props.deviceid
+            }
         }
         if (props.outbutton) {
-            buttons.push(
-                {
-                    'name': 'out',
-                    'type': 'out',
-                    'sourceDeviceId': props.deviceid
-                }
-            )
+            button = {
+                'name': 'out',
+                'type': 'out',
+                'sourceDeviceId': props.deviceid
+            }
         }
         if (props.thrubutton) {
-            buttons.push(
-                {
-                    'name': 'thru',
-                    'type': 'thru',
-                    'sourceDeviceId': props.deviceid
-                }
-            )
+            button = {
+                'name': 'thru',
+                'type': 'thru',
+                'sourceDeviceId': props.deviceid
+            }
         }
 
         return (
             <div sourcetype={props.connectiontype} className='connectionOptionsContainer' deviceid={selections[1].deviceId}>
-                {buttons.map((button, index) => (
-                    <button key={index} type='button' className={`connectionButton ${isConnected(selections[0], selections[1], button) ? 'connected' : ''}`} connectiontype={button.name} onClick={makeConnection}>Midi {button.name}</button>
-                ))}
+                <button disabled={shouldDisableButton(button.type)} type='button' className={`connectionButton ${isConnected(selections[0], selections[1], button.type) ? 'connected' : ''}`} connectiontype={button.name} connectionname={button.type} onClick={makeConnection}>Midi {button.name}</button>
             </div>
         )
+    }
+
+    const shouldDisableButton = (buttonType) => {
+
+        if (!isConnected(selections[0], selections[1], buttonType)) {
+            if (buttonType === 'sourceOutDestIn' || buttonType === 'sourceThruDestIn') {
+                return selections[1].midi.in.length > 0
+                // dest in length > 0
+            }
+            if (buttonType === 'out') {
+                return selections[0].midi.out.length > 0
+                // dest out length > 0
+            }
+            if (buttonType === 'thru') {
+                return selections[0].midi.thru.length > 0
+                // dest thru length > 0
+            }
+        }
     }
 
     const updateSelections = () => {
@@ -304,19 +367,19 @@ const ConnectionModal = () => {
         dispatch(connectionSelections([sourceSelection, destinationSelection]));
     }
 
-    const isConnected = (sourceDevice, destinationDevice, button) => {
+    const isConnected = (sourceDevice, destinationDevice, buttonType) => {
         const destinationMidiConnections = layout.devices.filter(device => device.deviceId === destinationDevice.deviceId)[0].midi;
 
-        if (button.type === 'inFromOut') {
+        if (buttonType === 'sourceOutDestIn') {
             return sourceDevice.midi.out === destinationDevice.deviceId;
         }
-        if (button.type === 'inFromThru') {
+        if (buttonType === 'sourceThruDestIn') {
             return sourceDevice.midi.thru === destinationDevice.deviceId;
         }
-        if (button.type === 'out') {
+        if (buttonType === 'out') {
             return destinationMidiConnections.out === sourceDevice.deviceId;
         }
-        if (button.type === 'thru') {
+        if (buttonType === 'thru') {
             return destinationMidiConnections.thru === sourceDevice.deviceId;
         }
     }
@@ -350,7 +413,20 @@ const ConnectionModal = () => {
                             <div className='destinationContainer'>
                                 <div className='destinationOptionsContainer'>
                                     <ImageContainer devicename={selections[1].deviceName} imageurl={destinationDeviceImage} />
-                                    <ButtonsContainer connectiontype='in' devicename={selections[1].deviceName} deviceid={selections[1].deviceId} outbutton thrubutton />
+                                    <ButtonsContainer connectiontype='in' devicename={selections[1].deviceName} deviceid={selections[1].deviceId} outbutton />
+                                </div>
+                            </div>
+                            <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />
+                            <SourceContainer connectiontype='in' devicename={selections[0].deviceName} imageurl={sourceDeviceImage} />
+                        </div>
+                    </div>
+
+                    <div className='connectionSection'>
+                        <div className='selectionOptionsContainer midiIn'>
+                            <div className='destinationContainer'>
+                                <div className='destinationOptionsContainer'>
+                                    <ImageContainer devicename={selections[1].deviceName} imageurl={destinationDeviceImage} />
+                                    <ButtonsContainer connectiontype='in' devicename={selections[1].deviceName} deviceid={selections[1].deviceId} outbutton />
                                 </div>
                             </div>
                             <FontAwesomeIcon className='svg arrowIcon' icon="arrow-right" />

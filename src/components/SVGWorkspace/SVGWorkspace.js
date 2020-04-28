@@ -6,6 +6,7 @@ import Colors from '../../styles/colors';
 import LayoutDevice from '../SVGWorkspace/LayoutDevice';
 import ConnectionModal from './ConnectionModal';
 import { useSelector } from 'react-redux';
+import ConnectionLegend from './ConnectionLegend';
 
 
 const Styles = styled.div`
@@ -67,10 +68,8 @@ const SVGWorkspace = props => {
                 {props.layout.devices ? props.layout.devices.map((device, index) => (
                     <LayoutDevice key={index} device={device}></LayoutDevice>
                 )) : null}
-                {deviceIdToEdit.length > 0 ?
-                    <ConnectionModal deviceid={deviceIdToEdit} devices={props.layout.devices} /> : null
-                }
             </div>
+            <ConnectionLegend />
 
         </Styles>
     )

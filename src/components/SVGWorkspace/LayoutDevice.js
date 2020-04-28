@@ -9,6 +9,23 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 const Styles = styled.div`
+    .midiOptions {
+        height: 30px;
+        position: relative;
+        top: 55px;
+
+        img {
+            position: relative;
+            height: 100%;
+            transform: rotate(180deg);
+            height: 100%;
+
+            svg {
+                color: white;
+            }
+        }
+    }
+
     .deviceContainer {
         width: 150px;
         height: 150px;
@@ -24,6 +41,10 @@ const Styles = styled.div`
             -moz-box-shadow: 5px 8px 11px 0px ${Colors.black};
             box-shadow: 5px 8px 11px 0px ${Colors.black};
             transform: scale(1.06);
+        }
+
+        .showOptions {
+            display: flex;
         }
 
         .deviceSelected {
@@ -53,8 +74,13 @@ const LayoutDevice = props => {
     const db = firebase.firestore();
     const deviceDataRef = db.collection('DeviceData');
     const [imageUrl, setImageUrl] = useState({});
+    const [clickedDeviceId, setClickedDeviceId] = useState('');
+    const [showOptions, setShowOptions] = useState(false);
+    const [showAudioOptions, setShowAudioOptions] = useState(false);
+    const [optionsToShow, setOptionsToShow] = useState('midi');
     const selections = useSelector(state => state.connectionSelections);
     const layout = useSelector(state => state.currentLayout);
+    const selectedDeviceId = useSelector(state => state.selectedLayoutDeviceId);
 
     useEffect(() => {
         getDeviceImage(props.device.imageName);
@@ -73,6 +99,7 @@ const LayoutDevice = props => {
     }
 
     const makeSelection = e => {
+        setClickedDeviceId(e.target.getAttribute('deviceid'));
         const clickedDeviceId = e.target.getAttribute('deviceid');
         if (selections[0].deviceId === undefined) {
             notify('Choose destination device');
@@ -101,11 +128,26 @@ const LayoutDevice = props => {
         return (await response).data().imageName;
     }
 
+    const showConnectionOptions = e => {
+        dispatch(selectedLayoutDeviceId(e.target.getAttribute('deviceid')));
+    }
+
+    const displayOptions = buttonClicked => {
+        console.log(buttonClicked);
+    }
+
+    const setOptionsList = () => {
+        console.log('fb\fbd');
+    }
+
     return (
         <Styles>
             <ToastContainer />
+            <div className='midiOptions'>
+
+            </div>
             <div className='deviceContainer'>
-                <img deviceid={props.device.deviceId} onClick={makeSelection} className={`layoutDeviceImage ${selections[0].deviceId === props.device.deviceId || selections[1].deviceId === props.device.deviceId ? 'deviceSelected' : ''}`} src={imageUrl} alt='device image'></img>
+                <img deviceid={props.device.deviceId} onClick={showConnectionOptions, setOptionsList} className={`layoutDeviceImage ${selections[0].deviceId === props.device.deviceId || selections[1].deviceId === props.device.deviceId ? 'deviceSelected' : ''}`} src={imageUrl} alt='device image'></img>
 
                 <div className='deviceName'>
                     {props.device.deviceName}
