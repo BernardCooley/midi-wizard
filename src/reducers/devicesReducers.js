@@ -1,6 +1,6 @@
 const deviceReducers = {
     stockDevices: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'STOCK_DEVICES':
                 return state = action.payload;
             default:
@@ -8,7 +8,7 @@ const deviceReducers = {
         }
     },
     userDeviceIds: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'USER_DEVICE_IDS':
                 return state = action.payload;
             default:
@@ -16,7 +16,7 @@ const deviceReducers = {
         }
     },
     userDevices: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'USER_DEVICES':
                 return state = action.payload;
             default:
@@ -24,7 +24,7 @@ const deviceReducers = {
         }
     },
     toggleAddDeviceForm: (state = false, action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'ADD_DEVICE_FORM':
                 return state = action.payload;
             default:
@@ -32,7 +32,7 @@ const deviceReducers = {
         }
     },
     isDeviceTrayOpen: (state = false, action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'IS_DEVICE_TRAY_OPEN':
                 return !state;
             default:
@@ -40,7 +40,7 @@ const deviceReducers = {
         }
     },
     searchResults: (state = [], action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'SEARCH_RESULTS':
                 return state = action.payload;
             default:
@@ -48,7 +48,7 @@ const deviceReducers = {
         }
     },
     gettingData: (state = false, action) => {
-        switch(action.type) {
+        switch (action.type) {
             case 'GETTING_DATA':
                 return state = action.payload;
             default:

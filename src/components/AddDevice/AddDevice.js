@@ -9,6 +9,7 @@ import ManualAddForm from '../AddDevice/ManualAddForm';
 import styled from 'styled-components';
 import { CloseIcon } from '../../styles/components';
 import Colors from '../../styles/colors';
+import SteppedForm from '../AddDevice/SteppedForm';
 
 
 const Styles = styled.div`
@@ -26,7 +27,7 @@ const Styles = styled.div`
             padding: 20px;
             position: relative;
             z-index: 10;
-            height: 100%;
+            height: 90%;
             overflow-y: scroll;
             -webkit-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
             -moz-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
@@ -82,7 +83,7 @@ const AddDevice = () => {
                     <StockSearchResults searchTerm={searchTerm} />
 
                     {searchResults.length === 0 ?
-                        <ManualAddForm /> :
+                        <SteppedForm /> :
                         null
                     }
                 </div>

@@ -132,6 +132,8 @@ const ManualAddForm = () => {
     const stockDevices = useSelector(state => state.stockDevices);
     const [suggestions, setSuggestions] = useState([]);
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
+    const [audioIns, setAudioIns] = useState(0);
+    const [audioOuts, setAudioOuts] = useState(0);
     const { handleSubmit, register, errors } = useForm();
     const userDeviceIds = useSelector(state => state.userDeviceIds);
     const currentUserId = useSelector(state => state.currentUserId);
@@ -220,6 +222,14 @@ const ManualAddForm = () => {
         setImageFieldPopulated(false);
     }
 
+    const updateAudioOuts = e => {
+        setAudioOuts(e.target.value);
+    }
+
+    const updateAudioIns = e => {
+        setAudioIns(e.target.value);
+    }
+
     return (
         <Styles>
             <div className='manualAddFormContainer'>
@@ -263,18 +273,24 @@ const ManualAddForm = () => {
                         </div>
                     </div>
                     <div className='detailsContainer'>
+
                         <div className='inputContainer'>
                             <div className='validationContainer'>{errors.audioOuts && errors.audioOuts.message}</div>
-                            <input className='inputField numberFields' type="number" placeholder="Audio outs" name="audioOuts" ref={register({
+                            <input onChange={updateAudioOuts} className='inputField numberFields' type="number" placeholder="Audio outs" name="audioOuts" ref={register({
                                 required: 'Please enter amount of audio outputs'
                             })} />
+
+                            {/* TODO add for loop do show fields */}
+
                         </div>
+
                         <div className='inputContainer'>
                             <div className='validationContainer'>{errors.audioIns && errors.audioIns.message}</div>
-                            <input className='inputField numberFields' type="number" placeholder="Audio ins" name="audioIns" ref={register({
+                            <input onChange={updateAudioIns} className='inputField numberFields' type="number" placeholder="Audio ins" name="audioIns" ref={register({
                                 required: 'Please enter amount of audio inputs'
                             })} />
                         </div>
+
                         <div className='checkboxGroupContainer'>
                             <div className='validationContainer'></div>
                             <div className='checkboxGroupTitle'>Midi</div>
