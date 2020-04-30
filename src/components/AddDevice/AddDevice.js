@@ -7,7 +7,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import ManualAddForm from '../AddDevice/ManualAddForm';
 import styled from 'styled-components';
-import { CloseIcon } from '../../styles/components';
+import { CloseIconStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import SteppedForm from '../AddDevice/SteppedForm';
 
@@ -74,9 +74,9 @@ const AddDevice = () => {
     return (
         <Styles>
             <div className='addDeviceOuterContainer'>
-                <CloseIcon>
+                <CloseIconStyles>
                     <FontAwesomeIcon className='closeIcon' icon="times-circle" />
-                </CloseIcon>
+                </CloseIconStyles>
                 <div className='addDeviceContainer'>
                     <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 

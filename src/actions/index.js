@@ -189,3 +189,18 @@ export const connectionSelections = selection => {
         payload: selection
     };
 };
+
+export const addDeviceFormValues = formValues => {
+    return {
+        type: 'ADD_DEVICE_FORM_VALUES',
+        payload: formValues
+    };
+};
+
+export const currentStep = stepNumber => {
+    return {
+        type: 'CURRENT_STEP',
+        payload: stepNumber
+    };
+};
+

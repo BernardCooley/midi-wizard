@@ -6,7 +6,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { isManageAccountPageOpen } from '../../actions';
 import { useDispatch } from 'react-redux';
-import { CloseIcon } from '../../styles/components';
+import { CloseIconStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 
 
@@ -57,9 +57,9 @@ const ManageAccountPage = () => {
         <Styles>
             <div className='manageAccountContainer'>
                 <div className='manageAccountInnerContainer'>
-                    <CloseIcon>
+                    <CloseIconStyles>
                         <FontAwesomeIcon onClick={closeAccountPage} className='svg closeIcon' icon="times-circle" />
-                    </CloseIcon>
+                    </CloseIconStyles>
                     <AccountDetails />
                 </div>
             </div>

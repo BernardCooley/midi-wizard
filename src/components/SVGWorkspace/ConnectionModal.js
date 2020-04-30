@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { CustomButton } from '../../styles/components';
+import { CustomButtonStyles } from '../../styles/components';
 import { selectedLayoutDeviceId, connectionSelections } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
@@ -468,11 +468,11 @@ const ConnectionModal = () => {
                     </div>
                 </div>
 
-                <CustomButton>
+                <CustomButtonStyles>
                     <div className='connectionEditButtons'>
                         <button onClick={closeModal} className='customButton'>Close</button>
                     </div>
-                </CustomButton>
+                </CustomButtonStyles>
             </div>
         </Styles>
     )

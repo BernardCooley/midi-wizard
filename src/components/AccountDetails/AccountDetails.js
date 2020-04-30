@@ -7,7 +7,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { resetState } from '../../actions';
 import { useDispatch } from 'react-redux';
-import { CustomButton } from '../../styles/components';
+import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 
 
@@ -162,13 +162,13 @@ const AccountDetails = () => {
                     </div>
                 </div>
 
-                <CustomButton>
+                <CustomButtonStyles>
                     <button type="submit" className='saveButton customButton' disabled={fieldValue.length < 6}>Save</button>
-                </CustomButton>
+                </CustomButtonStyles>
             </form>
-            <CustomButton>
+            <CustomButtonStyles>
                 <button className='logoutButton customButton' onClick={logout}>Logout</button>
-            </CustomButton>
+            </CustomButtonStyles>
         </Styles>
     )
 }

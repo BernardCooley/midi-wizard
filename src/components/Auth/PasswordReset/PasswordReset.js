@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { currentAuthComponent } from '../../../actions';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { AuthFormContainer, AuthFormField, AuthFormOptions, CustomButton, AuthFormValidationMessage } from '../../../styles/components';
+import { AuthFormContainerStyles, AuthFormFieldStyles, AuthFormOptionsStyles, CustomButtonStyles, AuthFormValidationMessageStyles } from '../../../styles/components';
 
 
 const Styles = styled.div``;
@@ -31,9 +31,9 @@ const PasswordReset = () => {
 
     return (
         <Styles>
-            <AuthFormContainer>
+            <AuthFormContainerStyles>
                 <form onSubmit={handleSubmit(sendPasswordResetEmail)} className="formContainer" noValidate>
-                    <AuthFormField>
+                    <AuthFormFieldStyles>
                         <div className='fieldContainer'>
                             <input className={`inputField ${errors.email ? 'errorBorder' : ''}`} type="email" placeholder="Email" name="email" ref={register({
                                 required: 'Email address is required',
@@ -42,23 +42,23 @@ const PasswordReset = () => {
                                     message: 'Email address invalid'
                                 }
                             })}></input>
-                            <AuthFormValidationMessage>
+                            <AuthFormValidationMessageStyles>
                                 <div className='validationContainer'><span className={errors.email ? 'errorBackground' : ''}>{errors.email && errors.email.message}</span></div>
-                            </AuthFormValidationMessage>
+                            </AuthFormValidationMessageStyles>
                         </div>
-                    </AuthFormField>
+                    </AuthFormFieldStyles>
 
-                    <CustomButton>
+                    <CustomButtonStyles>
                         <button className='customButton' type="submit">Reset password</button>
-                    </CustomButton>
+                    </CustomButtonStyles>
                 </form>
-            </AuthFormContainer>
+            </AuthFormContainerStyles>
 
-            <AuthFormOptions>
+            <AuthFormOptionsStyles>
                 <div className='optionsContainer'>
                     <div className='optionContainer'><span className='optionLink' onClick={showLoginForm}>Back to login</span></div>
                 </div>
-            </AuthFormOptions>
+            </AuthFormOptionsStyles>
         </Styles>
     )
 }

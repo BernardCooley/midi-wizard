@@ -2,13 +2,13 @@ import styled from 'styled-components';
 import Colors from '../styles/colors';
 
 
-export const ConnectionFormSection = styled.div`
+export const ConnectionFormSectionStyles = styled.div`
     .connectionFormSection {
         
     }
 `;
 
-export const TrayTab = styled.div`
+export const TrayTabStyles = styled.div`
     .trayTab {
         position: relative;
         background-color: #383838;
@@ -33,7 +33,7 @@ export const TrayTab = styled.div`
     }
 `
 
-export const CustomButton = styled.div`
+export const CustomButtonStyles = styled.div`
     .customButton {
         width: 200px;
         height: 50px;
@@ -51,7 +51,7 @@ export const CustomButton = styled.div`
     }
 `
 
-export const CloseIcon = styled.div`
+export const CloseIconStyles = styled.div`
     .closeIcon {
         position: relative;
         right: 7px;
@@ -67,7 +67,7 @@ export const CloseIcon = styled.div`
     }
 `
 
-export const AuthFormOptions = styled.div`
+export const AuthFormOptionsStyles = styled.div`
     .optionsContainer {
         display: flex;
         width: 100%;
@@ -92,7 +92,7 @@ export const AuthFormOptions = styled.div`
     }
 `
 
-export const AuthFormValidationMessage = styled.div`
+export const AuthFormValidationMessageStyles = styled.div`
     .validationContainer {
         color: ${Colors.red};
         min-height: 20px;
@@ -105,7 +105,7 @@ export const AuthFormValidationMessage = styled.div`
     }
 `
 
-export const AuthFormField = styled.div`
+export const AuthFormFieldStyles = styled.div`
     width: 100%;
 
     .fieldContainer {
@@ -134,11 +134,92 @@ export const AuthFormField = styled.div`
     }
 `
 
-export const AuthFormContainer = styled.div`
+export const AuthFormContainerStyles = styled.div`
     .formContainer {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+`
+
+export const AddDeviceFormStyles = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+
+    .form {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+        height: 100%;
+
+        .formFieldsContainer {
+            width: 100%;
+            display: flex;
+            align-items: center;
+
+            .navPlaceholder {
+                width: 35px;
+            }
+
+            .fieldContainer {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+
+                .inputContainer {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .errorBox {
+                        -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                        -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                        box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                    }
+
+                    .validationContainer {
+                        color: ${Colors.red};
+                        min-height: 20px;
+                    } 
+
+                    .inputField {
+                        width: 80%;
+                        font-size: 20px;
+                        margin: 5px 0;
+                        height: 40px;
+                        text-align: center;
+                        border-radius: 10px;
+                        border: none;
+                        outline: none;
+                        -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                        -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                        box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                    }
+
+                    .manufacturerSuggestions {
+                        min-height: 30px;
+
+                        .suggentionItem {
+                            cursor: pointer;
+                        }
+                    }
+
+                    .numberFields {
+                        text-align: center;
+                    }
+                }
+            }
+        }
     }
 `

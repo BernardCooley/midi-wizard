@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { CustomButton, ConnectionFormSection } from '../../styles/components';
+import { CustomButtonStyles, ConnectionFormSectionStyles } from '../../styles/components';
 import { selectedLayoutDeviceId } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';

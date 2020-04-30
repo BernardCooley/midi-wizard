@@ -7,7 +7,7 @@ import { selectedLayoutId, isLayoutsTrayOpen, currentLayout, deletedLayoutId } f
 import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import { TrayTab } from '../../styles/components';
+import { TrayTabStyles } from '../../styles/components';
 
 
 const Styles = styled.div`
@@ -267,9 +267,9 @@ const LayoutsTray = () => {
     return (
         <Styles>
             <div className={`layoutsTrayOuterContainer ${!layoutsTrayOpen ? 'hidden' : ''}`}>
-                <TrayTab>
+                <TrayTabStyles>
                     <button onClick={toggleLayoutsTray} className={`trayTab layoutTab ${!layoutsTrayOpen ? 'open' : ''}`}>Layouts</button>
-                </TrayTab>
+                </TrayTabStyles>
                 <div className='layoutsTrayContainer'>
                     <div className='layoutsListContainer'>
                         {userLayouts.map((layout, index) => (

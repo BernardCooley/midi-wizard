@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { currentAuthComponent } from '../../../actions';
-import { AuthFormContainer, AuthFormField, AuthFormOptions, CustomButton, AuthFormValidationMessage } from '../../../styles/components';
+import { AuthFormContainerStyles, AuthFormFieldStyles, AuthFormOptionsStyles, CustomButtonStyles, AuthFormValidationMessageStyles } from '../../../styles/components';
 
 
 const Styles = styled.div``;
@@ -110,10 +110,10 @@ const AddUser = () => {
 
     return (
         <Styles>
-            <AuthFormContainer>
+            <AuthFormContainerStyles>
                 <form onSubmit={handleSubmit(registerUser)} className="formContainer" noValidate>
 
-                    <AuthFormField>
+                    <AuthFormFieldStyles>
                         <div className='fieldContainer'>
                             <input className={`inputField ${errors.email ? 'errorBorder' : ''}`} type="email" placeholder="Email" name="email" ref={register({
                                 required: 'Email address is required',
@@ -122,47 +122,47 @@ const AddUser = () => {
                                     message: 'Email address invalid'
                                 }
                             })}></input>
-                            <AuthFormValidationMessage>
+                            <AuthFormValidationMessageStyles>
                                 <div className='validationContainer'>
                                     <span className={errors.email ? 'errorBackground' : ''}>{errors.email && errors.email.message}</span>
                                 </div>
-                            </AuthFormValidationMessage>
+                            </AuthFormValidationMessageStyles>
                         </div>
 
                         <div className='fieldContainer'>
                             <input className={`inputField ${errors.username ? 'errorBorder' : ''}`} type="text" placeholder="Username" name="username" ref={register({
                                 required: 'Username is required'
                             })}></input>
-                            <AuthFormValidationMessage>
+                            <AuthFormValidationMessageStyles>
                                 <div className='validationContainer'>
                                     <span className={errors.username ? 'errorBackground' : ''}>{errors.username && errors.username.message}</span>
                                 </div>
-                            </AuthFormValidationMessage>
+                            </AuthFormValidationMessageStyles>
                         </div>
 
                         <div className='fieldContainer'>
                             <input className={`inputField ${errors.password ? 'errorBorder' : ''}`} type="password" placeholder="Password" name="password" ref={register({
                                 required: 'Password is required'
                             })}></input>
-                            <AuthFormValidationMessage>
+                            <AuthFormValidationMessageStyles>
                                 <div className='validationContainer'>
                                     <span className={errors.password ? 'errorBackground' : ''}>{errors.password && errors.password.message}</span>
                                 </div>
-                            </AuthFormValidationMessage>
+                            </AuthFormValidationMessageStyles>
                         </div>
-                    </AuthFormField>
+                    </AuthFormFieldStyles>
 
-                    <CustomButton>
+                    <CustomButtonStyles>
                         <button className='customButton' type="submit">Register</button>
-                    </CustomButton>
+                    </CustomButtonStyles>
                 </form>
-            </AuthFormContainer>
+            </AuthFormContainerStyles>
 
-            <AuthFormOptions>
+            <AuthFormOptionsStyles>
                 <div className='optionsContainer'>
                     <div className='optionContainer'>Already registered? <span className='optionLink' onClick={showLoginForm}>Log in</span></div>
                 </div>
-            </AuthFormOptions>
+            </AuthFormOptionsStyles>
         </Styles>
     )
 

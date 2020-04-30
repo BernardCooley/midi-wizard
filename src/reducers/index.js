@@ -4,6 +4,7 @@ import adminConsoleReducers from './adminConsoleReducers';
 import workspaceDevices from './workspaceReducers';
 import { combineReducers } from 'redux';
 import workspaceReducers from './workspaceReducers';
+import addDeviceReducers from './addDeviceReducers';
 
 const allReducers = combineReducers({
   isLoggedIn: authReducers.isLoggedInReducer,
@@ -32,7 +33,9 @@ const allReducers = combineReducers({
   isVerified: authReducers.isVerified,
   isManageAccountPageOpen: authReducers.isManageAccountPageOpen,
   selectedLayoutDeviceId: workspaceReducers.selectedLayoutDeviceId,
-  connectionSelections: workspaceReducers.connectionSelections
+  connectionSelections: workspaceReducers.connectionSelections,
+  addDeviceFormValues: addDeviceReducers.addDeviceFormValues,
+  currentStep: addDeviceReducers.currentStep
 });
 
 const rootReducer = (state, action) => {

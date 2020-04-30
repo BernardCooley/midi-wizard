@@ -8,7 +8,7 @@ import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
 import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import { TrayTab } from '../../styles/components';
+import { TrayTabStyles } from '../../styles/components';
 
 
 const Styles = styled.div`
@@ -124,9 +124,9 @@ const UserDeviceList = () => {
         <Styles>
             <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                 <div className='devicesListContainer'>
-                    <TrayTab>
+                    <TrayTabStyles>
                         <button onClick={toggleDeviceTray} className={`trayTab deviceTab ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
-                    </TrayTab>
+                    </TrayTabStyles>
                     <div className='deviceListInnerContainer'>
                         <div className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
                             {userDevices.length < 1 ?

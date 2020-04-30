@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import { CustomButton } from '../../styles/components';
+import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 
 const Styles = styled.div`
@@ -131,9 +131,9 @@ const Header = () => {
                 <div className='buttonContainer'>
                     {isAdmin ?
                         <>
-                            <CustomButton>
+                            <CustomButtonStyles>
                                 <button className={`customButton adminConsoleButton ${isAdminConsoleOpen ? 'buttonActive' : ''}`} active={isAdminConsoleOpen ? true : false} onClick={openCloseAdminConsole}>Admin console {numberOfUnverifiedDevices}</button>
-                            </CustomButton>
+                            </CustomButtonStyles>
                         </>
                         : null
                     }
