@@ -5,6 +5,8 @@ import GeneralStep from './GeneralStep';
 import AudioStep from './AudioStep';
 import MidiStep from './MidiStep';
 import { useSelector } from 'react-redux';
+import Colors from '../../styles/colors';
+import ConfirmStep from './ConfirmStep';
 
 const Styles = styled.div`
     width: 100%;
@@ -26,11 +28,6 @@ const Styles = styled.div`
             justify-content: center;
             align-items: center;
 
-            .stepTitle {
-                font-size: 20px;
-                font-weight: bold;
-            }
-
             .formStep {
                 display: none;
                 height: 100%;
@@ -45,6 +42,7 @@ const Styles = styled.div`
         .stepIndicator {
             width: 100%;
             height: 50px;
+            border-bottom: 1px solid ${Colors.lightGray}
         }
     }
 `;
@@ -55,14 +53,17 @@ const SteppedForm = () => {
     const steps = [
         'General',
         'Audio',
-        'Midi'
+        'Midi',
+        'Confirm'
     ]
 
     return (
         <Styles>
             <div className='formAndIndicator'>
+                <div className='stepIndicator'>
+                    <StepIndicator steps={steps} currentstep={currentStep} />
+                </div>
                 <div className='formContainer'>
-                    <div className='stepTitle'>{steps[currentStep - 1]}</div>
                     <div className={`formStep ${currentStep === 1 ? 'currentStep' : ''}`}>
                         <GeneralStep />
                     </div>
@@ -72,9 +73,9 @@ const SteppedForm = () => {
                     <div className={`formStep ${currentStep === 3 ? 'currentStep' : ''}`}>
                         <MidiStep />
                     </div>
-                </div>
-                <div className='stepIndicator'>
-                    <StepIndicator steps={steps} currentstep={currentStep} />
+                    <div className={`formStep ${currentStep === 4 ? 'currentStep' : ''}`}>
+                        <ConfirmStep />
+                    </div>
                 </div>
             </div>
         </Styles>

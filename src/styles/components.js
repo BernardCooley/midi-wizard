@@ -151,72 +151,92 @@ export const AddDeviceFormStyles = styled.div`
     flex-direction: column;
     height: 100%;
 
-    .form {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-direction: column;
-        height: 100%;
+    .formContainer {
 
-        .formFieldsContainer {
+        .skip {
+            cursor: pointer;
+            font-weight: bold;
+            color: ${Colors.middleGray};
+            width: 100%;
+            text-align: right;
+            position: relative;
+            top: 20px;
+            height: 25px;
+
+            &:hover {
+                text-decoration: underline;
+                color: ${Colors.darkTeal};
+            }
+        }
+
+        .form {
             width: 100%;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-direction: column;
+            height: 100%;
 
-            .navPlaceholder {
-                width: 35px;
-            }
-
-            .fieldContainer {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+            .formFieldsContainer {
                 width: 100%;
+                display: flex;
+                align-items: center;
+                margin-bottom: 50px;
 
-                .inputContainer {
-                    width: 100%;
+                .navPlaceholder {
+                    width: 35px;
+                }
+
+                .fieldContainer {
                     display: flex;
-                    justify-content: center;
                     flex-direction: column;
+                    justify-content: center;
                     align-items: center;
+                    width: 100%;
 
-                    .errorBox {
-                        -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                        -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                        box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                    }
+                    .inputContainer {
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        flex-direction: column;
+                        align-items: center;
 
-                    .validationContainer {
-                        color: ${Colors.red};
-                        min-height: 20px;
-                    } 
-
-                    .inputField {
-                        width: 80%;
-                        font-size: 20px;
-                        margin: 5px 0;
-                        height: 40px;
-                        text-align: center;
-                        border-radius: 10px;
-                        border: none;
-                        outline: none;
-                        -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
-                        -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
-                        box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
-                    }
-
-                    .manufacturerSuggestions {
-                        min-height: 30px;
-
-                        .suggentionItem {
-                            cursor: pointer;
+                        .errorBox {
+                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                            box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
                         }
-                    }
 
-                    .numberFields {
-                        text-align: center;
+                        .validationContainer {
+                            color: ${Colors.red};
+                            min-height: 20px;
+                        } 
+
+                        .inputField {
+                            width: 50%;
+                            font-size: 20px;
+                            margin: 5px 0;
+                            height: 40px;
+                            text-align: center;
+                            border-radius: 10px;
+                            border: none;
+                            outline: none;
+                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                        }
+
+                        .manufacturerSuggestions {
+                            min-height: 30px;
+
+                            .suggentionItem {
+                                cursor: pointer;
+                            }
+                        }
+
+                        .numberFields {
+                            text-align: center;
+                        }
                     }
                 }
             }

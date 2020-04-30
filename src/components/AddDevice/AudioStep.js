@@ -35,30 +35,41 @@ const AudioStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
+    const skipStep = () => {
+        const updatedData = formFieldValues;
+        updatedData['Audio'] = null;
+
+        dispatch(addDeviceFormValues(updatedData));
+        dispatch(currentStep(stepNumber + 1));
+    }
+
     return (
         <Styles>
             <AddDeviceFormStyles>
-                <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
-                    <div className='formFieldsContainer'>
-                        <StepNavigationButton iconname='arrow-circle-left' />
-                        <div className='fieldContainer'>
-                            <div className='inputContainer'>
-                                <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
-                                <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
-                                    required: 'Please enter device name'
-                                })} />
-                            </div>
+                <div className='formContainer'>
+                    <div className='skip' onClick={skipStep}>Skip step</div>
+                    <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                        <div className='formFieldsContainer'>
+                            <StepNavigationButton iconname='arrow-circle-left' />
+                            <div className='fieldContainer'>
+                                <div className='inputContainer'>
+                                    <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
+                                    <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
+                                        required: 'Please enter device name'
+                                    })} />
+                                </div>
 
-                            <div className='inputContainer'>
-                                <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
-                                <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
-                                    required: 'Please enter manufacturer'
-                                })} />
+                                <div className='inputContainer'>
+                                    <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
+                                    <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
+                                        required: 'Please enter manufacturer'
+                                    })} />
+                                </div>
                             </div>
+                            <StepNavigationButton next iconname='arrow-circle-right' />
                         </div>
-                        <StepNavigationButton next iconname='arrow-circle-right' />
-                    </div>
-                </form>
+                    </form>
+                </div>
             </AddDeviceFormStyles>
         </Styles>
     )

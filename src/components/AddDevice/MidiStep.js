@@ -20,41 +20,56 @@ const MidiStep = () => {
     const dispatch = useDispatch();
     const { handleSubmit, register, errors } = useForm();
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
+    const stepNumber = useSelector(state => state.currentStep);
 
-    const submitForm = async data => {
+    const submitStep = async data => {
         const updatedData = formFieldValues;
         updatedData['Midi'] = data;
 
         dispatch(addDeviceFormValues(updatedData));
+
+        nextStep();
+    }
+
+    const nextStep = () => {
+        dispatch(currentStep(stepNumber + 1));
+    }
+
+    const skipStep = () => {
+        const updatedData = formFieldValues;
+        updatedData['Midi'] = null;
+
+        dispatch(addDeviceFormValues(updatedData));
+        dispatch(currentStep(stepNumber + 1));
     }
 
     return (
         <Styles>
             <AddDeviceFormStyles>
-                <form onSubmit={handleSubmit(submitForm)} className='form' autoComplete="off">
-                    <div className='formFieldsContainer'>
-                        <StepNavigationButton iconname='arrow-circle-left' />
-                        <div className='fieldContainer'>
-                            <div className='inputContainer'>
-                                <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
-                                <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
-                                    required: 'Please enter device name'
-                                })} />
-                            </div>
+                <div className='formContainer'>
+                    <div className='skip' onClick={skipStep}>Skip step</div>
+                    <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                        <div className='formFieldsContainer'>
+                            <StepNavigationButton iconname='arrow-circle-left' />
+                            <div className='fieldContainer'>
+                                <div className='inputContainer'>
+                                    <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
+                                    <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
+                                        required: 'Please enter device name'
+                                    })} />
+                                </div>
 
-                            <div className='inputContainer'>
-                                <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
-                                <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
-                                    required: 'Please enter manufacturer'
-                                })} />
+                                <div className='inputContainer'>
+                                    <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
+                                    <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
+                                        required: 'Please enter manufacturer'
+                                    })} />
+                                </div>
                             </div>
+                            <StepNavigationButton next iconname='arrow-circle-right' />
                         </div>
-                        <div className='navPlaceholder'></div>
-                    </div>
-                    <CustomButtonStyles>
-                        <button type='submit' className='navPlaceholder customButton'>Add device</button>
-                    </CustomButtonStyles>
-                </form>
+                    </form>
+                </div>
             </AddDeviceFormStyles>
         </Styles>
     )
