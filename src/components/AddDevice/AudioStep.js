@@ -23,7 +23,11 @@ const AudioStep = () => {
     const stepNumber = useSelector(state => state.currentStep);
 
     const submitStep = async data => {
-        dispatch(addDeviceFormValues([...formFieldValues, data]));
+        const updatedData = formFieldValues;
+        updatedData['Audio'] = data;
+
+        dispatch(addDeviceFormValues(updatedData));
+
         nextStep();
     }
 

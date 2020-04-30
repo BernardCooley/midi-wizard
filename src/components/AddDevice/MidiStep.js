@@ -22,7 +22,10 @@ const MidiStep = () => {
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
 
     const submitForm = async data => {
-        // dispatch(addDeviceFormValues([...formFieldValues, data]));
+        const updatedData = formFieldValues;
+        updatedData['Midi'] = data;
+
+        dispatch(addDeviceFormValues(updatedData));
     }
 
     return (

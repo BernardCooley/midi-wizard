@@ -23,7 +23,10 @@ const GeneralStep = () => {
     const stepNumber = useSelector(state => state.currentStep);
 
     const submitStep = async data => {
-        dispatch(addDeviceFormValues([...formFieldValues, data]));
+        const updatedData = formFieldValues;
+        updatedData['General'] = data;
+
+        dispatch(addDeviceFormValues(updatedData));
         nextStep();
     }
 

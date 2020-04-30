@@ -21,10 +21,20 @@ const Styles = styled.div`
         .formContainer {
             width: 100%;
             height: 85%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .stepTitle {
+                font-size: 20px;
+                font-weight: bold;
+            }
 
             .formStep {
                 display: none;
                 height: 100%;
+                width: 100%;
             }
 
             .currentStep {
@@ -52,6 +62,7 @@ const SteppedForm = () => {
         <Styles>
             <div className='formAndIndicator'>
                 <div className='formContainer'>
+                    <div className='stepTitle'>{steps[currentStep - 1]}</div>
                     <div className={`formStep ${currentStep === 1 ? 'currentStep' : ''}`}>
                         <GeneralStep />
                     </div>

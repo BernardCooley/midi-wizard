@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAddDeviceForm } from '../../actions';
+import { toggleAddDeviceForm, currentStep } from '../../actions';
 import StockSearchResults from './StockSearchResults';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -54,6 +54,8 @@ const AddDevice = () => {
     useEffect(() => {
         document.querySelector('.closeIcon').addEventListener('click', () => {
             openCloseAddDeviceForm(false);
+            dispatch(currentStep(1));
+
         })
     }, [isAddDeviceFormOpen]);
 

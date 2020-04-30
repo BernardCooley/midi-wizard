@@ -1,5 +1,5 @@
 const addDeviceReducers = {
-    addDeviceFormValues: (state = [], action) => {
+    addDeviceFormValues: (state = {}, action) => {
         switch (action.type) {
             case 'ADD_DEVICE_FORM_VALUES':
                 return state = action.payload;
