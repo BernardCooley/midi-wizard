@@ -4,9 +4,10 @@ import StepIndicator from './StepIndicator';
 import GeneralStep from './GeneralStep';
 import AudioStep from './AudioStep';
 import MidiStep from './MidiStep';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../styles/colors';
 import ConfirmStep from './ConfirmStep';
+import { addDeviceFormValues, currentStep } from '../../actions';
 
 const Styles = styled.div`
     width: 100%;
@@ -28,6 +29,22 @@ const Styles = styled.div`
             justify-content: center;
             align-items: center;
 
+            .skip {
+                cursor: pointer;
+                font-weight: bold;
+                color: ${Colors.middleGray};
+                width: 100%;
+                text-align: right;
+                position: relative;
+                height: 25px;
+                top: 10px;
+
+                &:hover {
+                    text-decoration: underline;
+                    color: ${Colors.darkTeal};
+                }
+            }
+
             .formStep {
                 display: none;
                 height: 100%;
@@ -48,7 +65,10 @@ const Styles = styled.div`
 `;
 
 const SteppedForm = () => {
-    const currentStep = useSelector(state => state.currentStep);
+    const dispatch = useDispatch();
+    const currStep = useSelector(state => state.currentStep);
+    const formFieldValues = useSelector(state => state.addDeviceFormValues);
+    const stepNumber = useSelector(state => state.currentStep);
 
     const steps = [
         'General',
@@ -57,23 +77,41 @@ const SteppedForm = () => {
         'Confirm'
     ]
 
+    const skipStep = () => {
+        let stepName = '';
+        if (currStep === 2) {
+            stepName = 'Audio';
+        } else if (currStep === 3) {
+            stepName = 'Midi';
+        }
+
+        const updatedData = formFieldValues;
+        updatedData[stepName] = null;
+
+        dispatch(addDeviceFormValues(updatedData));
+        dispatch(currentStep(stepNumber + 1));
+    }
+
     return (
         <Styles>
             <div className='formAndIndicator'>
+                {currentStep}
                 <div className='stepIndicator'>
-                    <StepIndicator steps={steps} currentstep={currentStep} />
+                    <StepIndicator steps={steps} currentstep={currStep} />
                 </div>
                 <div className='formContainer'>
-                    <div className={`formStep ${currentStep === 1 ? 'currentStep' : ''}`}>
+                    <div className={`formStep ${currStep === 1 ? 'currentStep' : ''}`}>
                         <GeneralStep />
                     </div>
-                    <div className={`formStep ${currentStep === 2 ? 'currentStep' : ''}`}>
+                    <div className={`formStep ${currStep === 2 ? 'currentStep' : ''}`}>
+                        <div className='skip' onClick={skipStep}>Skip step</div>
                         <AudioStep />
                     </div>
-                    <div className={`formStep ${currentStep === 3 ? 'currentStep' : ''}`}>
+                    <div className={`formStep ${currStep === 3 ? 'currentStep' : ''}`}>
+                        <div className='skip' onClick={skipStep}>Skip step</div>
                         <MidiStep />
                     </div>
-                    <div className={`formStep ${currentStep === 4 ? 'currentStep' : ''}`}>
+                    <div className={`formStep ${currStep === 4 ? 'currentStep' : ''}`}>
                         <ConfirmStep />
                     </div>
                 </div>

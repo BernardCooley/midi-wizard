@@ -35,19 +35,10 @@ const MidiStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
-    const skipStep = () => {
-        const updatedData = formFieldValues;
-        updatedData['Midi'] = null;
-
-        dispatch(addDeviceFormValues(updatedData));
-        dispatch(currentStep(stepNumber + 1));
-    }
-
     return (
         <Styles>
             <AddDeviceFormStyles>
                 <div className='formContainer'>
-                    <div className='skip' onClick={skipStep}>Skip step</div>
                     <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
                         <div className='formFieldsContainer'>
                             <StepNavigationButton iconname='arrow-circle-left' />

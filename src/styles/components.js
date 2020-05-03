@@ -153,22 +153,6 @@ export const AddDeviceFormStyles = styled.div`
 
     .formContainer {
 
-        .skip {
-            cursor: pointer;
-            font-weight: bold;
-            color: ${Colors.middleGray};
-            width: 100%;
-            text-align: right;
-            position: relative;
-            top: 20px;
-            height: 25px;
-
-            &:hover {
-                text-decoration: underline;
-                color: ${Colors.darkTeal};
-            }
-        }
-
         .form {
             width: 100%;
             display: flex;
