@@ -167,7 +167,7 @@ const AudioStep = () => {
         <Styles>
             <AddDeviceFormStyles>
                 <div className='formContainer'>
-                    <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                    <form name='audioForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
                         <div className='formFieldsContainer'>
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>
@@ -176,7 +176,7 @@ const AudioStep = () => {
                                     <AudioFields fieldname='audioIn' />
                                 </div>
                             </div>
-                            <StepNavigationButton next iconname='arrow-circle-right' />
+                            <StepNavigationButton next audioStep iconname='arrow-circle-right' />
                         </div>
                     </form>
                 </div>

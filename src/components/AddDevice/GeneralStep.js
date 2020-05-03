@@ -39,7 +39,7 @@ const GeneralStep = () => {
             <AddDeviceFormStyles>
                 <div className='formContainer'>
                     <div className='skip'></div>
-                    <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                    <form name='generalForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
                         <div className='formFieldsContainer'>
                             <div className='navPlaceholder'></div>
                             <div className='fieldContainer'>

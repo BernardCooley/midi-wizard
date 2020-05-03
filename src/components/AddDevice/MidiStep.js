@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
 import StepNavigationButton from './StepNavigationButton';
-import { AddDeviceFormStyles, CustomButtonStyles } from '../../styles/components';
+import { AddDeviceFormStyles } from '../../styles/components';
 
 const Styles = styled.div`
     width: 90%;
@@ -39,7 +39,7 @@ const MidiStep = () => {
         <Styles>
             <AddDeviceFormStyles>
                 <div className='formContainer'>
-                    <form onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                    <form name='midiForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
                         <div className='formFieldsContainer'>
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>

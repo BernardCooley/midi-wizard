@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowCircleRight, faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import { addDeviceFormValues, currentStep } from '../../actions';
+import { currentStep } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Styles = styled.div`
@@ -58,7 +58,8 @@ const StepNavigationButton = props => {
 
 StepNavigationButton.propTypes = {
     iconname: PropTypes.string,
-    next: PropTypes.bool
+    next: PropTypes.bool,
+    audioStep: PropTypes.bool
 }
 
 export default StepNavigationButton;
