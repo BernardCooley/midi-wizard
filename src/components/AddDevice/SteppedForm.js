@@ -46,13 +46,17 @@ const Styles = styled.div`
             }
 
             .formStep {
-                display: none;
+                opacity: 0;
                 height: 100%;
                 width: 100%;
+                position: absolute;
+                z-index: -10;
             }
 
             .currentStep {
-                display: block;
+                opacity: 1;
+                position: relative;
+                z-index: 10;
             }
         }
 
