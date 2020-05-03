@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faDotCircle } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
+import { currentStep } from '../../actions';
+import { useDispatch } from 'react-redux';
 
 
 const Styles = styled.div`
@@ -30,6 +32,15 @@ const Styles = styled.div`
         align-items: center;
         justify-content: flex-start;
         width: 120px;
+        cursor: pointer;
+        transition:0.2s;
+        -webkit-transition:0.2s;
+        -moz-transition:0.2s;
+
+        &:hover {
+            transform: scale(1.2);
+            color: ${Colors.darkTeal};
+        }
 
         .stepIcon {
             color: ${Colors.lightGray};
@@ -41,6 +52,15 @@ const Styles = styled.div`
             color: ${Colors.darkTeal};
         }
 
+        .completedStep {
+            transform: scale(1.3);
+            color: ${Colors.brightGreen};
+        }
+
+        .stepName {
+            pointer-events: none;
+        }
+
         .activeStepName {
             font-weight: bold;
         }
@@ -49,11 +69,18 @@ const Styles = styled.div`
 
 const StepIndicator = props => {
     library.add(faDotCircle);
+    const progress = props.progress;
+
+    const dispatch = useDispatch();
+
+    const changeStep = e => {
+        dispatch(currentStep(parseInt(e.target.getAttribute('stepnumber')) + 1));
+    }
 
     const Step = props => {
         return (
-            <div className='step'>
-                <FontAwesomeIcon icon="dot-circle" className={`stepIcon ${props.activestep ? 'activeStep' : ''}`} />
+            <div onClick={props.stepnumber < progress ? changeStep : null} stepnumber={props.stepnumber} className='step'>
+                <FontAwesomeIcon icon="dot-circle" className={`stepIcon ${props.stepnumber < progress - 1 && !props.activestep ? 'completedStep' : ''} ${props.activestep ? 'activeStep' : ''}`} />
                 <div className={`stepName ${props.activestep ? 'activeStepName' : ''}`}>{props.stepname}</div>
             </div>
         )
@@ -61,6 +88,7 @@ const StepIndicator = props => {
 
     Step.propTypes = {
         stepname: PropTypes.string,
+        stepnumber: PropTypes.number,
         activestep: PropTypes.bool
     }
 
@@ -68,7 +96,7 @@ const StepIndicator = props => {
         <Styles>
             {props.steps.map((step, index) => (
                 <>
-                    <Step key={index} stepname={step} activestep={props.steps.indexOf(step) === props.currentstep - 1} />
+                    <Step stepnumber={props.steps.indexOf(step)} key={index} stepname={step} activestep={props.steps.indexOf(step) === props.currentstep - 1} />
                     <div className='stepConnector'></div>
                 </>
             ))}
@@ -78,7 +106,8 @@ const StepIndicator = props => {
 
 StepIndicator.propTypes = {
     steps: PropTypes.array,
-    currentstep: PropTypes.number
+    currentstep: PropTypes.number,
+    progress: PropTypes.number
 }
 
 export default StepIndicator;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import StepIndicator from './StepIndicator';
 import GeneralStep from './GeneralStep';
@@ -69,6 +69,13 @@ const SteppedForm = () => {
     const currStep = useSelector(state => state.currentStep);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
+    const [progress, setProgress] = useState(1);
+
+    useEffect(() => {
+        if (progress < currStep) {
+            setProgress(currStep);
+        }
+    }, [currStep]);
 
     const steps = [
         'General',
@@ -95,9 +102,8 @@ const SteppedForm = () => {
     return (
         <Styles>
             <div className='formAndIndicator'>
-                {currentStep}
                 <div className='stepIndicator'>
-                    <StepIndicator steps={steps} currentstep={currStep} />
+                    <StepIndicator progress={progress} steps={steps} currentstep={currStep} />
                 </div>
                 <div className='formContainer'>
                     <div className={`formStep ${currStep === 1 ? 'currentStep' : ''}`}>
