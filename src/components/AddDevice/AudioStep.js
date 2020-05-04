@@ -109,11 +109,6 @@ const AudioStep = () => {
     const [audioOutFields, setAudioOutFields] = useState([]);
     const [audioInFields, setAudioInFields] = useState([]);
 
-
-    useEffect(() => {
-        console.log(audioOutFields);
-    }, [audioOutFields]);
-
     const submitStep = async data => {
         const updatedData = formFieldValues;
         updatedData['Audio'] = data;
@@ -127,7 +122,7 @@ const AudioStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
-    const addField = () => {
+    const addField = audioOutOrIn => {
         const newField = [
             {
                 "name": "",
@@ -135,28 +130,33 @@ const AudioStep = () => {
                 "value": ''
             }
         ]
-        setAudioOutFields([...updateValues(), ...newField]);
+        if (audioOutOrIn === 'audioOut') {
+            setAudioOutFields([...updateValues(audioOutOrIn), ...newField]);
+        } else if (audioOutOrIn === 'audioIn') {
+            setAudioInFields([...updateValues(audioOutOrIn), ...newField]);
+        }
     }
 
-    const removeField = id => {
-        const updatedFields = updateValues().filter(field => field.id !== id);
-        setAudioOutFields(updatedFields);
+    const removeField = (id, audioOutOrIn) => {
+        const updatedFields = updateValues(audioOutOrIn).filter(field => field.id !== id);
+        if (audioOutOrIn === 'audioOut') {
+            setAudioOutFields(updatedFields);
+        } else if (audioOutOrIn === 'audioIn') {
+            setAudioInFields(updatedFields);
+        }
     }
 
-    const updateValues = () => {
+    const updateValues = audioOutOrIn => {
         const updatedFields = [];
         const inputFields = document.getElementById('audioForm').elements;
 
         for (let field of inputFields) {
-            if (field.tagName === 'INPUT') {
-                if (field.getAttribute('fieldtype') === 'audioOut') {
-                    console.log(field.getAttribute('fieldid'), field.getAttribute('fieldname'), field.value);
-                    updatedFields.push({
-                        "name": "",
-                        "id": field.getAttribute('fieldid'),
-                        "value": field.value
-                    });
-                }
+            if (field.tagName === 'INPUT' && field.getAttribute('audiooutorin') === audioOutOrIn) {
+                updatedFields.push({
+                    "name": "",
+                    "id": field.getAttribute('fieldid'),
+                    "value": field.value
+                });
             }
         }
 
@@ -166,35 +166,43 @@ const AudioStep = () => {
     const AudioFields = props => {
         const { fields, append, remove } = useFieldArray({
             control,
-            name: props.fieldname
+            name: props.audioType
         });
+
+        let storedFields = [];
+
+        if (props.audioType === 'audioOut') {
+            storedFields = audioOutFields;
+        } else if (props.audioType === 'audioIn') {
+            storedFields = audioInFields;
+        }
 
         return (
             <div className='addAudioSection'>
-                {audioOutFields.length > 0 ?
+                {storedFields.length > 0 ?
                     < div className='inputListTitle'>Audio {
-                        props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
+                        props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
                     }s</div> : null
                 }
                 <ul className='fieldList'>
-                    {audioOutFields.map((field, index) => (
+                    {storedFields.map((field, index) => (
                         <li className='inputListItem' key={field.id}>
                             <div className='inputContainer' >
-                                <input fieldtype={props.fieldname} fieldname={field.name} fieldid={field.id} placeholder={`${
-                                    props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
-                                    } name`} name={`${props.fieldname}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
+                                <input audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
+                                    props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
+                                    } name`} name={`${props.audioType}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
                             </div>
-                            <button className='deleteButton' type='button' onClick={() => removeField(field.id)}>X</button>
+                            <button className='deleteButton' type='button' onClick={() => removeField(field.id, props.audioType)}>X</button>
                         </li>
                     ))}
                 </ul>
-                {audioOutFields.length > 0 ?
-                    <div onClick={addField} className='addButton'>
+                {storedFields.length > 0 ?
+                    <div onClick={() => addField(props.audioType)} className='addButton'>
                         <FontAwesomeIcon className='svg' icon="plus" />
                     </div> :
                     <CustomButtonStyles>
-                        <button onClick={addField} type='button' className='customButton'>Add audio {
-                            props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
+                        <button onClick={() => addField(props.audioType)} type='button' className='customButton'>Add audio {
+                            props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
                         }s</button>
                     </CustomButtonStyles>
                 }
@@ -203,7 +211,7 @@ const AudioStep = () => {
     }
 
     AudioFields.propTypes = {
-        fieldname: PropTypes.string
+        audioType: PropTypes.string
     }
 
     return (
@@ -215,8 +223,8 @@ const AudioStep = () => {
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>
                                 <div className='addAudioContainer'>
-                                    <AudioFields fieldname='audioOut' />
-                                    <AudioFields fieldname='audioIn' />
+                                    <AudioFields audioType='audioOut' />
+                                    <AudioFields audioType='audioIn' />
                                 </div>
                             </div>
                             <StepNavigationButton next audioStep iconname='arrow-circle-right' />
