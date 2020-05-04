@@ -47,7 +47,7 @@ export const CustomCheckBoxStyles = styled.div`
         }
 
         .checkBoxLabel input:checked ~ .customCheckbox {
-            background-color: #2196F3;
+            background-color: ${Colors.darkTeal};
         }
 
         .customCheckbox:after {
@@ -65,7 +65,7 @@ export const CustomCheckBoxStyles = styled.div`
             top: 5px;
             width: 5px;
             height: 10px;
-            border: solid white;
+            border: solid ${Colors.white};
             border-width: 0 3px 3px 0;
             -webkit-transform: rotate(45deg);
             -ms-transform: rotate(45deg);
