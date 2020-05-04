@@ -195,8 +195,7 @@ const ConfirmStep = () => {
 
     return (
         <Styles>
-            {/* TODO only show if there are fields to display */}
-            {formFieldValues.length > 2 ?
+            {Object.keys(formFieldValues).length > 2 ?
                 <>
                     <div className='summaryContainer'>
                         <StepNavigationButton iconname='arrow-circle-left' />
