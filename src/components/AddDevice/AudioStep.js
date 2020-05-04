@@ -139,7 +139,7 @@ const AudioStep = () => {
     }
 
     const removeField = id => {
-        const updatedFields = audioOutFields.filter(field => field.id !== id);
+        const updatedFields = updateValues().filter(field => field.id !== id);
         setAudioOutFields(updatedFields);
     }
 
