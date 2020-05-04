@@ -109,6 +109,11 @@ const AudioStep = () => {
     const [audioOutFields, setAudioOutFields] = useState([]);
     const [audioInFields, setAudioInFields] = useState([]);
 
+    const storeAllfields = () => {
+        setAudioOutFields(updateValues('audioOut'));
+        setAudioInFields(updateValues('audioIn'));
+    }
+
     const submitStep = async data => {
         const updatedData = formFieldValues;
         updatedData['Audio'] = data;
@@ -188,7 +193,7 @@ const AudioStep = () => {
                     {storedFields.map((field, index) => (
                         <li className='inputListItem' key={field.id}>
                             <div className='inputContainer' >
-                                <input audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
+                                <input onBlur={storeAllfields} audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
                                     props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
                                     } name`} name={`${props.audioType}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
                             </div>
