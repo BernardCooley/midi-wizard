@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, useFieldArray } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
@@ -106,6 +106,27 @@ const AudioStep = () => {
     const stepNumber = useSelector(state => state.currentStep);
     const audioOutLabel = 'output';
     const audioInLabel = 'input';
+    const [audioOutFields, setAudioOutFields] = useState([]);
+    const [audioInFields, setAudioInFields] = useState([]);
+
+
+    useEffect(() => {
+        console.log(audioOutFields);
+    }, [audioOutFields]);
+
+
+    // [
+    //     {
+    //         "name": "",
+    //         "id": "cb58903d-6a93-4134-a107-9c926bf2c1d7",
+    //         "value": 'qwery'
+    //     },
+    //     {
+    //         "name": "",
+    //         "id": "1ee48c36-87e6-43e6-92e3-09547d2c693c",
+    //         "value": '12345'
+    //     }
+    // ]
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
@@ -120,37 +141,73 @@ const AudioStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
+    const addField = () => {
+        const newField = [
+            {
+                "name": "",
+                "id": '_' + Math.random().toString(36).substr(2, 9),
+                "value": ''
+            }
+        ]
+        setAudioOutFields([...updateValues(), ...newField]);
+    }
+
+    const removeField = id => {
+        const updatedFields = audioOutFields.filter(field => field.id !== id);
+        setAudioOutFields(updatedFields);
+    }
+
+    const updateValues = () => {
+        const updatedFields = [];
+        const inputFields = document.getElementById('audioForm').elements;
+
+        for (let field of inputFields) {
+            if (field.tagName === 'INPUT') {
+                if (field.getAttribute('fieldtype') === 'audioOut') {
+                    console.log(field.getAttribute('fieldid'), field.getAttribute('fieldname'), field.value);
+                    updatedFields.push({
+                        "name": "",
+                        "id": field.getAttribute('fieldid'),
+                        "value": field.value
+                    });
+                }
+            }
+        }
+
+        return updatedFields;
+    }
+
     const AudioFields = props => {
         const { fields, append, remove } = useFieldArray({
             control,
-            name: props.fieldname,
+            name: props.fieldname
         });
 
         return (
             <div className='addAudioSection'>
-                {fields.length > 0 ?
+                {audioOutFields.length > 0 ?
                     < div className='inputListTitle'>Audio {
                         props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
                     }s</div> : null
                 }
                 <ul className='fieldList'>
-                    {fields.map((item, index) => (
-                        <li className='inputListItem' key={item.id}>
+                    {audioOutFields.map((field, index) => (
+                        <li className='inputListItem' key={field.id}>
                             <div className='inputContainer' >
-                                <input placeholder={`${
+                                <input fieldtype={props.fieldname} fieldname={field.name} fieldid={field.id} placeholder={`${
                                     props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
-                                    } name`} name={`${props.fieldname}[${index}]`} defaultValue={item.name} className='inputField' ref={register()} />
+                                    } name`} name={`${props.fieldname}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
                             </div>
-                            <button className='deleteButton' type='button' onClick={() => remove(index)}>X</button>
+                            <button className='deleteButton' type='button' onClick={() => removeField(field.id)}>X</button>
                         </li>
                     ))}
                 </ul>
-                {fields.length > 0 ?
-                    <div onClick={() => append({ name: "" })} className='addButton'>
+                {audioOutFields.length > 0 ?
+                    <div onClick={addField} className='addButton'>
                         <FontAwesomeIcon className='svg' icon="plus" />
                     </div> :
                     <CustomButtonStyles>
-                        <button onClick={() => append({ name: "" })} type='button' className='customButton'>Add audio {
+                        <button onClick={addField} type='button' className='customButton'>Add audio {
                             props.fieldname === 'audioOut' ? audioOutLabel : audioInLabel
                         }s</button>
                     </CustomButtonStyles>
@@ -167,7 +224,7 @@ const AudioStep = () => {
         <Styles>
             <AddDeviceFormStyles>
                 <div className='formContainer'>
-                    <form name='audioForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                    <form id='audioForm' name='audioForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
                         <div className='formFieldsContainer'>
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>
