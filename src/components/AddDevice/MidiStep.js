@@ -46,21 +46,21 @@ const MidiStep = () => {
                                 <CustomToggleSwitch>
                                     <label className="switch">
                                         Midi Out
-                                        <input name='midi_out' type="checkbox" ref={register()}></input>
+                                        <input defaultChecked={false} name='midi_out' type="checkbox" ref={register()}></input>
                                         <span className="slider round"></span>
                                     </label>
                                 </CustomToggleSwitch>
                                 <CustomToggleSwitch>
                                     <label className="switch">
                                         Midi In
-                                        <input name='midi_in' type="checkbox" ref={register()}></input>
+                                        <input defaultChecked={false} name='midi_in' type="checkbox" ref={register()}></input>
                                         <span className="slider round"></span>
                                     </label>
                                 </CustomToggleSwitch>
                                 <CustomToggleSwitch>
                                     <label className="switch">
                                         Midi Thru
-                                        <input name='midi_thru' type="checkbox" ref={register()}></input>
+                                        <input defaultChecked={false} name='midi_thru' type="checkbox" ref={register()}></input>
                                         <span className="slider round"></span>
                                     </label>
                                 </CustomToggleSwitch>

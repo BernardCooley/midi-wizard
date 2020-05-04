@@ -152,18 +152,19 @@ const GeneralStep = () => {
                             <div className='navPlaceholder'></div>
                             <div className='fieldContainer'>
                                 <div className='inputContainer'>
+                                    <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
+                                    <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
+                                        required: 'Please enter manufacturer'
+                                    })} />
+                                </div>
+
+                                <div className='inputContainer'>
                                     <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
                                     <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
                                         required: 'Please enter device name'
                                     })} />
                                 </div>
 
-                                <div className='inputContainer'>
-                                    <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
-                                    <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
-                                        required: 'Please enter manufacturer'
-                                    })} />
-                                </div>
                                 <div className='checkboxGroupTitle'>Device types</div>
                                 <ul className='fieldList'>
                                     {deviceTypeFields.map((field, index) => (
