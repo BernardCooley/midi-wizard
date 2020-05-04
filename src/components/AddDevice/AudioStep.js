@@ -116,7 +116,7 @@ const AudioStep = () => {
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
-        updatedData['Audio'] = data;
+        updatedData['audio'] = data;
 
         dispatch(addDeviceFormValues(updatedData));
 

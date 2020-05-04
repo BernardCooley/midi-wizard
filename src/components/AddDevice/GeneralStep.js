@@ -96,7 +96,23 @@ const GeneralStep = () => {
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
-        updatedData['General'] = data;
+
+        updatedData['general'] = {};
+
+        updatedData.general['deviceName'] = data.deviceName;
+        updatedData.general['manufacturer'] = data.manufacturer;
+
+        const deviceTypes = [];
+
+        Object.keys(data).forEach(key => {
+            if (key !== 'deviceName' && key !== 'manufacturer') {
+                if (data[key]) {
+                    deviceTypes.push(key);
+                }
+            }
+        });
+
+        updatedData['general']['deviceTypes'] = deviceTypes;
 
         dispatch(addDeviceFormValues(updatedData));
         nextStep();
@@ -156,7 +172,7 @@ const GeneralStep = () => {
                                                 <div className='checkboxContainer' >
                                                     <label className='checkBoxLabel'>
                                                         {field.label}
-                                                        <input checked={field.checked} onClick={updateChecked} id={field.id} type='checkbox' name='deviceType' value={field.valiue} ref={register()} />
+                                                        <input checked={field.checked} onClick={updateChecked} id={field.id} type='checkbox' name={field.value} value={field.value} ref={register()} />
                                                         <span className='customCheckbox'></span>
                                                     </label>
                                                 </div>

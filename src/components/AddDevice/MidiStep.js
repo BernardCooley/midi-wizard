@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
 import StepNavigationButton from './StepNavigationButton';
-import { AddDeviceFormStyles } from '../../styles/components';
+import { AddDeviceFormStyles, CustomToggleSwitch } from '../../styles/components';
 
 const Styles = styled.div`
     width: 90%;
@@ -24,7 +24,7 @@ const MidiStep = () => {
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
-        updatedData['Midi'] = data;
+        updatedData['midi'] = data;
 
         dispatch(addDeviceFormValues(updatedData));
 
@@ -43,19 +43,27 @@ const MidiStep = () => {
                         <div className='formFieldsContainer'>
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>
-                                <div className='inputContainer'>
-                                    <div className='validationContainer'>{errors.deviceName && errors.deviceName.message}</div>
-                                    <input className={`inputField ${errors.deviceName ? 'errorBox' : ''}`} placeholder='Device name' name="deviceName" ref={register({
-                                        required: 'Please enter device name'
-                                    })} />
-                                </div>
-
-                                <div className='inputContainer'>
-                                    <div className='validationContainer'>{errors.manufacturer && errors.manufacturer.message}</div>
-                                    <input className={`inputField ${errors.manufacturer ? 'errorBox' : ''}`} placeholder='Manufacturer' name="manufacturer" ref={register({
-                                        required: 'Please enter manufacturer'
-                                    })} />
-                                </div>
+                                <CustomToggleSwitch>
+                                    <label className="switch">
+                                        Midi Out
+                                        <input name='midi_out' type="checkbox" ref={register()}></input>
+                                        <span className="slider round"></span>
+                                    </label>
+                                </CustomToggleSwitch>
+                                <CustomToggleSwitch>
+                                    <label className="switch">
+                                        Midi In
+                                        <input name='midi_in' type="checkbox" ref={register()}></input>
+                                        <span className="slider round"></span>
+                                    </label>
+                                </CustomToggleSwitch>
+                                <CustomToggleSwitch>
+                                    <label className="switch">
+                                        Midi Thru
+                                        <input name='midi_thru' type="checkbox" ref={register()}></input>
+                                        <span className="slider round"></span>
+                                    </label>
+                                </CustomToggleSwitch>
                             </div>
                             <StepNavigationButton next iconname='arrow-circle-right' />
                         </div>
