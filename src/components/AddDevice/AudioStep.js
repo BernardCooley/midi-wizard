@@ -114,20 +114,6 @@ const AudioStep = () => {
         console.log(audioOutFields);
     }, [audioOutFields]);
 
-
-    // [
-    //     {
-    //         "name": "",
-    //         "id": "cb58903d-6a93-4134-a107-9c926bf2c1d7",
-    //         "value": 'qwery'
-    //     },
-    //     {
-    //         "name": "",
-    //         "id": "1ee48c36-87e6-43e6-92e3-09547d2c693c",
-    //         "value": '12345'
-    //     }
-    // ]
-
     const submitStep = async data => {
         const updatedData = formFieldValues;
         updatedData['Audio'] = data;
