@@ -9,97 +9,137 @@ import { CustomButtonStyles } from '../../styles/components';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Colors from '../../styles/colors';
 
 const Styles = styled.div`
-    width: 90%;
-    height: 90%;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    padding-top: 50px;
-
-    .addAudioContainer {
+        width: 90%;
+        height: 90%;
+        margin: auto;
         display: flex;
-        width: 100%;
-        justify-content: space-around;
+        align-items: center;
+        padding-top: 50px;
 
-        .addAudioSection {
+        .addAudioContainer {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 250px;
+            width: 100%;
+            justify-content: space-around;
 
-            .inputListTitle {
-                font-weight: bold;
-            }
+            .addAudioSection {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 250px;
 
-            .fieldList {
-                list-style: none;
-                margin: 10px;
-                padding: 0;
+                .svg {
+                    pointer-events: none;
+                }
 
-                li {
-                    display: flex;
-                    align-items: center;
+                .inputListTitle {
+                    font-weight: bold;
+                }
 
-                    .deleteButton {
+                .fieldList {
+                    list-style: none;
+                    margin: 10px;
+                    padding: 0;
+                    height: 45px;
+
+                    .inputListItem {
+                        display: flex;
+                        align-items: center;
                         position: relative;
-                        height: 42px;
-                        border-radius: 0 10px 10px 0;
-                        border: none;
-                        outline: none;
-                        text-align: right;
-                        font-size: 16px;
-                        transition:0.2s;
-                        -webkit-transition:0.2s;
-                        -moz-transition:0.2s;
-                        right: 22px;
+                        z-index: 1;
 
-                        &:hover {
-                            background-color: ${Colors.middleGray};
-                            color: ${Colors.whiteBlue};
+                        .fieldIcons {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100%;
+                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            height: 40px;
+                            position: relative;
+                            right: 7px;
+                            z-index: -1;
+                            border-radius: 10px;
+
+                            .confirmEditButton {
+                                border-bottom: 1px solid ${Colors.lightGray} !important;
+                                border-radius: 0 10px 0 0;
+                            }
+
+                            .deleteButton {
+                                border-radius: 0 0 10px 0;
+                            }
+
+                            .fieldActionButton {
+                                background-color: ${Colors.whiteBlue};
+                                color: ${Colors.middleGray};
+                                width: 35px;
+                                border: none;
+                                outline: none;
+                                padding-left: 13px;
+                                flex-grow: 1;
+
+                                &:hover {
+                                    background-color: ${Colors.middleGray};
+                                    color: ${Colors.whiteBlue};
+                                }
+
+                                .confirmIcon {
+                                    
+                                }
+
+                                .editIcon {
+
+                                }
+
+                                .deleteIcon {
+                                    transform: rotate(45deg);
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-            .inputContainer {
-                flex-direction: row !important;
-                position: relative;
-                width: 250px !important;
-            }
-
-            .addButton {
-                border-radius: 25px;
-                padding: 10px;
-                height: 25px;
-                cursor: pointer;
-                transition:0.2s;
-                -webkit-transition:0.2s;
-                -moz-transition:0.2s;
-
-                .svg {
-                    font-size: 25px;
+                .inputContainer {
+                    flex-direction: row !important;
+                    position: relative;
+                    width: 250px !important;
                 }
 
-                &:hover {
-                    transform: scale(1.2);
-                }
-            }
+                .addButton {
+                    border-radius: 25px;
+                    padding: 10px;
+                    height: 25px;
+                    cursor: pointer;
+                    transition:0.1s;
+                    -webkit-transition:0.1s;
+                    -moz-transition:0.1s;
 
-            .inputField {
-                width: 100% !important;
+                    .addButtonSvg {
+                        font-size: 25px;
+                    }
+
+                    &:hover {
+                        transform: scale(1.2);
+                    }
+                }
+
+                .inputField {
+                    width: 100% !important;
+                }
             }
         }
-    }
-`;
+    `;
 
 
 const AudioStep = () => {
 
-    library.add(faPlus);
+    library.add(faPlus, faCheck, faEdit);
     const dispatch = useDispatch();
     const { handleSubmit, register, control } = useForm();
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
@@ -108,10 +148,12 @@ const AudioStep = () => {
     const audioInLabel = 'input';
     const [audioOutFields, setAudioOutFields] = useState([]);
     const [audioInFields, setAudioInFields] = useState([]);
+    const [editingFieldId, setEditingFieldId] = useState('');
 
     const storeAllfields = () => {
         setAudioOutFields(updateValues('audioOut'));
         setAudioInFields(updateValues('audioIn'));
+        setEditingFieldId('');
     }
 
     const submitStep = async data => {
@@ -135,6 +177,7 @@ const AudioStep = () => {
                 "value": ''
             }
         ]
+        setEditingFieldId(newField[0].id);
         if (audioOutOrIn === 'audioOut') {
             setAudioOutFields([...updateValues(audioOutOrIn), ...newField]);
         } else if (audioOutOrIn === 'audioIn') {
@@ -182,6 +225,23 @@ const AudioStep = () => {
             storedFields = audioInFields;
         }
 
+        const confirmField = () => {
+            if (document.querySelector(`#${editingFieldId}`).value.length > 0) {
+                storeAllfields();
+            } else {
+                document.querySelector(`#${editingFieldId}`).classList.add('errorBox');
+                setTimeout(() => {
+                    document.querySelector(`#${editingFieldId}`).classList.remove('errorBox');
+                }, 200);
+                setTimeout(() => {
+                    document.querySelector(`#${editingFieldId}`).classList.add('errorBox');
+                }, 400);
+                setTimeout(() => {
+                    document.querySelector(`#${editingFieldId}`).classList.remove('errorBox');
+                }, 600);
+            }
+        }
+
         return (
             <div className='addAudioSection'>
                 {storedFields.length > 0 ?
@@ -193,18 +253,34 @@ const AudioStep = () => {
                     {storedFields.map((field, index) => (
                         <li className='inputListItem' key={field.id}>
                             <div className='inputContainer' >
-                                <input onBlur={storeAllfields} audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
+                                <input id={field.id} disabled={editingFieldId !== field.id} audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
                                     props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
                                     } name`} name={`${props.audioType}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
                             </div>
-                            <button className='deleteButton' type='button' onClick={() => removeField(field.id, props.audioType)}>X</button>
+                            <div className='fieldIcons'>
+                                {editingFieldId === field.id ?
+                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={confirmField}>
+                                        <FontAwesomeIcon className='svg' icon="check" />
+                                    </button> :
+                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={() => setEditingFieldId(field.id)}>
+                                        <FontAwesomeIcon className='svg' icon="edit" />
+                                    </button>
+                                }
+                                <button className='fieldActionButton deleteButton' type='button' onClick={() => removeField(field.id, props.audioType)}>
+                                    <FontAwesomeIcon className='deleteIcon svg' icon="plus" />
+                                </button>
+                            </div>
                         </li>
                     ))}
                 </ul>
                 {storedFields.length > 0 ?
-                    <div onClick={() => addField(props.audioType)} className='addButton'>
-                        <FontAwesomeIcon className='svg' icon="plus" />
-                    </div> :
+                    <>
+                        {editingFieldId.length === 0 ?
+                            <div onClick={() => addField(props.audioType)} className='addButton'>
+                                <FontAwesomeIcon className='addButtonSvg' icon="plus" />
+                            </div> : null
+                        }
+                    </> :
                     <CustomButtonStyles>
                         <button onClick={() => addField(props.audioType)} type='button' className='customButton'>Add audio {
                             props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
@@ -228,6 +304,7 @@ const AudioStep = () => {
                             <StepNavigationButton iconname='arrow-circle-left' />
                             <div className='fieldContainer'>
                                 <div className='addAudioContainer'>
+                                    {/* TODO field is disabled when clicking the other plus button */}
                                     <AudioFields audioType='audioOut' />
                                     <AudioFields audioType='audioIn' />
                                 </div>

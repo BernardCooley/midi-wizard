@@ -57,6 +57,7 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.1",
     "firestore-export-import": "^0.3.3",
-    "node-sass": "^4.13.1"
+    "node-sass": "^4.13.1",
+    "react-hook-form-devtools": "^1.1.3"
   }
 }
