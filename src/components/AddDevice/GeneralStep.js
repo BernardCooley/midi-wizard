@@ -14,7 +14,28 @@ const Styles = styled.div`
     display: flex;
     align-items: center;
 
-    .fieldList {
+    .imageUploadInput {
+        font-size: 18px;
+        display: flex;
+    }
+
+    .checkboxGroupTitle {
+        position: relative;
+        top: 69px;
+        background-color: ${Colors.whiteBlue};
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    .imageUploadLabel {
+        position: relative;
+        background-color: ${Colors.whiteBlue};
+        font-weight: bold;
+        padding: 10px;
+        top: -43px;
+    }
+
+    .fieldList, .imageUploadContainer {
         list-style: none;
         padding-left: 0;
         width: 80%;
@@ -28,12 +49,45 @@ const Styles = styled.div`
         margin-top: 50px;
     }
 
-    .checkboxGroupTitle {
-        position: relative;
-        top: 69px;
-        background-color: ${Colors.whiteBlue};
-        font-weight: bold;
-        padding: 10px;
+    .imageContainer {
+        justify-content: center;
+
+        .imageUploadInput {
+            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+            -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+            box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+        }
+
+        .imageUploadInputContainer {
+
+
+            .clearImageUploadField {
+                margin-top: 10px;
+                background-color: ${Colors.middleGray};
+                color: ${Colors.white};
+                padding: 5px;
+                border: none;
+                outline: none;
+
+                &:hover {
+                    background-color: ${Colors.darkTeal};
+                }
+            }    
+
+            .imagePreview {
+                width: 50%;
+                margin: auto;
+                margin-top: 20px;
+
+                img {
+                    width: 100%;
+                }
+            }        
+        }
+    }
+
+    .hidden {
+        visibility: hidden;
     }
 `;
 
@@ -45,6 +99,8 @@ const GeneralStep = () => {
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
     const [deviceTypeFields, setDeviceTypeFields] = useState([]);
+    const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
+    const [imageFle, setImageFile] = useState('');
 
     useEffect(() => {
         setDeviceTypeFields(constructDeviceTypeFields(deviceTypes));
@@ -97,7 +153,9 @@ const GeneralStep = () => {
     const submitStep = async data => {
         const updatedData = formFieldValues;
 
-        updatedData['general'] = {};
+        if (!updatedData['general']) {
+            updatedData['general'] = {};
+        }
 
         updatedData.general['deviceName'] = data.deviceName;
         updatedData.general['manufacturer'] = data.manufacturer;
@@ -105,7 +163,7 @@ const GeneralStep = () => {
         const deviceTypes = [];
 
         Object.keys(data).forEach(key => {
-            if (key !== 'deviceName' && key !== 'manufacturer') {
+            if (key !== 'deviceName' && key !== 'manufacturer' && key !== 'imageFile') {
                 if (data[key]) {
                     deviceTypes.push(key);
                 }
@@ -122,6 +180,7 @@ const GeneralStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
+    // eslint-disable-next-line no-unused-vars
     const { fields, append, remove } = useFieldArray({
         control,
         name: ''
@@ -142,12 +201,33 @@ const GeneralStep = () => {
         }));
     }
 
+    const clearFileInput = () => {
+        document.querySelector('#imageUploadInput').value = '';
+        setImageFieldPopulated(false);
+        setImageFile('');
+    }
+
+    const updateFilePath = () => {
+        const localImageUrl = window.URL.createObjectURL(document.querySelector('#imageUploadInput').files[0]);
+        const updatedData = formFieldValues;
+
+        if (!updatedData['general']) {
+            updatedData['general'] = {};
+        }
+
+        updatedData['general']['imageRef'] = localImageUrl
+
+        dispatch(addDeviceFormValues(updatedData));
+        setImageFile(localImageUrl);
+    }
+
     return (
         <Styles>
             <AddDeviceFormStyles>
                 <div className='formContainer'>
                     <div className='skip'></div>
                     <form name='generalForm' onSubmit={handleSubmit(submitStep)} className='form' autoComplete="off">
+                        <p className='formInstructions'>Please fill out the form with as much detail as possible. You will be able to use your new device right away, but each new device will be reviewed and possibly updated by site admin, so details my change in your device if they are incorrect.</p>
                         <div className='formFieldsContainer'>
                             <div className='navPlaceholder'></div>
                             <div className='fieldContainer'>
@@ -181,6 +261,20 @@ const GeneralStep = () => {
                                         </li>
                                     ))}
                                 </ul>
+
+                                <div className='imageContainer imageUploadContainer'>
+                                    <div className='imageUploadLabel'>Device image</div>
+                                    <div className='imageUploadInputContainer inputContainer'>
+                                        <div className='validationContainer'>{errors.imageFile && 'Image files must be jpg, jpeg or png'}</div>
+                                        <input onChange={() => { setImageFieldPopulated(true); updateFilePath() }} id='imageUploadInput' className='imageUploadInput' name="imageFile" ref={register({
+                                            validate: files => files.length === 0 || files[0].name.includes('.jpg') || files[0].name.includes('.png') || files[0].name.includes('.jpeg')
+                                        })} type="file" />
+                                        <div className='imagePreview'>
+                                            <img src={imageFle}></img>
+                                        </div>
+                                        <button onClick={clearFileInput} className={`clearImageUploadField ${!imageFieldPopulated ? 'hidden' : ''}`} type="button">Delete image</button>
+                                    </div>
+                                </div>
                             </div>
                             <StepNavigationButton next iconname='arrow-circle-right' />
                         </div>

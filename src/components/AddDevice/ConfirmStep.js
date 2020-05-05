@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomButtonStyles } from '../../styles/components';
@@ -81,6 +81,10 @@ const Styles = styled.div`
                 width: 90%;
                 height: 100%;
 
+                .imagePreview img {
+                    width: 100%;
+                }
+
                 .detailContainer {
                     margin-bottom: 10px;
                 }
@@ -142,7 +146,8 @@ const ConfirmStep = () => {
             "midi_out": true,
             "midi_in": true,
             "midi_thru": false
-        }
+        },
+        "image": "blob:http://localhost:3000/cb7d3dd0-845b-4281-a4fd-45a310472ce4"
     }
 
     const addDevice = async () => {
@@ -227,6 +232,9 @@ const ConfirmStep = () => {
                                             {CapitalizeString(type.replace(/_/g, ' '))}
                                         </div>
                                     ))}
+                                </div>
+                                <div className='imagePreview'>
+                                    <img src={formFieldValues.general.imageRef}></img>
                                 </div>
                             </div>
                         </div>

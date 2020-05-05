@@ -298,6 +298,11 @@ export const AddDeviceFormStyles = styled.div`
             flex-direction: column;
             height: 100%;
 
+            .formInstructions {
+                text-align: center;
+                font-weight: bold;
+            }
+
             .formFieldsContainer {
                 width: 100%;
                 display: flex;
