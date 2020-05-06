@@ -40,6 +40,13 @@ export const setUserDevices = userDevices => {
     };
 };
 
+export const newUserDevices = userDevices => {
+    return {
+        type: 'NEW_USER_DEVICES',
+        payload: userDevices
+    };
+};
+
 export const toggleAddDeviceForm = show => {
     return {
         type: 'ADD_DEVICE_FORM',

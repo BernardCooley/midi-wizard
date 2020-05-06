@@ -124,7 +124,8 @@ const GeneralStep = () => {
         'midi_thru_box',
         'midi_merge_box',
         'clock_generator',
-        'clock_generators'
+        'clock_generators',
+        'sampler'
     ]
 
     const constructDeviceTypeFields = (deviceTypessss) => {

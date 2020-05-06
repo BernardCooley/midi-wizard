@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import StepNavigationButton from './StepNavigationButton';
@@ -9,6 +9,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import firebase from '../../firebase';
+import { toggleAddDeviceForm, addDeviceFormValues } from '../../actions';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Styles = styled.div`
     width: 90%;
@@ -124,21 +126,47 @@ const Styles = styled.div`
 
 const ConfirmStep = () => {
 
+    const dispatch = useDispatch();
     const db = firebase.firestore();
     const stockDevicesRef = db.collection('StockDevices');
+    const userDevicesRef = db.collection('Users');
     library.add(faTimes, faCheck);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
+    const currentUserId = useSelector(state => state.currentUserId);
+    const newUserDevices = useSelector(state => state.newUserDevices);
+
+    const notify = message => {
+        toast(message);
+    };
 
     const addToStockDevices = async newDevice => {
         const newDocumentRef = await stockDevicesRef.doc();
         await newDocumentRef.set(newDevice);
         newDevice['deviceId'] = await newDocumentRef.id;
+        newDevice['verified'] = false;
         await newDocumentRef.set(newDevice);
         return newDocumentRef.id;
     }
 
+    const addToUserDevices = async (newDevice, deviceId) => {
+        const updatedDevices = [...newUserDevices, await newDevice];
+
+        updatedDevices['deviceId'] = await deviceId;
+        updatedDevices['verified'] = false;
+
+        userDevicesRef.doc(currentUserId).update(
+            {
+                'devices': updatedDevices
+            }).then(() => {
+                dispatch(toggleAddDeviceForm(false));
+                dispatch(addDeviceFormValues({}));
+                notify('Device added');
+
+            });
+    }
+
     const addDevice = async () => {
-        addToStockDevices(formFieldValues);
+        addToUserDevices(formFieldValues, addToStockDevices(formFieldValues));
     }
 
     const CapitalizeString = string => {
@@ -191,6 +219,7 @@ const ConfirmStep = () => {
 
     return (
         <Styles>
+            <ToastContainer />
             {Object.keys(formFieldValues).length > 2 ?
                 <>
                     <div className='summaryContainer'>
