@@ -185,9 +185,9 @@ const ConfirmStep = () => {
             <div className='audio'>
                 <div className='audioTitle detailTitle'>{props.audiolabel}</div>
                 <div className='audioDetailContainer'>
-                    {formFieldValues.audio[props.audiotype].map((audio, index) => (
+                    {formFieldValues.audio[props.audiotype] ? formFieldValues.audio[props.audiotype].map((audio, index) => (
                         <div className='audioDetail' key={index}>{audio}</div>
-                    ))}
+                    )) : null}
                 </div>
             </div>
         )
