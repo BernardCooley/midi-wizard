@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import StepNavigationButton from './StepNavigationButton';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
+import firebase from '../../firebase';
 
 const Styles = styled.div`
     width: 90%;
@@ -49,19 +50,6 @@ const Styles = styled.div`
 
                 .midiDetail {
                     text-align: center;
-
-                    .midiIcons {
-                        font-size: 24px;
-                        margin-top: 10px;
-                    }
-
-                    .noIcon {
-                        color: ${Colors.red};
-                    }
-
-                    .yesIcon {
-                        color: ${Colors.brightGreen};
-                    }
                 }
             }
 
@@ -118,40 +106,39 @@ const Styles = styled.div`
             }
         }
     }
+
+    .yesIcon {
+        color: ${Colors.brightGreen};
+    }
+
+    .noIcon {
+        color: ${Colors.red};
+    }
+
+    .icons {
+        font-size: 24px;
+        margin-top: 10px;
+    }
 `;
 
 
 const ConfirmStep = () => {
 
+    const db = firebase.firestore();
+    const stockDevicesRef = db.collection('StockDevices');
     library.add(faTimes, faCheck);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
 
-    const data = {
-        "general": {
-            "deviceName": "lhvlj",
-            "manufacturer": "bjlbjh",
-            "deviceTypes": [
-                "audio_interface", "synthesizer"
-            ]
-        },
-        "audio": {
-            "audioOut": [
-                "fszdf", "thsry"
-            ],
-            "audioIn": [
-                "fbdng", "f\\b\\dng"
-            ]
-        },
-        "midi": {
-            "midi_out": true,
-            "midi_in": true,
-            "midi_thru": false
-        },
-        "image": "blob:http://localhost:3000/cb7d3dd0-845b-4281-a4fd-45a310472ce4"
+    const addToStockDevices = async newDevice => {
+        const newDocumentRef = await stockDevicesRef.doc();
+        await newDocumentRef.set(newDevice);
+        newDevice['deviceId'] = await newDocumentRef.id;
+        await newDocumentRef.set(newDevice);
+        return newDocumentRef.id;
     }
 
     const addDevice = async () => {
-        console.log(formFieldValues);
+        addToStockDevices(formFieldValues);
     }
 
     const CapitalizeString = string => {
@@ -169,8 +156,8 @@ const ConfirmStep = () => {
             <div className='midiDetail'>
                 <div className='detailTitle'>{CapitalizeString((props.miditype).replace(/_/g, ' '))}</div>
                 {formFieldValues.midi[props.miditype] ?
-                    <FontAwesomeIcon className='yesIcon midiIcons' icon="check" /> :
-                    <FontAwesomeIcon className='noIcon midiIcons' icon="times" />
+                    <FontAwesomeIcon className='yesIcon icons' icon="check" /> :
+                    <FontAwesomeIcon className='noIcon icons' icon="times" />
                 }
             </div>
         )
@@ -185,9 +172,13 @@ const ConfirmStep = () => {
             <div className='audio'>
                 <div className='audioTitle detailTitle'>{props.audiolabel}</div>
                 <div className='audioDetailContainer'>
-                    {formFieldValues.audio[props.audiotype] ? formFieldValues.audio[props.audiotype].map((audio, index) => (
-                        <div className='audioDetail' key={index}>{audio}</div>
-                    )) : null}
+                    {Object.keys(formFieldValues.audio[props.audiotype]).length > 0 ? Object.keys(formFieldValues.audio[props.audiotype]).map((key, index) => (
+                        <div className='audioDetail' key={index}>{key}</div>
+                    )) :
+                        <div className='audioDetail'>
+                            <FontAwesomeIcon className='noIcon icons' icon="times" />
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -209,20 +200,22 @@ const ConfirmStep = () => {
                             <div className='summaryDetails'>
                                 <div className='detailContainer'>
                                     <div className='detailTitle'>
-                                        Device Name
-                                    </div>
-                                    <div className='detail'>
-                                        {formFieldValues.general.deviceName}
-                                    </div>
-                                </div>
-                                <div className='detailContainer'>
-                                    <div className='detailTitle'>
                                         Manufacturer
                                     </div>
                                     <div className='detail'>
                                         {formFieldValues.general.manufacturer}
                                     </div>
                                 </div>
+
+                                <div className='detailContainer'>
+                                    <div className='detailTitle'>
+                                        Device Name
+                                    </div>
+                                    <div className='detail'>
+                                        {formFieldValues.general.deviceName}
+                                    </div>
+                                </div>
+
                                 <div className='detailContainer'>
                                     <div className='detailTitle'>
                                         Device Types
@@ -233,8 +226,16 @@ const ConfirmStep = () => {
                                         </div>
                                     ))}
                                 </div>
-                                <div className='imagePreview'>
-                                    <img src={formFieldValues.general.imageRef}></img>
+                                <div className='imagePreview detailContainer'>
+                                    <div className='detailTitle'>
+                                        Device Image
+                                    </div>
+                                    {formFieldValues.general.imageRef ?
+                                        <img src={formFieldValues.general.imageRef}></img> :
+                                        <div className=''>
+                                            <FontAwesomeIcon className='noIcon icons' icon="times" />
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>

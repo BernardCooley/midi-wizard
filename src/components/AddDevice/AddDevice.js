@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAddDeviceForm, currentStep } from '../../actions';
+import { toggleAddDeviceForm, currentStep, addDeviceFormValues } from '../../actions';
 import StockSearchResults from './StockSearchResults';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import ManualAddForm from '../AddDevice/ManualAddForm';
 import styled from 'styled-components';
 import { CloseIconStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
@@ -55,6 +54,7 @@ const AddDevice = () => {
         document.querySelector('.closeIcon').addEventListener('click', () => {
             openCloseAddDeviceForm(false);
             dispatch(currentStep(1));
+            dispatch(addDeviceFormValues({}));
 
         })
     }, [isAddDeviceFormOpen]);

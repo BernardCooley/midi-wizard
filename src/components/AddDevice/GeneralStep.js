@@ -47,6 +47,7 @@ const Styles = styled.div`
         justify-content: space-between;
         border-radius: 15px;
         margin-top: 50px;
+        margin-bottom: 10px;
     }
 
     .imageContainer {
@@ -160,17 +161,11 @@ const GeneralStep = () => {
         updatedData.general['deviceName'] = data.deviceName;
         updatedData.general['manufacturer'] = data.manufacturer;
 
-        const deviceTypes = [];
-
         Object.keys(data).forEach(key => {
-            if (key !== 'deviceName' && key !== 'manufacturer' && key !== 'imageFile') {
-                if (data[key]) {
-                    deviceTypes.push(key);
-                }
+            if (key === 'deviceType') {
+                updatedData['general']['deviceTypes'] = data[key];
             }
         });
-
-        updatedData['general']['deviceTypes'] = deviceTypes;
 
         dispatch(addDeviceFormValues(updatedData));
         nextStep();
@@ -246,14 +241,16 @@ const GeneralStep = () => {
                                 </div>
 
                                 <div className='checkboxGroupTitle'>Device types</div>
-                                <ul className='fieldList'>
+                                <ul className={`fieldList ${errors.deviceType ? 'errorBox' : ''}`}>
                                     {deviceTypeFields.map((field, index) => (
                                         <li className='inputListItem' key={index}>
                                             <CustomCheckBoxStyles>
                                                 <div className='checkboxContainer' >
                                                     <label className='checkBoxLabel'>
                                                         {field.label}
-                                                        <input checked={field.checked} onClick={updateChecked} id={field.id} type='checkbox' name={field.value} value={field.value} ref={register()} />
+                                                        <input checked={field.checked} onClick={updateChecked} id={field.id} type='checkbox' name='deviceType' value={field.value} ref={register({
+                                                            required: 'At least one device type is required'
+                                                        })} />
                                                         <span className='customCheckbox'></span>
                                                     </label>
                                                 </div>
@@ -261,6 +258,7 @@ const GeneralStep = () => {
                                         </li>
                                     ))}
                                 </ul>
+                                <div className='validationContainer'>{errors.deviceType && errors.deviceType.message}</div>
 
                                 <div className='imageContainer imageUploadContainer'>
                                     <div className='imageUploadLabel'>Device image</div>

@@ -298,6 +298,23 @@ export const AddDeviceFormStyles = styled.div`
             flex-direction: column;
             height: 100%;
 
+            .errorBox {
+                -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+                box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
+            }
+
+            .successBox {
+                -webkit-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+                -moz-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+                box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+            }
+
+            .validationContainer {
+                color: ${Colors.red};
+                min-height: 20px;
+            } 
+
             .formInstructions {
                 text-align: center;
                 font-weight: bold;
@@ -326,23 +343,6 @@ export const AddDeviceFormStyles = styled.div`
                         justify-content: center;
                         flex-direction: column;
                         align-items: center;
-
-                        .errorBox {
-                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                            box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
-                        }
-
-                        .successBox {
-                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
-                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
-                            box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
-                        }
-
-                        .validationContainer {
-                            color: ${Colors.red};
-                            min-height: 20px;
-                        } 
 
                         .inputField {
                             width: 50%;

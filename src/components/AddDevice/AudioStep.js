@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, useFieldArray } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
@@ -164,7 +164,26 @@ const AudioStep = () => {
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
-        updatedData['audio'] = data;
+        updatedData['audio'] = {
+            'audioIn': {},
+            'audioOut': {}
+        };
+
+        if (data.audioIn) {
+            data.audioIn.forEach(inputName => {
+                updatedData['audio']['audioIn'][inputName] = '';
+            });
+        } else {
+            updatedData['audio']['audioIn'] = {};
+        }
+
+        if (data.audioOut) {
+            data.audioOut.forEach(inputName => {
+                updatedData['audio']['audioOut'][inputName] = '';
+            });
+        } else {
+            updatedData['audio']['audioOut'] = {};
+        }
 
         dispatch(addDeviceFormValues(updatedData));
 
@@ -227,6 +246,7 @@ const AudioStep = () => {
     }
 
     const AudioFields = props => {
+        // eslint-disable-next-line no-unused-vars
         const { fields, append, remove } = useFieldArray({
             control,
             name: props.audioType
