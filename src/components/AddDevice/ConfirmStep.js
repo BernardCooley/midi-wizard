@@ -183,7 +183,7 @@ const ConfirmStep = () => {
         return (
             <div className='midiDetail'>
                 <div className='detailTitle'>{CapitalizeString((props.miditype).replace(/_/g, ' '))}</div>
-                {formFieldValues.midi[props.miditype] ?
+                {formFieldValues.midi[props.miditype].enabled ?
                     <FontAwesomeIcon className='yesIcon icons' icon="check" /> :
                     <FontAwesomeIcon className='noIcon icons' icon="times" />
                 }

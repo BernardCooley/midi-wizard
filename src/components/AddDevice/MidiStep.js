@@ -18,13 +18,18 @@ const Styles = styled.div`
 const MidiStep = () => {
 
     const dispatch = useDispatch();
-    const { handleSubmit, register, errors } = useForm();
+    const { handleSubmit, register } = useForm();
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
 
     const submitStep = async data => {
         const updatedData = formFieldValues;
-        updatedData['midi'] = data;
+        updatedData['midi'] = {};
+
+        Object.keys(data).forEach(midiType => {
+            updatedData['midi'][midiType] = {};
+            updatedData['midi'][midiType]['enabled'] = data[midiType];
+        });
 
         dispatch(addDeviceFormValues(updatedData));
 
