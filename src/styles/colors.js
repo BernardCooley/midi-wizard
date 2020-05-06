@@ -8,7 +8,8 @@ const Colors = {
     white: 'white',
     jet: '#333333',
     black: 'black',
-    brightGreen: '#12ab12'
+    brightGreen: 'rgba(18, 171, 18, 1)',
+    brightGreenOpaque: 'rgba(18, 171, 18, 0.4)',
 }
 
 export default Colors;

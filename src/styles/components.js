@@ -333,6 +333,12 @@ export const AddDeviceFormStyles = styled.div`
                             box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
                         }
 
+                        .successBox {
+                            -webkit-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+                            -moz-box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+                            box-shadow: 0 0 3pt 2pt ${Colors.brightGreen} !important;
+                        }
+
                         .validationContainer {
                             color: ${Colors.red};
                             min-height: 20px;

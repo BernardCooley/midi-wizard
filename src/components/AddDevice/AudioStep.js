@@ -43,7 +43,6 @@ const Styles = styled.div`
                     list-style: none;
                     margin: 10px;
                     padding: 0;
-                    height: 45px;
 
                     .inputListItem {
                         display: flex;
@@ -131,6 +130,10 @@ const Styles = styled.div`
 
                 .inputField {
                     width: 100% !important;
+
+                    &:disabled {
+                        background-color: ${Colors.lightGray};
+                    }
                 }
             }
         }
@@ -148,12 +151,15 @@ const AudioStep = () => {
     const audioInLabel = 'input';
     const [audioOutFields, setAudioOutFields] = useState([]);
     const [audioInFields, setAudioInFields] = useState([]);
-    const [editingFieldId, setEditingFieldId] = useState('');
+    const [editingFieldIds, setEditingFieldIds] = useState({
+        'audioOut': '',
+        'audioIn': ''
+    });
 
-    const storeAllfields = () => {
+    const storefields = audioType => {
         setAudioOutFields(updateValues('audioOut'));
         setAudioInFields(updateValues('audioIn'));
-        setEditingFieldId('');
+        updateFieldsToBeEdited(audioType, '');
     }
 
     const submitStep = async data => {
@@ -169,7 +175,7 @@ const AudioStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
-    const addField = audioOutOrIn => {
+    const addField = audioType => {
         const newField = [
             {
                 "name": "",
@@ -177,29 +183,32 @@ const AudioStep = () => {
                 "value": ''
             }
         ]
-        setEditingFieldId(newField[0].id);
-        if (audioOutOrIn === 'audioOut') {
-            setAudioOutFields([...updateValues(audioOutOrIn), ...newField]);
-        } else if (audioOutOrIn === 'audioIn') {
-            setAudioInFields([...updateValues(audioOutOrIn), ...newField]);
+
+        updateFieldsToBeEdited(audioType, newField[0].id);
+
+        if (audioType === 'audioOut') {
+            setAudioOutFields([...updateValues(audioType), ...newField]);
+        } else if (audioType === 'audioIn') {
+            setAudioInFields([...updateValues(audioType), ...newField]);
         }
     }
 
-    const removeField = (id, audioOutOrIn) => {
-        const updatedFields = updateValues(audioOutOrIn).filter(field => field.id !== id);
-        if (audioOutOrIn === 'audioOut') {
+    const removeField = (audioType, id) => {
+        const updatedFields = updateValues(audioType).filter(field => field.id !== id);
+        if (audioType === 'audioOut') {
             setAudioOutFields(updatedFields);
-        } else if (audioOutOrIn === 'audioIn') {
+        } else if (audioType === 'audioIn') {
             setAudioInFields(updatedFields);
         }
+        updateFieldsToBeEdited(audioType, '');
     }
 
-    const updateValues = audioOutOrIn => {
+    const updateValues = audioType => {
         const updatedFields = [];
         const inputFields = document.getElementById('audioForm').elements;
 
         for (let field of inputFields) {
-            if (field.tagName === 'INPUT' && field.getAttribute('audiooutorin') === audioOutOrIn) {
+            if (field.tagName === 'INPUT' && field.getAttribute('audiooutorin') === audioType) {
                 updatedFields.push({
                     "name": "",
                     "id": field.getAttribute('fieldid'),
@@ -209,6 +218,12 @@ const AudioStep = () => {
         }
 
         return updatedFields;
+    }
+
+    const updateFieldsToBeEdited = (audioType, fieldId) => {
+        const updatedIds = editingFieldIds;
+        updatedIds[audioType] = fieldId;
+        setEditingFieldIds(updatedIds);
     }
 
     const AudioFields = props => {
@@ -225,19 +240,25 @@ const AudioStep = () => {
             storedFields = audioInFields;
         }
 
-        const confirmField = () => {
-            if (document.querySelector(`#${editingFieldId}`).value.length > 0) {
-                storeAllfields();
+        const editField = (audioType, fieldId) => {
+            storefields(audioType);
+            updateFieldsToBeEdited(audioType, fieldId);
+        }
+
+        const confirmField = audioType => {
+            const fieldId = editingFieldIds[audioType];
+            if (document.querySelector(`#${fieldId}`).value.length > 0) {
+                storefields(audioType);
             } else {
-                document.querySelector(`#${editingFieldId}`).classList.add('errorBox');
+                document.querySelector(`#${fieldId}`).classList.add('errorBox');
                 setTimeout(() => {
-                    document.querySelector(`#${editingFieldId}`).classList.remove('errorBox');
+                    document.querySelector(`#${fieldId}`).classList.remove('errorBox');
                 }, 200);
                 setTimeout(() => {
-                    document.querySelector(`#${editingFieldId}`).classList.add('errorBox');
+                    document.querySelector(`#${fieldId}`).classList.add('errorBox');
                 }, 400);
                 setTimeout(() => {
-                    document.querySelector(`#${editingFieldId}`).classList.remove('errorBox');
+                    document.querySelector(`#${fieldId}`).classList.remove('errorBox');
                 }, 600);
             }
         }
@@ -253,20 +274,20 @@ const AudioStep = () => {
                     {storedFields.map((field, index) => (
                         <li className='inputListItem' key={field.id}>
                             <div className='inputContainer' >
-                                <input id={field.id} disabled={editingFieldId !== field.id} audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
+                                <input id={field.id} disabled={editingFieldIds[props.audioType] !== field.id} audiooutorin={props.audioType} fieldname={field.name} fieldid={field.id} placeholder={`${
                                     props.audioType === 'audioOut' ? audioOutLabel : audioInLabel
-                                    } name`} name={`${props.audioType}[${index}]`} defaultValue={field.value} className='inputField' ref={register()} />
+                                    } name`} name={`${props.audioType}[${index}]`} defaultValue={field.value} className={`inputField ${editingFieldIds[props.audioType] !== field.id ? 'successBox' : ''}`} ref={register()} />
                             </div>
                             <div className='fieldIcons'>
-                                {editingFieldId === field.id ?
-                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={confirmField}>
+                                {editingFieldIds[props.audioType] === field.id ?
+                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={() => confirmField(props.audioType)}>
                                         <FontAwesomeIcon className='svg' icon="check" />
                                     </button> :
-                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={() => setEditingFieldId(field.id)}>
+                                    <button className='fieldActionButton confirmEditButton' type='button' onClick={() => editField(props.audioType, field.id)}>
                                         <FontAwesomeIcon className='svg' icon="edit" />
                                     </button>
                                 }
-                                <button className='fieldActionButton deleteButton' type='button' onClick={() => removeField(field.id, props.audioType)}>
+                                <button className='fieldActionButton deleteButton' type='button' onClick={() => removeField(props.audioType, field.id)}>
                                     <FontAwesomeIcon className='deleteIcon svg' icon="plus" />
                                 </button>
                             </div>
@@ -275,7 +296,7 @@ const AudioStep = () => {
                 </ul>
                 {storedFields.length > 0 ?
                     <>
-                        {editingFieldId.length === 0 ?
+                        {editingFieldIds[props.audioType].length === 0 ?
                             <div onClick={() => addField(props.audioType)} className='addButton'>
                                 <FontAwesomeIcon className='addButtonSvg' icon="plus" />
                             </div> : null
