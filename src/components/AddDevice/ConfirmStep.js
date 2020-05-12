@@ -164,12 +164,11 @@ const ConfirmStep = () => {
                 dispatch(addDeviceFormValues({}));
                 dispatch(currentStep(1));
                 notify('Device added');
-
             });
     }
 
     const uploadImage = async imageFile => {
-        let imageUpload = imageStorageRef.child('stockDeviceImages').child(imageFile.name)
+        let imageUpload = imageStorageRef.child('deviceImages').child(imageFile.name)
 
         await imageUpload.put(imageFile);
     }
