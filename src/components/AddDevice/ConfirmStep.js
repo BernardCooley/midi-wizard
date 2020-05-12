@@ -9,7 +9,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import firebase from '../../firebase';
-import { toggleAddDeviceForm, addDeviceFormValues } from '../../actions';
+import { toggleAddDeviceForm, addDeviceFormValues, currentStep } from '../../actions';
 import { ToastContainer, toast } from 'react-toastify';
 
 const Styles = styled.div`
@@ -160,6 +160,7 @@ const ConfirmStep = () => {
             }).then(() => {
                 dispatch(toggleAddDeviceForm(false));
                 dispatch(addDeviceFormValues({}));
+                dispatch(currentStep(1));
                 notify('Device added');
 
             });
