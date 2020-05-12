@@ -134,13 +134,15 @@ const ConfirmStep = () => {
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
     const existingUserDevices = useSelector(state => state.existingUserDevices);
+    const imageStorageRef = firebase.storage().ref();
 
     const notify = message => {
         toast(message);
     };
 
     const addToStockDevices = async newDevice => {
-        const newDocumentRef = await stockDevicesRef.doc();
+        newDevice.general.imageFile = '';
+        const newDocumentRef = stockDevicesRef.doc();
         await newDocumentRef.set(newDevice);
         newDevice['deviceId'] = await newDocumentRef.id;
         newDevice['verified'] = false;
@@ -166,7 +168,16 @@ const ConfirmStep = () => {
             });
     }
 
+    const uploadImage = async imageFile => {
+        let imageUpload = imageStorageRef.child('stockDeviceImages').child(imageFile.name)
+
+        await imageUpload.put(imageFile);
+    }
+
     const addDevice = async () => {
+        if (formFieldValues.general.imageFile) {
+            uploadImage(formFieldValues.general.imageFile);
+        }
         addToUserDevices(formFieldValues, addToStockDevices(formFieldValues));
     }
 

@@ -204,14 +204,16 @@ const GeneralStep = () => {
     }
 
     const updateFilePath = () => {
-        const localImageUrl = window.URL.createObjectURL(document.querySelector('#imageUploadInput').files[0]);
+        const file = document.querySelector('#imageUploadInput').files[0];
+        const localImageUrl = window.URL.createObjectURL(file);
         const updatedData = formFieldValues;
 
         if (!updatedData['general']) {
             updatedData['general'] = {};
         }
-
-        updatedData['general']['imageRef'] = localImageUrl
+        updatedData['general']['imageRef'] = localImageUrl;
+        updatedData['general']['imageName'] = file.name;
+        updatedData['general']['imageFile'] = file;
 
         dispatch(addDeviceFormValues(updatedData));
         setImageFile(localImageUrl);
