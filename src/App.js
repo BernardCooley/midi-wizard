@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified, isManageAccountPageOpen, newUserDevices } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -119,7 +119,7 @@ function App() {
     userDevicesRef.doc(userId).onSnapshot(response => {
       if (response.data() && response.data().devices) {
         const devices = response.data().devices;
-        dispatch(newUserDevices(devices));
+        dispatch(existingUserDevices(devices));
       }
     })
   }

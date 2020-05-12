@@ -15,7 +15,7 @@ const allReducers = combineReducers({
   stockDevices: deviceReducers.stockDevices,
   userDeviceIds: deviceReducers.userDeviceIds,
   userDevices: deviceReducers.userDevices,
-  newUserDevices: deviceReducers.newUserDevices,
+  existingUserDevices: deviceReducers.existingUserDevices,
   isAddDeviceFormOpen: deviceReducers.toggleAddDeviceForm,
   isDeviceTrayOpen: deviceReducers.isDeviceTrayOpen,
   isAdminConsoleOpen: adminConsoleReducers.isAdminConsoleOpen,

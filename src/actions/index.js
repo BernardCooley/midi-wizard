@@ -40,7 +40,7 @@ export const setUserDevices = userDevices => {
     };
 };
 
-export const newUserDevices = userDevices => {
+export const existingUserDevices = userDevices => {
     return {
         type: 'NEW_USER_DEVICES',
         payload: userDevices

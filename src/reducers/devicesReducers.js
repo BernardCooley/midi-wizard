@@ -15,7 +15,7 @@ const deviceReducers = {
                 return state;
         }
     },
-    newUserDevices: (state = [], action) => {
+    existingUserDevices: (state = [], action) => {
         switch (action.type) {
             case 'NEW_USER_DEVICES':
                 return state = action.payload;

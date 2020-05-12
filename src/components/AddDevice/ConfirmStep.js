@@ -133,7 +133,7 @@ const ConfirmStep = () => {
     library.add(faTimes, faCheck);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
-    const newUserDevices = useSelector(state => state.newUserDevices);
+    const existingUserDevices = useSelector(state => state.existingUserDevices);
 
     const notify = message => {
         toast(message);
@@ -149,7 +149,7 @@ const ConfirmStep = () => {
     }
 
     const addToUserDevices = async (newDevice, deviceId) => {
-        const updatedDevices = [...newUserDevices, await newDevice];
+        const updatedDevices = [...existingUserDevices, await newDevice];
 
         updatedDevices['deviceId'] = await deviceId;
         updatedDevices['verified'] = false;
