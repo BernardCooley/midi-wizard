@@ -41,19 +41,30 @@ const Styles = styled.div`
             cursor: pointer;
             height: 30px;
             width: 100px;
+            border: 1px solid ${Colors.whiteBlue};
+            outline: none;
+        }
+
+        .enabled {
+            background-color: ${Colors.middleGray};
+            color: ${Colors.white};
+
+            &:hover {
+                background-color: ${Colors.darkTeal};
+            }
         }
     }
 `
 
-const SearchResultsCard = (props) => {
+const SearchResultsCard = props => {
 
     const device = props.device;
     const db = firebase.firestore();
-    const userDataRef = db.collection('UserDeviceData');
+    const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
 
     const userId = useSelector(state => state.currentUserId);
-    const userDeviceIds = useSelector(state => state.userDeviceIds);
+    const existingUserDevices = useSelector(state => state.existingUserDevices);
     const [imageUrl, setImageUrl] = useState('');
 
     useEffect(() => {
@@ -61,34 +72,26 @@ const SearchResultsCard = (props) => {
     }, [device]);
 
     const getImageUrl = async () => {
-        const imageResponse = await imageStorageRef.child('deviceImages').child(device.imageName);
+        const imageResponse = imageStorageRef.child('deviceImages').child(device.general.imageName);
 
         await imageResponse.getDownloadURL().then(url => {
             setImageUrl(url);
         })
     }
 
-    const addToUserDevices = async e => {
-        const deviceId = e.target.getAttribute('deviceid');
-
-        if (!doesUserAlreadyHaveDevice(deviceId)) {
-            await userDataRef.doc(userId).update({
-                devices: [...userDeviceIds, deviceId]
-            });
-        }
-    }
-
-    const doesUserAlreadyHaveDevice = deviceId => {
-        return userDeviceIds.filter(userDeviceId => userDeviceId === deviceId).length > 0 ? true : false;
+    const addToUserDevices = async () => {
+        await usersRef.doc(userId).update({
+            devices: [...existingUserDevices, device]
+        });
     }
 
     return (
         <Styles>
             <div className='deviceCardContainer'>
-                <div className='manufacturer'>{device.manufacturer}</div>
-                <div className='deviceName'>{device.deviceName}</div>
+                <div className='manufacturer'>{device.general.manufacturer}</div>
+                <div className='deviceName'>{device.general.deviceName}</div>
                 <img src={imageUrl} className='cardImage'></img>
-                <button deviceid={device.deviceId} className='addButton' disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
+                <button className={`addButton ${device.inDeviceTray ? '' : 'enabled'}`} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
             </div>
         </Styles>
     )

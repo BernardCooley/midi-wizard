@@ -7,6 +7,14 @@ const deviceReducers = {
                 return state;
         }
     },
+    allStockDevices: (state = [], action) => {
+        switch (action.type) {
+            case 'ALL_STOCK_DEVICES':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
     userDeviceIds: (state = [], action) => {
         switch (action.type) {
             case 'USER_DEVICE_IDS':

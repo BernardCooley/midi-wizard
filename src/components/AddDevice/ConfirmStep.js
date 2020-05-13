@@ -129,7 +129,7 @@ const ConfirmStep = () => {
     const dispatch = useDispatch();
     const db = firebase.firestore();
     const stockDevicesRef = db.collection('StockDevices');
-    const userDevicesRef = db.collection('Users');
+    const usersRef = db.collection('Users');
     library.add(faTimes, faCheck);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
@@ -156,7 +156,7 @@ const ConfirmStep = () => {
         updatedDevices['deviceId'] = await deviceId;
         updatedDevices['verified'] = false;
 
-        userDevicesRef.doc(currentUserId).update(
+        usersRef.doc(currentUserId).update(
             {
                 'devices': updatedDevices
             }).then(() => {

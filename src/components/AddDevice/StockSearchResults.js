@@ -21,21 +21,22 @@ const Styles = styled.div`
 const StockSearchResults = props => {
 
     const dispatch = useDispatch();
-    const stockDevices = useSelector(state => state.stockDevices);
+    const allStockDevices = useSelector(state => state.allStockDevices);
     const userDeviceIds = useSelector(state => state.userDeviceIds);
     const searchResults = useSelector(state => state.searchResults);
+    const existingUserDevices = useSelector(state => state.existingUserDevices);
 
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
     }, [props.searchTerm, userDeviceIds]);
 
     const getSearchResults = searchTerm => {
-        const results = stockDevices.filter(device =>
-            device.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            device.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
+        const results = allStockDevices.filter(device =>
+            device.general.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            device.general.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
         results.forEach(device => {
-            device.inDeviceTray = userDeviceIds.filter(userDeviceId => userDeviceId === device.deviceId).length > 0 ? true : false;
+            device.inDeviceTray = existingUserDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });
         return results;
     }

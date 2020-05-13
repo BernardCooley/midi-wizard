@@ -13,6 +13,7 @@ const allReducers = combineReducers({
   currentAuthComponent: authReducers.currentAuthComponent,
   isAdmin: authReducers.isAdmin,
   stockDevices: deviceReducers.stockDevices,
+  allStockDevices: deviceReducers.allStockDevices,
   userDeviceIds: deviceReducers.userDeviceIds,
   userDevices: deviceReducers.userDevices,
   existingUserDevices: deviceReducers.existingUserDevices,
