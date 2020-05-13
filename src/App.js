@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, layoutIds, layouts, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices, allStockDevices } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices, allStockDevices, layouts } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -33,9 +33,7 @@ function App() {
   const usersRef = db.collection('Users');
   const allDeviceDataRef = db.collection('DeviceData');
   const allStockDevicesRef = db.collection('StockDevices');
-  const userLayoutDataRef = db.collection('UserLayouts');
   const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
-  const userLayoutIds = useSelector(state => state.layoutIds);
   const userId = useSelector(state => state.currentUserId);
   const stockDevices = useSelector(state => state.stockDevices);
   const isUserVerified = useSelector(state => state.isVerified);
@@ -52,16 +50,10 @@ function App() {
   }, [isAdminConsoleOpen, manageAccountPageOpen]);
 
   useEffect(() => {
-    if (userId) {
-      getLayoutIds(userId);
+    if (userId.length > 0) {
+      getLayouts(userId);
     }
   }, [userId]);
-
-  useEffect(() => {
-    if (userLayoutIds) {
-      triggerGetLayouts();
-    }
-  }, [userLayoutIds]);
 
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
@@ -140,30 +132,12 @@ function App() {
     });
   }
 
-  const getLayoutIds = async uid => {
-    userDataRef.doc(uid).onSnapshot(response => {
+  const getLayouts = async userId => {
+    usersRef.doc(userId).onSnapshot(response => {
       if (response.data()) {
-        dispatch(layoutIds(response.data().layouts));
+        dispatch(layouts(response.data().layouts));
       }
     });
-  }
-
-  const getLayouts = async () => {
-    const layoutsArray = [];
-
-    for (const id of userLayoutIds) {
-      const response = await userLayoutDataRef.doc(id).get();
-      layoutsArray.push(response.data());
-    }
-    dispatch(layouts(layoutsArray));
-  }
-
-  const triggerGetLayouts = async () => {
-    for (const id of userLayoutIds) {
-      userLayoutDataRef.doc(id).onSnapshot(() => {
-        getLayouts();
-      });
-    }
   }
 
   const getIsAdmin = async userId => {
