@@ -75,7 +75,6 @@ const UserDevice = (deviceDetails) => {
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
     const userData = useSelector(state => state.userData);
-    const existingUserDevices = useSelector(state => state.existingUserDevices);
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
@@ -86,7 +85,7 @@ const UserDevice = (deviceDetails) => {
     };
 
     const addToLayout = async (clickedDeviceId, position) => {
-        let selectedDevice = existingUserDevices.filter(device => device.deviceId === clickedDeviceId)[0];
+        let selectedDevice = userData.devices.filter(device => device.deviceId === clickedDeviceId)[0];
 
         const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
 
@@ -145,7 +144,7 @@ const UserDevice = (deviceDetails) => {
     }
 
     const deleteFromDB = async (deviceIdToDelete) => {
-        const updatedDeviceList = existingUserDevices.filter(device => device.deviceId !== deviceIdToDelete);
+        const updatedDeviceList = userData.devices.filter(device => device.deviceId !== deviceIdToDelete);
 
         await usersRef.doc(userId).update({
             devices: updatedDeviceList

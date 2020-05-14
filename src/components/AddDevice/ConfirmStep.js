@@ -133,7 +133,6 @@ const ConfirmStep = () => {
     library.add(faTimes, faCheck);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
-    const existingUserDevices = useSelector(state => state.existingUserDevices);
     const userData = useSelector(state => state.userData);
     const imageStorageRef = firebase.storage().ref();
 
@@ -152,7 +151,7 @@ const ConfirmStep = () => {
     }
 
     const addToUserDevices = async (newDevice, deviceId) => {
-        const updatedDevices = [...existingUserDevices, await newDevice];
+        const updatedDevices = [...userData.devices, await newDevice];
 
         updatedDevices['deviceId'] = await deviceId;
         updatedDevices['verified'] = false;

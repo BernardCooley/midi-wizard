@@ -64,7 +64,6 @@ const SearchResultsCard = props => {
     const imageStorageRef = firebase.storage().ref();
 
     const userId = useSelector(state => state.currentUserId);
-    const existingUserDevices = useSelector(state => state.existingUserDevices);
     const userData = useSelector(state => state.userData);
     const [imageUrl, setImageUrl] = useState('');
 
@@ -82,7 +81,7 @@ const SearchResultsCard = props => {
 
     const addToUserDevices = async () => {
         await usersRef.doc(userId).update({
-            devices: [...existingUserDevices, device]
+            devices: [...userData.devices, device]
         });
     }
 
