@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices, allStockDevices, layouts } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices, allStockDevices, layouts, userData } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -66,6 +66,7 @@ function App() {
         getIsAdmin(user.uid).then(() => {
           getUserDeviceIds(user.uid);
           getUserDevices(user.uid);
+          getUserData(user.uid);
         });
       });
     } else {
@@ -114,6 +115,15 @@ function App() {
       if (response.data() && response.data().devices) {
         const devices = response.data().devices;
         dispatch(existingUserDevices(devices));
+      }
+    })
+  }
+
+  const getUserData = async userId => {
+    usersRef.doc(userId).onSnapshot(response => {
+      if (response.data()) {
+        const data = response.data();
+        dispatch(userData(data));
       }
     })
   }

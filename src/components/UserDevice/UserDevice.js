@@ -74,6 +74,7 @@ const UserDevice = (deviceDetails) => {
     const layout = useSelector(state => state.currentLayout);
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
+    const userData = useSelector(state => state.userData);
     const existingUserDevices = useSelector(state => state.existingUserDevices);
 
     useEffect(() => {

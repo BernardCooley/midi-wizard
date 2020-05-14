@@ -218,3 +218,9 @@ export const currentStep = stepNumber => {
     };
 };
 
+export const userData = userData => {
+    return {
+        type: 'USER_DATA',
+        payload: userData
+    };
+};

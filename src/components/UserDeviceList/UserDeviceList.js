@@ -100,7 +100,7 @@ const UserDeviceList = () => {
     library.add(faPlus);
     const dispatch = useDispatch();
     const userDevices = useSelector(state => state.userDevices);
-    const existingUserDevices = useSelector(state => state.existingUserDevices);
+    const userData = useSelector(state => state.userData);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
 
@@ -110,7 +110,7 @@ const UserDeviceList = () => {
 
     useEffect(() => {
         getImageUrls();
-    }, [existingUserDevices]);
+    }, [userData.devices]);
 
     const toggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
@@ -118,7 +118,7 @@ const UserDeviceList = () => {
     }
 
     const getImageUrls = async () => {
-        existingUserDevices.map(async device => {
+        userData.devices.map(async device => {
             const deviceImageName = device.general.imageName ? device.general.imageName : 'default_device_image.jpg';
 
             device['imageUrl'] = await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
@@ -134,15 +134,15 @@ const UserDeviceList = () => {
                     </TrayTabStyles>
                     <div className='deviceListInnerContainer'>
                         <div className={`listContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
-                            {existingUserDevices.length < 1 ?
+                            {userData.devices.length < 1 ?
                                 <div className='addFirstDevice' onClick={() => dispatch(toggleAddDeviceForm(true))}>Add first device</div>
                                 : null
                             }
-                            {existingUserDevices.length > 0 ? existingUserDevices.map((device, index) => (
+                            {userData.devices.length > 0 ? userData.devices.map((device, index) => (
                                 <UserDevice key={index} deviceDetails={device} />
                             )) : null}
                         </div>
-                        {!isAddDeviceFormOpen && existingUserDevices.length > 0 ?
+                        {!isAddDeviceFormOpen && userData.devices.length > 0 ?
                             <div className={'openAddDeviceFormButton'} onClick={() => dispatch(toggleAddDeviceForm(true))}>
                                 <FontAwesomeIcon className='svg' icon="plus" />
                             </div>

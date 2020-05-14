@@ -24,7 +24,7 @@ const StockSearchResults = props => {
     const allStockDevices = useSelector(state => state.allStockDevices);
     const userDeviceIds = useSelector(state => state.userDeviceIds);
     const searchResults = useSelector(state => state.searchResults);
-    const existingUserDevices = useSelector(state => state.existingUserDevices);
+    const userData = useSelector(state => state.userData);
 
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
@@ -36,7 +36,7 @@ const StockSearchResults = props => {
             device.general.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
         );
         results.forEach(device => {
-            device.inDeviceTray = existingUserDevices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
+            device.inDeviceTray = userData.devices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });
         return results;
     }

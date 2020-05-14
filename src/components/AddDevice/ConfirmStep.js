@@ -134,6 +134,7 @@ const ConfirmStep = () => {
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
     const existingUserDevices = useSelector(state => state.existingUserDevices);
+    const userData = useSelector(state => state.userData);
     const imageStorageRef = firebase.storage().ref();
 
     const notify = message => {

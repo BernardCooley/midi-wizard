@@ -65,6 +65,7 @@ const SearchResultsCard = props => {
 
     const userId = useSelector(state => state.currentUserId);
     const existingUserDevices = useSelector(state => state.existingUserDevices);
+    const userData = useSelector(state => state.userData);
     const [imageUrl, setImageUrl] = useState('');
 
     useEffect(() => {

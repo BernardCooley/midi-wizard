@@ -37,7 +37,8 @@ const allReducers = combineReducers({
   selectedLayoutDeviceId: workspaceReducers.selectedLayoutDeviceId,
   connectionSelections: workspaceReducers.connectionSelections,
   addDeviceFormValues: addDeviceReducers.addDeviceFormValues,
-  currentStep: addDeviceReducers.currentStep
+  currentStep: addDeviceReducers.currentStep,
+  userData: deviceReducers.userData
 });
 
 const rootReducer = (state, action) => {
