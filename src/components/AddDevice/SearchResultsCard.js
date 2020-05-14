@@ -58,7 +58,6 @@ const Styles = styled.div`
 
 const SearchResultsCard = props => {
 
-    const device = props.device;
     const db = firebase.firestore();
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
@@ -69,10 +68,10 @@ const SearchResultsCard = props => {
 
     useEffect(() => {
         getImageUrl();
-    }, [device]);
+    }, [props.device]);
 
     const getImageUrl = async () => {
-        const imageResponse = imageStorageRef.child('deviceImages').child(device.general.imageName);
+        const imageResponse = imageStorageRef.child('deviceImages').child(props.device.general.imageName);
 
         await imageResponse.getDownloadURL().then(url => {
             setImageUrl(url);
@@ -80,18 +79,19 @@ const SearchResultsCard = props => {
     }
 
     const addToUserDevices = async () => {
+        props.device.inDeviceTray = true;
         await usersRef.doc(userId).update({
-            devices: [...userData.devices, device]
+            devices: [...userData.devices, props.device]
         });
     }
 
     return (
         <Styles>
             <div className='deviceCardContainer'>
-                <div className='manufacturer'>{device.general.manufacturer}</div>
-                <div className='deviceName'>{device.general.deviceName}</div>
+                <div className='manufacturer'>{props.device.general.manufacturer}</div>
+                <div className='deviceName'>{props.device.general.deviceName}</div>
                 <img src={imageUrl} className='cardImage'></img>
-                <button className={`addButton ${device.inDeviceTray ? '' : 'enabled'}`} disabled={device.inDeviceTray} onClick={addToUserDevices}>Add</button>
+                <button className={`addButton ${props.device.inDeviceTray ? '' : 'enabled'}`} disabled={props.device.inDeviceTray} onClick={addToUserDevices}>Add</button>
             </div>
         </Styles>
     )
