@@ -179,15 +179,12 @@ const LayoutsTray = () => {
             const confirmDelete = window.confirm("Delete layout?");
 
             if (confirmDelete) {
-                dispatch(deletedLayoutId(e.target.parentNode.parentNode.getAttribute('layoutid')));
+                dispatch(deletedLayoutId(clickedLayoutId));
 
-                const updatedUserLayoutIds = userLayoutIds.filter(layoutId => layoutId !== clickedLayoutId);
+                const updatedLayouts = userLayouts.filter(layout => layout.layoutId !== clickedLayoutId);
 
-                await userDataRef.doc(currentUserId).update({
-                    layouts: updatedUserLayoutIds
-                }).then(() => {
-                    dispatch(selectedLayoutId(updatedUserLayoutIds[0]));
-                    userLayoutDataRef.doc(clickedLayoutId).delete();
+                await usersRef.doc(userId).update({
+                    layouts: updatedLayouts
                 });
             }
         } else {
