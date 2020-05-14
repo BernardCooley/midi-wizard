@@ -145,6 +145,7 @@ const LayoutsTray = () => {
     const db = firebase.firestore();
     const userLayoutDataRef = db.collection('UserLayouts');
     const userDataRef = db.collection('UserDeviceData');
+    const usersRef = db.collection('Users');
 
     const dispatch = useDispatch();
     const userLayouts = useSelector(state => state.layouts);
@@ -153,6 +154,7 @@ const LayoutsTray = () => {
     const currentUserId = useSelector(state => state.currentUserId);
     const userLayoutIds = useSelector(state => state.layoutIds);
     const selectedLayout = useSelector(state => state.currentLayout);
+    const userId = useSelector(state => state.currentUserId);
 
     const [firstLoad, setFirstLoad] = useState(true);
     const [editEnabled, setEditEnabled] = useState(false);
@@ -170,7 +172,7 @@ const LayoutsTray = () => {
         }
     }, [userLayouts]);
 
-    const deleteFromLayout = async e => {
+    const deleteLayout = async e => {
         const clickedLayoutId = e.target.parentNode.parentNode.getAttribute('layoutid');
 
         if (clickedLayoutId !== currentLayoutId) {
@@ -232,36 +234,30 @@ const LayoutsTray = () => {
         }
     }
 
-    const addNewLayout = () => {
+    const addNewLayout = async () => {
         const newLayout = {
-            devices: [],
-            layoutId: '',
+            devices: {},
+            layoutId: '_' + Math.random().toString(36).substr(2, 9),
             layoutName: 'New layout'
         }
 
-        addNewLayoutToUserLayouts(addNewLayoutToLayouts(false, newLayout));
+        const updatedLayouts = [...userLayouts, newLayout];
+
+        await usersRef.doc(userId).update({
+            layouts: updatedLayouts
+        })
     }
 
-    const addNewLayoutToLayouts = async (createCopy, newLayout) => {
-        const newDocumentRef = await userLayoutDataRef.doc();
+    const copyLayout = async () => {
+        const newLayout = JSON.parse(JSON.stringify(selectedLayout));
+        newLayout.layoutId = '_' + Math.random().toString(36).substr(2, 9);
+        newLayout.layoutName = `${selectedLayout.layoutName}-copy`;
 
-        newLayout.layoutId = newDocumentRef.id;
-        newLayout.layoutName = createCopy ? `${newLayout.layoutName} new` : newLayout.layoutName;
+        const updatedLayouts = [...userLayouts, newLayout];
 
-        await newDocumentRef.set(newLayout);
-        return newDocumentRef.id;
-    }
-
-    const addNewLayoutToUserLayouts = async newLayoutId => {
-        userLayoutIds.push(await newLayoutId);
-
-        await userDataRef.doc(currentUserId).update({
-            layouts: userLayoutIds
+        await usersRef.doc(userId).update({
+            layouts: updatedLayouts
         });
-    }
-
-    const copyLayout = () => {
-        addNewLayoutToUserLayouts(addNewLayoutToLayouts(true, selectedLayout));
     }
 
     return (
@@ -285,7 +281,7 @@ const LayoutsTray = () => {
                                                 <FontAwesomeIcon className='svg editIcon' icon="edit" />
                                             }
                                         </div>
-                                        <div onClick={deleteFromLayout} className='layoutDeviceActionContainer'>
+                                        <div onClick={deleteLayout} className='layoutDeviceActionContainer'>
                                             <FontAwesomeIcon className='svg deleteIcon' icon="trash-alt" />
                                         </div>
                                     </div>
