@@ -131,7 +131,7 @@ const LayoutDevice = props => {
     }
 
     const setOptionsList = () => {
-        console.log('fb\fbd');
+        console.log('device clicked');
     }
 
     return (
