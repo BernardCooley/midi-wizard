@@ -65,8 +65,8 @@ const SVGWorkspace = props => {
             {/* <svg ref={svgRef} id='svgWorkspace' className='svgWorkspaceContainer'></svg> */}
 
             <div className='svgWorkspaceContainer'>
-                {props.layout.devices ? props.layout.devices.map((device, index) => (
-                    <LayoutDevice key={index} device={device}></LayoutDevice>
+                {props.layout.devices ? Object.keys(props.layout.devices).map((key, index) => (
+                    <LayoutDevice key={index} device={props.layout.devices[key]}></LayoutDevice>
                 )) : null}
             </div>
             <ConnectionLegend />

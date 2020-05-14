@@ -113,19 +113,13 @@ const LayoutDevice = props => {
     }
 
     const getDeviceImage = async () => {
-        await getDeviceImageName()
-            .then(async imageName => {
-                const imageResponse = imageStorageRef.child('deviceImages').child(imageName);
+        const imageName = props.device.general.imageName;
 
-                await imageResponse.getDownloadURL().then(url => {
-                    setImageUrl(url);
-                });
-            });
-    }
+        const imageResponse = imageStorageRef.child('deviceImages').child(imageName);
 
-    const getDeviceImageName = async () => {
-        const response = deviceDataRef.doc(props.device.deviceId).get();
-        return (await response).data().imageName;
+        await imageResponse.getDownloadURL().then(url => {
+            setImageUrl(url);
+        });
     }
 
     const showConnectionOptions = e => {
@@ -150,7 +144,7 @@ const LayoutDevice = props => {
                 <img deviceid={props.device.deviceId} onClick={showConnectionOptions, setOptionsList} className={`layoutDeviceImage ${selections[0].deviceId === props.device.deviceId || selections[1].deviceId === props.device.deviceId ? 'deviceSelected' : ''}`} src={imageUrl} alt='device image'></img>
 
                 <div className='deviceName'>
-                    {props.device.deviceName}
+                    {props.device.general.deviceName}
                 </div>
             </div>
         </Styles>
