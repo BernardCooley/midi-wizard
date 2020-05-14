@@ -22,13 +22,12 @@ const StockSearchResults = props => {
 
     const dispatch = useDispatch();
     const allStockDevices = useSelector(state => state.allStockDevices);
-    const userDeviceIds = useSelector(state => state.userDeviceIds);
     const searchResults = useSelector(state => state.searchResults);
     const userData = useSelector(state => state.userData);
 
     useEffect(() => {
         dispatch(setSearchResults(getSearchResults(props.searchTerm)));
-    }, [props.searchTerm, userDeviceIds]);
+    }, [props.searchTerm]);
 
     const getSearchResults = searchTerm => {
         const results = allStockDevices.filter(device =>

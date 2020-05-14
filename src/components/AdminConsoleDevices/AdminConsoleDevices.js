@@ -118,10 +118,10 @@ const EditableCell = ({ value: initialValue, row: { index }, column: { id }, upd
         setValue(initialValue)
     }, [initialValue])
 
-    const stockDevices = useSelector(state => state.stockDevices);
+    const allStockDevices = useSelector(state => state.allStockDevices);
     const deviceIds = []
 
-    stockDevices.forEach(d => {
+    allStockDevices.forEach(d => {
         deviceIds.push(d.deviceId);
     })
 
@@ -266,10 +266,10 @@ const AdminConsoleTable = () => {
     const stockDeviceDtaRef = db.collection('DeviceData');
     const userLayoutDataRef = db.collection('UserLayouts');
     const userDeviceDataRef = db.collection('UserDeviceData');
-    const stockDevices = useSelector(state => state.stockDevices);
+    const allStockDevices = useSelector(state => state.allStockDevices);
     const isImageBeingEdited = useSelector(state => state.toggleEditingImage);
     const isGettingData = useSelector(state => state.gettingData);
-    const [data, setData] = useState(() => stockDevices);
+    const [data, setData] = useState(() => allStockDevices);
     const [skipPageReset, setSkipPageReset] = useState(false);
     const [showingAll, setShowingAll] = useState(false);
 
@@ -339,12 +339,12 @@ const AdminConsoleTable = () => {
     }, [data]);
 
     useEffect(() => {
-        setData(stockDevices);
-    }, [stockDevices]);
+        setData(allStockDevices);
+    }, [allStockDevices]);
 
     useEffect(() => {
         if (showingAll) {
-            setData(stockDevices);
+            setData(allStockDevices);
         } else {
             setData(data.filter(d => d.verified === false));
         }
@@ -355,7 +355,7 @@ const AdminConsoleTable = () => {
     };
 
     const updatedData = () => {
-        const updatedDevices = stockDevices.map((device, index) => {
+        const updatedDevices = allStockDevices.map((device, index) => {
             if (device !== data[index]) {
                 return data[index];
             }

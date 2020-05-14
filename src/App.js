@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
 import Header from './components/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
-import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, setStockDevices, setUserDevicIds, isAdmin, setUserDevices, isVerified, isManageAccountPageOpen, existingUserDevices, allStockDevices, layouts, userData } from './actions';
+import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, isAdmin, isVerified, isManageAccountPageOpen, allStockDevices, layouts, userData } from './actions';
 import firebase from './firebase';
 import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
@@ -31,17 +31,14 @@ function App() {
   const isLoggedIn = useSelector(state => state.isLoggedIn);
   const userDataRef = db.collection('UserDeviceData');
   const usersRef = db.collection('Users');
-  const allDeviceDataRef = db.collection('DeviceData');
   const allStockDevicesRef = db.collection('StockDevices');
   const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
   const userId = useSelector(state => state.currentUserId);
-  const stockDevices = useSelector(state => state.stockDevices);
   const isUserVerified = useSelector(state => state.isVerified);
   const manageAccountPageOpen = useSelector(state => state.isManageAccountPageOpen);
   const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
-    getStockDevices();
     getAllStockDevices();
   }, []);
 
@@ -64,8 +61,6 @@ function App() {
       dispatch(setCurrentUserId(user.uid));
       getUsername(user.uid).then(() => {
         getIsAdmin(user.uid).then(() => {
-          getUserDeviceIds(user.uid);
-          getUserDevices(user.uid);
           getUserData(user.uid);
         });
       });
@@ -96,29 +91,6 @@ function App() {
     });
   }
 
-  const getUserDeviceIds = async userId => {
-    userDataRef.doc(userId).onSnapshot(response => {
-      if (response.data() && response.data().devices) {
-        const userDeviceIds = response.data().devices;
-
-        if (stockDevices.length > 0) {
-          const userDevices = stockDevices.filter(device => userDeviceIds.includes(device.deviceId));
-          dispatch(setUserDevices(userDevices));
-        }
-        dispatch(setUserDevicIds(userDeviceIds));
-      }
-    })
-  }
-
-  const getUserDevices = async userId => {
-    usersRef.doc(userId).onSnapshot(response => {
-      if (response.data() && response.data().devices) {
-        const devices = response.data().devices;
-        dispatch(existingUserDevices(devices));
-      }
-    })
-  }
-
   const getUserData = async userId => {
     usersRef.doc(userId).onSnapshot(response => {
       if (response.data()) {
@@ -126,13 +98,6 @@ function App() {
         dispatch(userData(data));
       }
     })
-  }
-
-  const getStockDevices = async () => {
-    allDeviceDataRef.onSnapshot(response => {
-      const data = response.docs.map(doc => doc.data());
-      dispatch(setStockDevices(data));
-    });
   }
 
   const getAllStockDevices = async () => {

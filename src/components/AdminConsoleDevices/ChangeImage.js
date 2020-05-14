@@ -62,7 +62,7 @@ const ChangeImage = () => {
     const [filePath, setFilePath] = useState('');
     const { handleSubmit, register } = useForm();
     const idBeingEdited = useSelector(state => state.deviceIdBeingEdited);
-    const stockDevices = useSelector(state => state.stockDevices);
+    const allStockDevices = useSelector(state => state.allStockDevices);
 
     const notify = message => {
         toast(message);
@@ -82,7 +82,7 @@ const ChangeImage = () => {
         if (!doesImageExist(imageName)) {
             dispatch(toggleEditingImage(false));
             dispatch(gettingData(true));
-            const existingImageName = stockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
+            const existingImageName = allStockDevices.filter(device => device.deviceId === idBeingEdited)[0].imageName;
 
             uploadImage(formData.imageFile[0]).then(snapshot => {
                 snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -100,7 +100,7 @@ const ChangeImage = () => {
     }
 
     const doesImageExist = imageName => {
-        const allImageNames = stockDevices.map(device => {
+        const allImageNames = allStockDevices.map(device => {
             return device.imageName
         });
         return allImageNames.includes(imageName);

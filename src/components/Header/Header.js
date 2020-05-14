@@ -93,7 +93,7 @@ const Header = () => {
     const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
     const currentUsername = useSelector(state => state.currentUsername);
     const [firstName, setFirstName] = useState('');
-    const stockDevices = useSelector(state => state.stockDevices);
+    const allStockDevices = useSelector(state => state.allStockDevices);
     const [numberOfUnverifiedDevices, setNumberOfUnverifiedDevices] = useState('');
 
     useEffect(() => {
@@ -102,10 +102,10 @@ const Header = () => {
 
     useEffect(() => {
         setNumberOfUnverifiedDevices(getUnverifiedDevices());
-    }, [stockDevices]);
+    }, [allStockDevices]);
 
     const getUnverifiedDevices = () => {
-        return stockDevices.filter(device => device.verified === false).length;
+        return allStockDevices.filter(device => device.verified === false).length;
     }
 
     const getFirstName = () => {

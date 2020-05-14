@@ -19,13 +19,6 @@ export const setCurrentUsername = username => {
     };
 };
 
-export const setStockDevices = stockDevices => {
-    return {
-        type: 'STOCK_DEVICES',
-        payload: stockDevices
-    };
-};
-
 export const allStockDevices = stockDevices => {
     return {
         type: 'ALL_STOCK_DEVICES',
@@ -33,23 +26,9 @@ export const allStockDevices = stockDevices => {
     };
 };
 
-export const setUserDevicIds = userDeviceIds => {
-    return {
-        type: 'USER_DEVICE_IDS',
-        payload: userDeviceIds
-    };
-};
-
 export const setUserDevices = userDevices => {
     return {
         type: 'USER_DEVICES',
-        payload: userDevices
-    };
-};
-
-export const existingUserDevices = userDevices => {
-    return {
-        type: 'NEW_USER_DEVICES',
         payload: userDevices
     };
 };
