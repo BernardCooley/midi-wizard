@@ -143,16 +143,14 @@ const LayoutsTray = () => {
     library.add(faTrashAlt, faEdit, faCheck);
 
     const db = firebase.firestore();
-    const userLayoutDataRef = db.collection('UserLayouts');
-    const userDataRef = db.collection('UserDeviceData');
+
     const usersRef = db.collection('Users');
 
     const dispatch = useDispatch();
     const userLayouts = useSelector(state => state.layouts);
     const layoutsTrayOpen = useSelector(state => state.isLayoutsTrayOpen);
     const currentLayoutId = useSelector(state => state.selectedLayoutId);
-    const currentUserId = useSelector(state => state.currentUserId);
-    const userLayoutIds = useSelector(state => state.layoutIds);
+
     const selectedLayout = useSelector(state => state.currentLayout);
     const userId = useSelector(state => state.currentUserId);
 
