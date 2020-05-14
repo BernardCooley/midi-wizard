@@ -208,8 +208,15 @@ const LayoutsTray = () => {
     }
 
     const updateLayoutName = async newLayoutName => {
-        await userLayoutDataRef.doc(layoutIdBeingEdited).update({
-            layoutName: newLayoutName
+        const updatedLayouts = userLayouts.map(layout => {
+            if (layout.layoutId === layoutIdBeingEdited) {
+                layout.layoutName = newLayoutName;
+            }
+            return layout;
+        });
+
+        await usersRef.doc(userId).update({
+            layouts: updatedLayouts
         });
     }
 
@@ -245,7 +252,7 @@ const LayoutsTray = () => {
 
         await usersRef.doc(userId).update({
             layouts: updatedLayouts
-        })
+        });
     }
 
     const copyLayout = async () => {
