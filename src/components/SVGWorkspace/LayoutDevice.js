@@ -84,7 +84,7 @@ const LayoutDevice = props => {
 
     useEffect(() => {
         getDeviceImage(props.device.imageName);
-    }, []);
+    }, [props.device]);
 
     const notify = message => {
         toast(message);
@@ -114,7 +114,6 @@ const LayoutDevice = props => {
 
     const getDeviceImage = async () => {
         const imageName = props.device.general.imageName;
-
         const imageResponse = imageStorageRef.child('deviceImages').child(imageName);
 
         await imageResponse.getDownloadURL().then(url => {

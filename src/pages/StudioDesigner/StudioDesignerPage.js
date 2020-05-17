@@ -1,5 +1,5 @@
 import React from 'react';
-import UserDeviceList from '../../components/UserDeviceList/UserDeviceList';
+import DeviceTray from '../../components/DeviceTray/DeviceTray';
 import { useSelector } from 'react-redux';
 import Workspace from '../../components/Workspace/Workspace';
 import AddDevice from '../../components/AddDevice/AddDevice';
@@ -26,7 +26,7 @@ const StudioDesignerPage = () => {
                     <AddDevice /> :
                     <Workspace />
                 }
-                <UserDeviceList />
+                <DeviceTray />
             </div>
         </Styles>
     )

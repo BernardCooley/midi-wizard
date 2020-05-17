@@ -10,6 +10,8 @@ import ConnectionLegend from './ConnectionLegend';
 
 
 const Styles = styled.div`
+    width: 100%;
+
     .svgWorkspaceContainer {
         background-color: ${Colors.darkTeal};
         width: auto;

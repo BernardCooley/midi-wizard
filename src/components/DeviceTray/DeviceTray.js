@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import UserDevice from '../UserDevice/UserDevice';
+import TrayDevice from './TrayDevice';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -20,7 +20,7 @@ const Styles = styled.div`
             align-items: center;
             scrollbar-color: red;
             position: fixed;
-            bottom: -30px;
+            bottom: -52px;
             transition:0.6s;
             -webkit-transition:0.6s;
             -moz-transition:0.6s;
@@ -61,6 +61,7 @@ const Styles = styled.div`
                     margin: auto;
                     overflow-y: auto;
                     justify-content: center;
+                    padding-left: 155px;
 
                     .addFirstDevice {
                         font-size: 30px;
@@ -95,7 +96,7 @@ const Styles = styled.div`
     }
 `
 
-const UserDeviceList = () => {
+const DeviceTray = () => {
 
     library.add(faPlus);
     const dispatch = useDispatch();
@@ -141,7 +142,7 @@ const UserDeviceList = () => {
                                 : null
                             }
                             {userData.devices && userData.devices.length > 0 ? userData.devices.map((device, index) => (
-                                <UserDevice key={index} deviceDetails={device} />
+                                <TrayDevice key={index} deviceDetails={device} />
                             )) : null}
                         </div>
                         {!isAddDeviceFormOpen && userData.devices && userData.devices.length > 0 ?
@@ -158,4 +159,4 @@ const UserDeviceList = () => {
     );
 }
 
-export default UserDeviceList;
+export default DeviceTray;

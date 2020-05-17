@@ -228,7 +228,7 @@ const LayoutsTray = () => {
             const layoutId = e.target.parentNode.getAttribute('layoutid');
             try {
                 dispatch(selectedLayoutId(layoutId));
-                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]))
+                dispatch(currentLayout(userLayouts.filter(layout => layout.layoutId === layoutId)[0]));
                 toggleLayoutsTray();
             } catch (error) {
                 console.error(error);

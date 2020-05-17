@@ -63,7 +63,8 @@ const Styles = styled.div`
     }
 `
 
-const UserDevice = (deviceDetails) => {
+const TrayDevice = (deviceDetails) => {
+
     library.add(faTrashAlt);
     const db = firebase.firestore();
     const device = deviceDetails.deviceDetails;
@@ -223,4 +224,4 @@ const UserDevice = (deviceDetails) => {
     )
 }
 
-export default UserDevice;
+export default TrayDevice;
