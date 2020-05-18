@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, useFieldArray } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
 import StepNavigationButton from './StepNavigationButton';
-import { AddDeviceFormStyles, CustomCheckBoxStyles } from '../../styles/components';
+import { AddDeviceFormStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
+import DeviceTypeIcons from '../ImportIcons/DeviceTypeIcons';
+
 
 const Styles = styled.div`
     width: 90%;
@@ -17,14 +19,6 @@ const Styles = styled.div`
     .imageUploadInput {
         font-size: 18px;
         display: flex;
-    }
-
-    .checkboxGroupTitle {
-        position: relative;
-        top: 69px;
-        background-color: ${Colors.whiteBlue};
-        font-weight: bold;
-        padding: 10px;
     }
 
     .imageUploadLabel {
@@ -90,6 +84,75 @@ const Styles = styled.div`
     .hidden {
         visibility: hidden;
     }
+
+    .deviceTypeContainer {
+        width: 85%;
+        border: 1px solid lightgray;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+
+        .checkboxGroupTitle {
+            position: relative;
+            top: -23px;
+            background-color: ${Colors.whiteBlue};
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .deviceTypes {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+            .deviceType {
+                display: flex;
+                height: 40px;
+                width: 160px;
+                margin: 20px;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                padding: 5px;
+                outline: 1px solid ${Colors.black};
+                transition:0.2s;
+                -webkit-transition:0.2s;
+                -moz-transition:0.2s;
+                justify-content: center;
+
+                .deviceTypeLabel {
+                    pointer-events: none;
+                }
+
+                &:hover {
+                    transform: scale(1.1);
+                    -webkit-box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+                    -moz-box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+                    box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+                }
+
+                .deviceTypeIcon {
+                    height: auto;
+                    width: 30px;
+                    margin-right: 10px;
+                    pointer-events: none;
+                }
+            }
+
+            .selected {
+                background-color: ${Colors.darkTeal};
+                color: ${Colors.white};
+                transform: scale(1.1);
+                outline: none;
+                -webkit-box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+                -moz-box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+                box-shadow: 5px 8px 11px 0px ${Colors.middleGray};
+            }
+        }
+    }
 `;
 
 
@@ -99,48 +162,9 @@ const GeneralStep = () => {
     const { handleSubmit, register, errors, control } = useForm();
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
-    const [deviceTypeFields, setDeviceTypeFields] = useState([]);
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const [imageFle, setImageFile] = useState('');
-
-    useEffect(() => {
-        setDeviceTypeFields(constructDeviceTypeFields(deviceTypes));
-    }, []);
-
-    const deviceTypes = [
-        'speaker',
-        'dj_mixer',
-        'effects_pedal',
-        'effects_processor',
-        'control_surface',
-        'audio_interface',
-        'sequencer',
-        'turntable',
-        'headphones',
-        'synthesizer',
-        'drum_machine',
-        'mixing_desk',
-        'recorder',
-        'midi_thru_box',
-        'midi_merge_box',
-        'clock_generator',
-        'clock_generators',
-        'sampler'
-    ]
-
-    const constructDeviceTypeFields = (deviceTypessss) => {
-        const typeFields = [];
-        deviceTypessss.forEach(type => {
-            typeFields.push({
-                "name": "",
-                "id": '_' + Math.random().toString(36).substr(2, 9),
-                "value": type,
-                "label": CapitalizeString(type.replace(/_/g, ' ')),
-                "checked": false
-            })
-        });
-        return typeFields;
-    }
+    const [selectedDeviceTypes, setSelectedDeviceTypes] = useState([]);
 
     const CapitalizeString = string => {
         string = string.split(" ");
@@ -182,21 +206,6 @@ const GeneralStep = () => {
         name: ''
     });
 
-    const updateChecked = e => {
-        const clickedCheckbox = e.target;
-
-        setDeviceTypeFields(deviceTypeFields.map(field => {
-            if (field.id === clickedCheckbox.id) {
-                if (field.checked === true) {
-                    field.checked = false;
-                } else {
-                    field.checked = true;
-                }
-            }
-            return field;
-        }));
-    }
-
     const clearFileInput = () => {
         document.querySelector('#imageUploadInput').value = '';
         setImageFieldPopulated(false);
@@ -217,6 +226,29 @@ const GeneralStep = () => {
 
         dispatch(addDeviceFormValues(updatedData));
         setImageFile(localImageUrl);
+    }
+
+    const selectDeselect = e => {
+        const clickedDeviceType = e.target.getAttribute('element');
+
+        if (selectedDeviceTypes.includes(clickedDeviceType)) {
+            setSelectedDeviceTypes(selectedDeviceTypes.filter(type => type !== clickedDeviceType));
+        } else {
+            setSelectedDeviceTypes([...selectedDeviceTypes, clickedDeviceType]);
+        }
+    }
+
+    const DeviceTypes = () => {
+        return (
+            <div className='deviceTypes'>
+                {Object.keys(DeviceTypeIcons).map((key, index) => (
+                    <div className={`deviceType ${selectedDeviceTypes.includes(key) ? 'selected' : ''}`} element={key} key={index} onClick={selectDeselect}>
+                        <img className='deviceTypeIcon' src={selectedDeviceTypes.includes(key) ? DeviceTypeIcons[key].light : DeviceTypeIcons[key].dark}></img>
+                        <div className='deviceTypeLabel'>{CapitalizeString(key.replace(/_/g, ' '))}</div>
+                    </div>
+                ))}
+            </div>
+        )
     }
 
     return (
@@ -243,24 +275,10 @@ const GeneralStep = () => {
                                     })} />
                                 </div>
 
-                                <div className='checkboxGroupTitle'>Device types</div>
-                                <ul className={`fieldList ${errors.deviceType ? 'errorBox' : ''}`}>
-                                    {deviceTypeFields.map((field, index) => (
-                                        <li className='inputListItem' key={index}>
-                                            <CustomCheckBoxStyles>
-                                                <div className='checkboxContainer' >
-                                                    <label className='checkBoxLabel'>
-                                                        {field.label}
-                                                        <input checked={field.checked} onClick={updateChecked} id={field.id} type='checkbox' name='deviceType' value={field.value} ref={register({
-                                                            required: 'At least one device type is required'
-                                                        })} />
-                                                        <span className='customCheckbox'></span>
-                                                    </label>
-                                                </div>
-                                            </CustomCheckBoxStyles>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className='deviceTypeContainer'>
+                                    <div className='checkboxGroupTitle'>Device types</div>
+                                    <DeviceTypes></DeviceTypes>
+                                </div>
                                 <div className='validationContainer'>{errors.deviceType && errors.deviceType.message}</div>
 
                                 <div className='imageContainer imageUploadContainer'>
