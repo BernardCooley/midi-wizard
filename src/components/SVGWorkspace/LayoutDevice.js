@@ -29,7 +29,7 @@ const Styles = styled.div`
     .deviceContainer {
         width: 150px;
         height: 150px;
-        margin: 50px;
+        margin: 0 50px;
         cursor: pointer;
         transition: all .2s ease-in-out;
         display: flex;
