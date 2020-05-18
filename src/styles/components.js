@@ -232,7 +232,7 @@ export const AuthFormOptionsStyles = styled.div`
 export const AuthFormValidationMessageStyles = styled.div`
     .validationContainer {
         color: ${Colors.red};
-        min-height: 20px;
+        height: 20px;
     }
 
     .errorBackground {
