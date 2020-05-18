@@ -47,15 +47,16 @@ const Styles = styled.div`
             }
 
             .formStep {
-                opacity: 0;
+                display: none;
                 height: 100%;
                 width: 100%;
                 position: absolute;
                 z-index: -10;
+                flex-direction: column;
             }
 
             .currentStep {
-                opacity: 1;
+                display: flex;
                 position: relative;
                 z-index: 10;
             }
