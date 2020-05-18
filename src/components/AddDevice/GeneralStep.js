@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, useFieldArray } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
@@ -96,7 +96,7 @@ const Styles = styled.div`
 
         .checkboxGroupTitle {
             position: relative;
-            top: -23px;
+            top: -45px;
             background-color: ${Colors.whiteBlue};
             font-weight: bold;
             padding: 10px;
@@ -153,6 +153,14 @@ const Styles = styled.div`
             }
         }
     }
+
+    .valContainer {
+        color: ${Colors.red};
+        min-height: 20px;
+        position: relative;
+        top: -34px;
+        z-index: 10;
+    }
 `;
 
 
@@ -164,7 +172,8 @@ const GeneralStep = () => {
     const stepNumber = useSelector(state => state.currentStep);
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const [imageFle, setImageFile] = useState('');
-    const [selectedDeviceTypes, setSelectedDeviceTypes] = useState([]);
+    const [selectedDeviceTypes, setSelectedDeviceTypes] = useState(formFieldValues['general'] ? formFieldValues['general']['deviceTypes'] : []);
+    const [deviceTypesMessage, setDeviceTypesMessage] = useState('');
 
     const CapitalizeString = string => {
         string = string.split(" ");
@@ -177,23 +186,23 @@ const GeneralStep = () => {
     }
 
     const submitStep = async data => {
-        const updatedData = formFieldValues;
+        if (selectedDeviceTypes.length > 0) {
+            setDeviceTypesMessage('');
+            const updatedData = formFieldValues;
 
-        if (!updatedData['general']) {
-            updatedData['general'] = {};
-        }
-
-        updatedData.general['deviceName'] = data.deviceName;
-        updatedData.general['manufacturer'] = data.manufacturer;
-
-        Object.keys(data).forEach(key => {
-            if (key === 'deviceType') {
-                updatedData['general']['deviceTypes'] = data[key];
+            if (!updatedData['general']) {
+                updatedData['general'] = {};
             }
-        });
 
-        dispatch(addDeviceFormValues(updatedData));
-        nextStep();
+            updatedData.general['deviceName'] = data.deviceName;
+            updatedData.general['manufacturer'] = data.manufacturer;
+            updatedData.general['deviceTypes'] = selectedDeviceTypes;
+
+            dispatch(addDeviceFormValues(updatedData));
+            nextStep();
+        } else {
+            setDeviceTypesMessage('Please choose at least one device type.');
+        }
     }
 
     const nextStep = () => {
@@ -275,11 +284,11 @@ const GeneralStep = () => {
                                     })} />
                                 </div>
 
-                                <div className='deviceTypeContainer'>
+                                <div className={`deviceTypeContainer ${deviceTypesMessage.length > 0 ? 'errorBox' : ''}`}>
+                                    <div className='valContainer'>{deviceTypesMessage.length > 0 ? deviceTypesMessage : ''}</div>
                                     <div className='checkboxGroupTitle'>Device types</div>
                                     <DeviceTypes></DeviceTypes>
                                 </div>
-                                <div className='validationContainer'>{errors.deviceType && errors.deviceType.message}</div>
 
                                 <div className='imageContainer imageUploadContainer'>
                                     <div className='imageUploadLabel'>Device image</div>
