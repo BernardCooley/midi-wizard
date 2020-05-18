@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import TrayDevice from './TrayDevice';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
-import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { TrayTabStyles } from '../../styles/components';
@@ -100,32 +99,13 @@ const DeviceTray = () => {
 
     library.add(faPlus);
     const dispatch = useDispatch();
-    const userDevices = useSelector(state => state.userDevices);
     const userData = useSelector(state => state.userData);
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const deviceTrayOpen = useSelector(state => state.isDeviceTrayOpen);
 
-    useEffect(() => {
-        getImageUrls();
-    }, [userDevices]);
-
-    useEffect(() => {
-        getImageUrls();
-    }, [userData.devices]);
-
     const toggleDeviceTray = () => {
         dispatch(isDeviceTrayOpen());
         dispatch(toggleAddDeviceForm(false));
-    }
-
-    const getImageUrls = async () => {
-        if (userData.devices && userData.devices.length > 0) {
-            userData.devices.map(async device => {
-                const deviceImageName = device.general.imageName ? device.general.imageName : 'default_device_image.jpg';
-
-                device['imageUrl'] = await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL();
-            });
-        }
     }
 
     return (
@@ -142,7 +122,7 @@ const DeviceTray = () => {
                                 : null
                             }
                             {userData.devices && userData.devices.length > 0 ? userData.devices.map((device, index) => (
-                                <TrayDevice key={index} deviceDetails={device} />
+                                <TrayDevice key={index} device={device} />
                             )) : null}
                         </div>
                         {!isAddDeviceFormOpen && userData.devices && userData.devices.length > 0 ?

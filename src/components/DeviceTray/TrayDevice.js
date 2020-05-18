@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
+import PropTypes from 'prop-types';
 
 
 const Styles = styled.div`
@@ -63,11 +64,10 @@ const Styles = styled.div`
     }
 `
 
-const TrayDevice = (deviceDetails) => {
+const TrayDevice = props => {
 
     library.add(faTrashAlt);
     const db = firebase.firestore();
-    const device = deviceDetails.deviceDetails;
     const usersRef = db.collection('Users');
     const userId = useSelector(state => state.currentUserId);
     const layoutId = useSelector(state => state.selectedLayoutId);
@@ -76,14 +76,27 @@ const TrayDevice = (deviceDetails) => {
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
     const userData = useSelector(state => state.userData);
+    const [imageUrl, setImageUrl] = useState('');
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
     }, [layout]);
 
+    useEffect(() => {
+        getImageUrl();
+    }, [props.device]);
+
     const notify = message => {
         toast(message);
     };
+
+    const getImageUrl = async () => {
+        const deviceImageName = props.device.general.imageName ? props.device.general.imageName : 'default_device_image.jpg';
+
+        await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL().then(response => {
+            setImageUrl(response);
+        });
+    }
 
     const addToLayout = async (clickedDeviceId, position) => {
         let selectedDevice = userData.devices.filter(device => device.deviceId === clickedDeviceId)[0];
@@ -190,8 +203,8 @@ const TrayDevice = (deviceDetails) => {
     }
 
     const isDeviceInCurrentLayout = () => {
-        if (layout.devices && Object.keys(layout.devices).length > 0 && device) {
-            return Object.keys(layout.devices).filter(key => layout.devices[key].deviceId === device.deviceId).length > 0;
+        if (layout.devices && Object.keys(layout.devices).length > 0 && props.device) {
+            return Object.keys(layout.devices).filter(key => layout.devices[key].deviceId === props.device.deviceId).length > 0;
         }
     }
 
@@ -208,17 +221,21 @@ const TrayDevice = (deviceDetails) => {
         return matchedLayouts;
     }
 
+    TrayDevice.propTypes = {
+        device: PropTypes.object
+    }
+
     return (
         <Styles>
-            <div deviceid={device ? device.deviceId : ''} className='deviceContainer'>
+            <div deviceid={props.device ? props.device.deviceId : ''} className='deviceContainer'>
                 <ToastContainer />
                 <div className='deviceTrayOptions'>
-                    <div deviceid={device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
+                    <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
                         <FontAwesomeIcon className='deleteIcon svg deviceAction' icon="trash-alt" />
                     </div>
                 </div>
-                <img deviceid={device ? device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={device.imageUrl} alt=''></img>
-                <div className={`deviceTitle ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`}>{device ? device.deviceName : ''}</div>
+                <img deviceid={props.device ? props.device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>
+                <div className={`deviceTitle ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`}>{props.device ? props.device.deviceName : ''}</div>
             </div>
         </Styles>
     )
