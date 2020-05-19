@@ -9,15 +9,19 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import DeleteIcon from '../../icons/delete.svg';
 import EditIcon from '../../icons/edit.svg';
+import AddToLayoutIcon from '../../icons/add_to_layout.svg';
 import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
+import Colors from '../../styles/colors';
 
 
 const Styles = styled.div`
+    border-right: 3px outset ${Colors.middleGray};
+
     .deviceContainer {
-        height: auto;
+        height: 171px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         margin: 5px 10px;
         padding: 5px;
@@ -32,22 +36,27 @@ const Styles = styled.div`
             z-index: 11;
 
             .deviceActionContainer {
-                cursor: pointer;
                 opacity: 1;
                 display: flex;
                 justify-content: space-between;
                 width: auto;
+                cursor: pointer;
+                transition:0.2s;
+                -webkit-transition:0.2s;
+                -moz-transition:0.2s;
 
                 .actionIcon {
-                    height: 20px;
-                    height: 20px;
-                    transition:0.2s;
-                    -webkit-transition:0.2s;
-                    -moz-transition:0.2s;
+                    height: 15px;
+                    pointer-events: none;
+                }
 
-                    &:hover {
-                        transform: scale(1.3);
-                    }
+                &:hover {
+                    transform: scale(1.3);
+                }
+
+                .deleteIcon {
+                    height: 20px;
+                    margin-bottom: 4px;
                 }
             }
         }
@@ -58,7 +67,9 @@ const Styles = styled.div`
         }
 
         .alreadyInLayout {
-            opacity: 0.5;
+            opacity: 0.5 !important;
+            pointer-events: none;
+            cursor: default;
         }
 
         .deviceTitle {
@@ -77,7 +88,6 @@ const TrayDevice = props => {
     const userLayouts = useSelector(state => state.layouts);
     const layout = useSelector(state => state.currentLayout);
     const [inCurrentWorkspace, setInCurrentWorkspace] = useState(false);
-    const [clickedDeviceId, setClickedDeviceId] = useState([]);
     const userData = useSelector(state => state.userData);
     const [imageUrl, setImageUrl] = useState('');
     const dispatch = useDispatch();
@@ -102,41 +112,26 @@ const TrayDevice = props => {
         });
     }
 
-    const addToLayout = async (clickedDeviceId, position) => {
+    const addToLayout = async (e) => {
+        const clickedDeviceId = e.target.getAttribute('deviceid');
+
         let selectedDevice = userData.devices.filter(device => device.deviceId === clickedDeviceId)[0];
 
         const currentLayout = userLayouts.filter(layout => layout.layoutId === layoutId)[0];
 
-        if (!isDeviceAlreadyInLayout(currentLayout, selectedDevice)) {
-            selectedDevice.position = { 'x': position[0], 'y': position[1] }
-            selectedDevice = { [selectedDevice.deviceId]: selectedDevice };
+        selectedDevice = { [selectedDevice.deviceId]: selectedDevice };
 
-            const updatedLayoutDevices = { ...currentLayout.devices, ...selectedDevice };
-            const updatedLayouts = userLayouts.map(layout => {
-                if (layout.layoutId === currentLayout.layoutId) {
-                    layout.devices = updatedLayoutDevices
-                }
-                return layout;
-            });
+        const updatedLayoutDevices = { ...currentLayout.devices, ...selectedDevice };
+        const updatedLayouts = userLayouts.map(layout => {
+            if (layout.layoutId === currentLayout.layoutId) {
+                layout.devices = updatedLayoutDevices
+            }
+            return layout;
+        });
 
-            await usersRef.doc(userId).update({
-                layouts: updatedLayouts
-            })
-        }
-    }
-
-    const dragDevice = e => {
-        setClickedDeviceId(e.target.getAttribute('deviceid'));
-    }
-
-    const dropDevice = e => {
-        e = e || window.event;
-        addToLayout(clickedDeviceId, [e.pageX, e.pageY]);
-    }
-
-    const isDeviceAlreadyInLayout = (layout, selectedDevice) => {
-        const devices = Object.keys(layout.devices);
-        return devices.filter(key => layout.devices[key].deviceId === selectedDevice.deviceId).length > 0;
+        await usersRef.doc(userId).update({
+            layouts: updatedLayouts
+        })
     }
 
     const deleteDevice = e => {
@@ -172,7 +167,6 @@ const TrayDevice = props => {
     }
 
     const removeDeviceFromLayouts = async (deviceIdToDelete) => {
-
         const updatedLayouts = userLayouts.map(layout => {
             const keptDeviceIds = Object.keys(layout.devices).filter(key => key !== deviceIdToDelete);
 
@@ -240,14 +234,17 @@ const TrayDevice = props => {
             <div deviceid={props.device ? props.device.deviceId : ''} className='deviceContainer'>
                 <ToastContainer />
                 <div className='deviceTrayOptions'>
-                    <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
-                        <img src={DeleteIcon} className='actionIcon'></img>
-                    </div>
                     <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={editDevice}>
                         <img src={EditIcon} className='actionIcon'></img>
                     </div>
+                    <div deviceid={props.device.deviceId} className={`deviceActionContainer ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} onClick={addToLayout}>
+                        <img src={AddToLayoutIcon} className='actionIcon'></img>
+                    </div>
+                    <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
+                        <img src={DeleteIcon} className='deleteIcon actionIcon'></img>
+                    </div>
                 </div>
-                <img deviceid={props.device ? props.device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>
+                <img deviceid={props.device ? props.device.deviceId : ''} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>
                 <div className={`deviceTitle ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`}>{props.device ? props.device.deviceName : ''}</div>
             </div>
         </Styles>

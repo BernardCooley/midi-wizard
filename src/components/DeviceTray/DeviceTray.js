@@ -48,7 +48,7 @@ const Styles = styled.div`
                 align-items: center;
                 width: 98%;
                 position: relative;
-                top: -35px;
+                top: -30px;
                 height: 208px;
 
                 .listContainer {
