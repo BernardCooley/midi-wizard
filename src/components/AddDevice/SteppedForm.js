@@ -75,6 +75,7 @@ const SteppedForm = () => {
     const currStep = useSelector(state => state.currentStep);
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
+    const deviceBeingEdited = useSelector(state => state.deviceBeingEdited);
     const [progress, setProgress] = useState(1);
 
     useEffect(() => {
@@ -82,6 +83,12 @@ const SteppedForm = () => {
             setProgress(currStep);
         }
     }, [currStep]);
+
+    useEffect(() => {
+        if (deviceBeingEdited) {
+            setProgress(5);
+        }
+    }, []);
 
     const steps = [
         'General',

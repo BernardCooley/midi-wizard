@@ -32,7 +32,7 @@ const Styles = styled.div`
         width: 100%;
         margin: auto;
         justify-content: space-between;
-        padding-top: 100px;
+        margin-top: 150px;
         
         .summarySection {
             height: 100%;
