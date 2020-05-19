@@ -82,7 +82,9 @@ const AddDevice = () => {
                     <FontAwesomeIcon className='closeIcon' icon="times-circle" />
                 </CloseIconStyles>
                 <div className='addDeviceContainer'>
-                    <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
+                    {!isdeviceBeingEdited ?
+                        <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input> : null
+                    }
 
                     {!isdeviceBeingEdited ?
                         <StockSearchResults searchTerm={searchTerm} /> : null
