@@ -203,3 +203,10 @@ export const userData = userData => {
         payload: userData
     };
 };
+
+export const deviceBeingEdited = beingEdited => {
+    return {
+        type: 'DEVICE_BEING_EDITED',
+        payload: beingEdited
+    };
+};

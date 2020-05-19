@@ -223,8 +223,6 @@ const ConnectionModal = () => {
     const removeConnection = async (sourceDevice, destinationDevice, connectionName) => {
         console.log(sourceDevice, destinationDevice, connectionName);
 
-        // TODO
-
         if (connectionName === 'sourceOutDestIn') {
             // source out = ''
             // dest in = ''

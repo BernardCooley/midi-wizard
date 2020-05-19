@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
-import Colors from '../../styles/colors';
 import PropTypes from 'prop-types';
+import DeleteIcon from '../../icons/delete.svg';
+import EditIcon from '../../icons/edit.svg';
+import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
 
 
 const Styles = styled.div`
@@ -22,29 +23,31 @@ const Styles = styled.div`
         padding: 5px;
 
         .deviceTrayOptions {
-            width: 87%;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
             top: 10px;
-            right: 14px;
             z-index: 11;
 
             .deviceActionContainer {
                 cursor: pointer;
                 opacity: 1;
+                display: flex;
+                justify-content: space-between;
+                width: auto;
 
-                .deleteIcon {
-                    color: ${Colors.red};
-                }
-                
-                .svg {
-                    pointer-events: none;
-                }
-                
-                .deviceAction {
-                    font-size: 18px;
+                .actionIcon {
+                    height: 20px;
+                    height: 20px;
+                    transition:0.2s;
+                    -webkit-transition:0.2s;
+                    -moz-transition:0.2s;
+
+                    &:hover {
+                        transform: scale(1.3);
+                    }
                 }
             }
         }
@@ -77,6 +80,7 @@ const TrayDevice = props => {
     const [clickedDeviceId, setClickedDeviceId] = useState([]);
     const userData = useSelector(state => state.userData);
     const [imageUrl, setImageUrl] = useState('');
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setInCurrentWorkspace(isDeviceInCurrentLayout());
@@ -221,6 +225,12 @@ const TrayDevice = props => {
         return matchedLayouts;
     }
 
+    const editDevice = () => {
+        dispatch(toggleAddDeviceForm(true));
+        dispatch(deviceBeingEdited(true));
+        dispatch(addDeviceFormValues(props.device));
+    }
+
     TrayDevice.propTypes = {
         device: PropTypes.object
     }
@@ -231,7 +241,10 @@ const TrayDevice = props => {
                 <ToastContainer />
                 <div className='deviceTrayOptions'>
                     <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={deleteDevice}>
-                        <FontAwesomeIcon className='deleteIcon svg deviceAction' icon="trash-alt" />
+                        <img src={DeleteIcon} className='actionIcon'></img>
+                    </div>
+                    <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={editDevice}>
+                        <img src={EditIcon} className='actionIcon'></img>
                     </div>
                 </div>
                 <img deviceid={props.device ? props.device.deviceId : ''} onDragStart={dragDevice} onDragEnd={dropDevice} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>

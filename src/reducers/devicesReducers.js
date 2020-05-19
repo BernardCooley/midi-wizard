@@ -54,6 +54,14 @@ const deviceReducers = {
             default:
                 return state;
         }
+    },
+    deviceBeingEdited: (state = false, action) => {
+        switch (action.type) {
+            case 'DEVICE_BEING_EDITED':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

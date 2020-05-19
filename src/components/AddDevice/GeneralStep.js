@@ -7,6 +7,7 @@ import StepNavigationButton from './StepNavigationButton';
 import { AddDeviceFormStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import DeviceTypeIcons from '../ImportIcons/DeviceTypeIcons';
+import firebase from '../../firebase';
 
 
 const Styles = styled.div`
@@ -167,13 +168,32 @@ const Styles = styled.div`
 const GeneralStep = () => {
 
     const dispatch = useDispatch();
-    const { handleSubmit, register, errors, control } = useForm();
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const stepNumber = useSelector(state => state.currentStep);
     const [imageFieldPopulated, setImageFieldPopulated] = useState(false);
     const [imageFle, setImageFile] = useState('');
     const [selectedDeviceTypes, setSelectedDeviceTypes] = useState(formFieldValues['general'] ? formFieldValues['general']['deviceTypes'] : []);
     const [deviceTypesMessage, setDeviceTypesMessage] = useState('');
+    const imageStorageRef = firebase.storage().ref();
+
+    const { handleSubmit, register, errors, control } = useForm({
+        defaultValues: {
+            manufacturer: formFieldValues.general.manufacturer,
+            deviceName: formFieldValues.general.deviceName
+        }
+    });
+
+    useEffect(() => {
+        getImageUrl();
+    }, [formFieldValues]);
+
+    const getImageUrl = async () => {
+        const imageResponse = imageStorageRef.child('deviceImages').child(formFieldValues.general.imageName);
+
+        await imageResponse.getDownloadURL().then(url => {
+            setImageFile(url);
+        })
+    }
 
     const CapitalizeString = string => {
         string = string.split(" ");

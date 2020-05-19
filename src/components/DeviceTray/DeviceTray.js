@@ -79,6 +79,13 @@ const Styles = styled.div`
                     height: 25px;
                     margin-left: 20px;
                     cursor: pointer;
+                    transition:0.2s;
+                    -webkit-transition:0.2s;
+                    -moz-transition:0.2s;
+
+                    &:hover {
+                        transform: scale(1.4);
+                    }
 
                     .svg {
                         font-size: 25px;

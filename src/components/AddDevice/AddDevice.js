@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAddDeviceForm, currentStep, addDeviceFormValues } from '../../actions';
+import { toggleAddDeviceForm, currentStep, addDeviceFormValues, deviceBeingEdited } from '../../actions';
 import StockSearchResults from './StockSearchResults';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -48,6 +48,7 @@ const AddDevice = () => {
     const dispatch = useDispatch();
     const isAddDeviceFormOpen = useSelector(state => state.isAddDeviceFormOpen);
     const searchResults = useSelector(state => state.searchResults);
+    const isdeviceBeingEdited = useSelector(state => state.deviceBeingEdited);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -55,6 +56,7 @@ const AddDevice = () => {
             openCloseAddDeviceForm(false);
             dispatch(currentStep(1));
             dispatch(addDeviceFormValues({}));
+            dispatch(deviceBeingEdited(false));
 
         })
     }, [isAddDeviceFormOpen]);
@@ -82,9 +84,11 @@ const AddDevice = () => {
                 <div className='addDeviceContainer'>
                     <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input>
 
-                    <StockSearchResults searchTerm={searchTerm} />
+                    {!isdeviceBeingEdited ?
+                        <StockSearchResults searchTerm={searchTerm} /> : null
+                    }
 
-                    {searchResults.length === 0 ?
+                    {isdeviceBeingEdited || searchResults.length === 0 ?
                         <SteppedForm /> :
                         null
                     }
