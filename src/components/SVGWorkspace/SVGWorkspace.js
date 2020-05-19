@@ -1,11 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { select } from 'd3';
 import styled from 'styled-components';
-import Colors from '../../styles/colors';
 import LayoutDevice from '../SVGWorkspace/LayoutDevice';
-import ConnectionModal from './ConnectionModal';
-import { useSelector } from 'react-redux';
 import ConnectionLegend from './ConnectionLegend';
 
 
@@ -13,7 +9,9 @@ const Styles = styled.div`
     width: 100%;
 
     .svgWorkspaceContainer {
-        background-color: ${Colors.darkTeal};
+        background-color: #434343;
+        background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
+        background-size: 50px 50px;
         width: auto;
         height: 100vh;
         padding: 50px;
@@ -25,54 +23,14 @@ const Styles = styled.div`
 
 const SVGWorkspace = props => {
 
-    const deviceIdToEdit = useSelector(state => state.selectedLayoutDeviceId);
-
-    // const svgRef = useRef();
-
-    // const [data, setData] = useState([23, 54, 18, 20, 46]);
-    // const [deviceContainerSize, setDeviceContainerSize] = useState({
-    //     'width': 100,
-    //     'height': 100
-    // });
-    // const [deviceCoordinates, setDeviceCoordinates] = useState({
-    //     'x': 200,
-    //     'y': 100
-    // });
-
-
-    // useEffect(() => {
-    //     if (props.layout.devices) {
-    //         const svg = select(svgRef.current);
-
-    //         svg.selectAll('rect')
-    //             .data(props.layout.devices)
-    //             .join('rect')
-    //             .attr('width', deviceContainerSize.width)
-    //             .attr('height', deviceContainerSize.height)
-    //             .attr('x', d => d.svg.x - deviceContainerSize.width)
-    //             .attr('y', d => d.svg.y)
-    //             .attr('fill', Colors.lightGray);
-
-    //         svg.selectAll('text')
-    //             .data(props.layout.devices)
-    //             .join('text')
-    //             .text(d => d.deviceName)
-    //             .attr('x', d => d.svg.x - deviceContainerSize.width)
-    //             .attr('y', d => d.svg.y)
-    //     }
-    // }, [data, props.layout.devices]);
-
     return (
         <Styles>
-            {/* <svg ref={svgRef} id='svgWorkspace' className='svgWorkspaceContainer'></svg> */}
-
             <div className='svgWorkspaceContainer'>
                 {props.layout.devices ? Object.keys(props.layout.devices).map((key, index) => (
                     <LayoutDevice key={index} device={props.layout.devices[key]}></LayoutDevice>
                 )) : null}
             </div>
             <ConnectionLegend />
-
         </Styles>
     )
 }

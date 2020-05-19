@@ -2,57 +2,70 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../styles/colors';
 
 const Styles = styled.div`
+    min-width: 275px;
+
     .deviceCardContainer {
-        width: 200px;
         background-color: ${Colors.whiteBlueOpaque};
-        margin: 10px;
+        margin: 10px 0;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
-        padding: 10px;
         -webkit-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
         -moz-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
         box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
-        min-height: 350px;
+        height: 100px;
+        padding: 15px;
+        transition:0.2s;
+        -webkit-transition:0.2s;
+        -moz-transition:0.2s;
+        cursor: pointer;
+        outline: 1px solid ${Colors.black};
 
-        .manufacturer {
-            font-size: 16px;
-            text-align: center;
+        &:hover {
+            transform: scale(1.05);
+            background-color: ${Colors.darkTeal};
+            color: ${Colors.whiteBlue};
         }
 
-        .deviceName {
-            font-size: 24px;
-            text-align: center;
-        }
+        .detailContainer {
+            flex-grow: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
 
-        .cardImage {
-            width: 100%;
-            background-color: ${Colors.lightgray};
-            height: auto;
-            margin: 10px;
-        }
+            .manufacturer {
+                font-size: 16px;
+                text-align: center;
+            }
 
-        .addButton {
-            cursor: pointer;
-            height: 30px;
-            width: 100px;
-            border: 1px solid ${Colors.whiteBlue};
-            outline: none;
-        }
-
-        .enabled {
-            background-color: ${Colors.middleGray};
-            color: ${Colors.white};
-
-            &:hover {
-                background-color: ${Colors.darkTeal};
+            .deviceName {
+                font-size: 24px;
+                text-align: center;
             }
         }
+
+        .cardImageContainer {
+            height: 100%;
+            flex-grow: 2;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            .cardImage {
+                height: 100%;
+                background-color: ${Colors.lightgray};
+                margin: 10px;
+            }
+        }
+    }
+
+    .inTray {
+        opacity: 0.5;
+        pointer-events: none;
     }
 `
 
@@ -79,6 +92,12 @@ const SearchResultsCard = props => {
     }
 
     const addToUserDevices = async () => {
+        document.querySelector('.addDeviceOuterContainer').classList.add('addingDevice');
+
+        setTimeout(() => {
+            document.querySelector('.addDeviceOuterContainer').classList.remove('addingDevice');
+        }, 1000);
+
         props.device.inDeviceTray = true;
         await usersRef.doc(userId).update({
             devices: [...userData.devices, props.device]
@@ -87,11 +106,14 @@ const SearchResultsCard = props => {
 
     return (
         <Styles>
-            <div className='deviceCardContainer'>
-                <div className='manufacturer'>{props.device.general.manufacturer}</div>
-                <div className='deviceName'>{props.device.general.deviceName}</div>
-                <img src={imageUrl} className='cardImage'></img>
-                <button className={`addButton ${props.device.inDeviceTray ? '' : 'enabled'}`} disabled={props.device.inDeviceTray} onClick={addToUserDevices}>Add</button>
+            <div className={`deviceCardContainer ${props.device.inDeviceTray ? 'inTray' : ''}`} onClick={addToUserDevices}>
+                <div className='detailContainer'>
+                    <div className='manufacturer'>{props.device.general.manufacturer}</div>
+                    <div className='deviceName'>{props.device.general.deviceName}</div>
+                </div>
+                <div className='cardImageContainer'>
+                    <img src={imageUrl} className='cardImage'></img>
+                </div>
             </div>
         </Styles>
     )

@@ -12,6 +12,10 @@ import SteppedForm from '../AddDevice/SteppedForm';
 
 
 const Styles = styled.div`
+    .addingDevice {
+        opacity: 0;
+    }
+
     .addDeviceOuterContainer {
         width: 90vw;
         height: 500px;
@@ -19,6 +23,9 @@ const Styles = styled.div`
         top: 50px;
         z-index: 15;
         margin: auto;
+        transition:0.4s;
+        -webkit-transition:0.4s;
+        -moz-transition:0.4s;
 
         .addDeviceContainer {
             border: 1px solid ${Colors.lightGray};
@@ -31,6 +38,10 @@ const Styles = styled.div`
             -webkit-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
             -moz-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
             box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
 
             .deviceSearchBox {
                 width: 98%;

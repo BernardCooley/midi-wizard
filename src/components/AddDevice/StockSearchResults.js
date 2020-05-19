@@ -7,14 +7,16 @@ import styled from 'styled-components';
 import Colors from '../../styles/colors';
 
 const Styles = styled.div`
+    width: 100%;
+
     .stockSearchResultsContainer {
         width: 100%;
         height: 100%;
         background-color: ${Colors.whiteBlue};
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: flex-start;
+        flex-wrap: wrap;
     }
 `
 
