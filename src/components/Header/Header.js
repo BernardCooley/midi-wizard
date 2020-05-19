@@ -139,7 +139,7 @@ const Header = () => {
                     }
                 </div>
                 <div className='titleContainer'>
-                    <div className='appTitle'>Studio Designer</div>
+                    <div className='appTitle'>Studio Socket</div>
                 </div>
                 <div className='accountActionsContainer'>
                     <div className='userName'>Welcome {firstName}</div>
