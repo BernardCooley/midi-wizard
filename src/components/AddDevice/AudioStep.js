@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, useFieldArray } from "react-hook-form";
 import { addDeviceFormValues, currentStep } from '../../actions';
@@ -156,6 +156,10 @@ const AudioStep = () => {
         'audioIn': ''
     });
 
+    useEffect(() => {
+        buildInitialFields();
+    }, [formFieldValues]);
+
     const storefields = audioType => {
         setAudioOutFields(updateValues('audioOut'));
         setAudioInFields(updateValues('audioIn'));
@@ -194,12 +198,12 @@ const AudioStep = () => {
         dispatch(currentStep(stepNumber + 1));
     }
 
-    const addField = audioType => {
+    const addField = (audioType, value) => {
         const newField = [
             {
                 "name": "",
                 "id": '_' + Math.random().toString(36).substr(2, 9),
-                "value": ''
+                "value": value
             }
         ]
 
@@ -243,6 +247,18 @@ const AudioStep = () => {
         const updatedIds = editingFieldIds;
         updatedIds[audioType] = fieldId;
         setEditingFieldIds(updatedIds);
+    }
+
+    const buildInitialFields = () => {
+        if (formFieldValues.audio) {
+            Object.keys(formFieldValues.audio.audioIn).forEach(key => {
+                addField('audioIn', key);
+            });
+
+            Object.keys(formFieldValues.audio.audioOut).forEach(key => {
+                addField('audioOut', key);
+            });
+        }
     }
 
     const AudioFields = props => {

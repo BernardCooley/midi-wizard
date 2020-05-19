@@ -178,8 +178,8 @@ const GeneralStep = () => {
 
     const { handleSubmit, register, errors, control } = useForm({
         defaultValues: {
-            manufacturer: formFieldValues.general.manufacturer,
-            deviceName: formFieldValues.general.deviceName
+            manufacturer: formFieldValues.general ? formFieldValues.general.manufacturer : '',
+            deviceName: formFieldValues.general ? formFieldValues.general.deviceName : ''
         }
     });
 
@@ -188,11 +188,13 @@ const GeneralStep = () => {
     }, [formFieldValues]);
 
     const getImageUrl = async () => {
-        const imageResponse = imageStorageRef.child('deviceImages').child(formFieldValues.general.imageName);
+        if (formFieldValues.general) {
+            const imageResponse = imageStorageRef.child('deviceImages').child(formFieldValues.general.imageName);
 
-        await imageResponse.getDownloadURL().then(url => {
-            setImageFile(url);
-        })
+            await imageResponse.getDownloadURL().then(url => {
+                setImageFile(url);
+            });
+        }
     }
 
     const CapitalizeString = string => {
