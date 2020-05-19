@@ -134,6 +134,7 @@ const ConfirmStep = () => {
     const formFieldValues = useSelector(state => state.addDeviceFormValues);
     const currentUserId = useSelector(state => state.currentUserId);
     const userData = useSelector(state => state.userData);
+    const deviceBeingEdited = useSelector(state => state.deviceBeingEdited);
     const imageStorageRef = firebase.storage().ref();
 
     const notify = message => {
@@ -271,7 +272,7 @@ const ConfirmStep = () => {
                                         Device Image
                                     </div>
                                     {formFieldValues.general.imageRef ?
-                                        <img src={formFieldValues.general.imageRef}></img> :
+                                        <img src={deviceBeingEdited ? formFieldValues.imageUrl : formFieldValues.general.imageRef}></img> :
                                         <div className=''>
                                             <FontAwesomeIcon className='noIcon icons' icon="times" />
                                         </div>
