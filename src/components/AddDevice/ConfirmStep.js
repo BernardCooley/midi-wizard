@@ -10,7 +10,7 @@ import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import firebase from '../../firebase';
 import { toggleAddDeviceForm, addDeviceFormValues, currentStep } from '../../actions';
-import { ToastContainer, toast } from 'react-toastify';
+import sweetAlert from 'sweetalert';
 
 const Styles = styled.div`
     width: 90%;
@@ -138,10 +138,6 @@ const ConfirmStep = () => {
     const deviceBeingEdited = useSelector(state => state.deviceBeingEdited);
     const imageStorageRef = firebase.storage().ref();
 
-    const notify = message => {
-        toast(message);
-    };
-
     const addToStockDevices = async newDevice => {
         newDevice.general.imageFile = '';
         const newDocumentRef = stockDevicesRef.doc();
@@ -165,7 +161,14 @@ const ConfirmStep = () => {
                 dispatch(toggleAddDeviceForm(false));
                 dispatch(addDeviceFormValues({}));
                 dispatch(currentStep(1));
-                notify('Device added');
+                sweetAlert({
+                    title: 'Success',
+                    text: 'Device added',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 2000,
+                    className: ''
+                });
             });
     }
 
@@ -232,7 +235,6 @@ const ConfirmStep = () => {
 
     return (
         <Styles>
-            <ToastContainer />
             {Object.keys(formFieldValues).length > 2 ?
                 <>
                     <div className='summaryContainer'>

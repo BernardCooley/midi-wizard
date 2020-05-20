@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleEditingImage, gettingData } from '../../actions';
-import { ToastContainer, toast } from 'react-toastify';
 import Colors from '../../styles/colors';
+import sweetAlert from 'sweetalert';
 
 const Styles = styled.div`
     .changeImageContainer {
@@ -64,10 +64,6 @@ const ChangeImage = () => {
     const idBeingEdited = useSelector(state => state.deviceIdBeingEdited);
     const allStockDevices = useSelector(state => state.allStockDevices);
 
-    const notify = message => {
-        toast(message);
-    };
-
     const closeForm = () => {
         document.querySelector('#imageUploadInput').value = '';
         setImageFieldPopulated(false);
@@ -88,14 +84,28 @@ const ChangeImage = () => {
                 snapshot.ref.getDownloadURL().then(downloadURL => {
                     deleteExistingImage(existingImageName).then(() => {
                         updateDeviceDetails(imageName, downloadURL).then(() => {
-                            notify('Image uploaded');
+                            sweetAlert({
+                                title: 'Success',
+                                text: 'Image uploaded',
+                                icon: 'success',
+                                buttons: false,
+                                timer: 2000,
+                                className: ''
+                            });
                             dispatch(gettingData(false));
                         });
                     });
                 });
             });
         } else {
-            alert('Image already uploaded. Please choose another');
+            sweetAlert({
+                title: 'Success',
+                text: 'Image already uploaded. Please choose another.',
+                icon: 'success',
+                buttons: false,
+                timer: 2000,
+                className: ''
+            });
         }
     }
 
@@ -134,7 +144,6 @@ const ChangeImage = () => {
 
     return (
         <Styles>
-            <ToastContainer />
             <div className='changeImageContainer'>
                 <button className='closeButton' onClick={closeForm}>X</button>
                 <form onSubmit={handleSubmit(updateImage)} className='manualAddDeviceForm' autoComplete="off">

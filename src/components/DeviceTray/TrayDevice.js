@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -12,6 +11,7 @@ import EditIcon from '../../icons/edit.svg';
 import AddToLayoutIcon from '../../icons/add_to_layout.svg';
 import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
 import Colors from '../../styles/colors';
+import sweetAlert from 'sweetalert';
 
 
 const Styles = styled.div`
@@ -100,10 +100,6 @@ const TrayDevice = props => {
         getImageUrl();
     }, [props.device]);
 
-    const notify = message => {
-        toast(message);
-    };
-
     const getImageUrl = async () => {
         const deviceImageName = props.device.general.imageName ? props.device.general.imageName : 'default_device_image.jpg';
 
@@ -184,7 +180,14 @@ const TrayDevice = props => {
         await usersRef.doc(userId).update({
             layouts: updatedLayouts
         }).then(() => {
-            notify('Device deleted');
+            sweetAlert({
+                title: 'Success',
+                text: 'Device deleted.',
+                icon: 'success',
+                buttons: false,
+                timer: 2000,
+                className: ''
+            });
         });
     }
 
@@ -232,7 +235,6 @@ const TrayDevice = props => {
     return (
         <Styles>
             <div deviceid={props.device ? props.device.deviceId : ''} className='deviceContainer'>
-                <ToastContainer />
                 <div className='deviceTrayOptions'>
                     <div deviceid={props.device.deviceId} className='deviceActionContainer' onClick={editDevice}>
                         <img src={EditIcon} className='actionIcon'></img>

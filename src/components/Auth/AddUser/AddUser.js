@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { currentAuthComponent } from '../../../actions';
 import { AuthFormContainerStyles, AuthFormFieldStyles, AuthFormOptionsStyles, CustomButtonStyles, AuthFormValidationMessageStyles } from '../../../styles/components';
+import sweetAlert from 'sweetalert';
 
 
 const Styles = styled.div``;
@@ -37,7 +38,14 @@ const AddUser = () => {
                         console.log(data.email, data.password);
                         rollBackData.push(createUserInDatabaseResp);
                         signUpResp.user.sendEmailVerification().then(function () {
-                            alert('Verification email sent. Please check your inbox.');
+                            sweetAlert({
+                                title: 'Success',
+                                text: 'Verification email sent. Please check your inbox.',
+                                icon: 'success',
+                                buttons: false,
+                                timer: 2000,
+                                className: ''
+                            });
                             setTimeout(() => {
                                 window.location.reload();
                             }, 3000);

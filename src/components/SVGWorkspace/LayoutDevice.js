@@ -5,7 +5,7 @@ import firebase from '../../firebase';
 import { selectedLayoutDeviceId, connectionSelections } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
-import { ToastContainer, toast } from 'react-toastify';
+import sweetAlert from 'sweetalert';
 
 
 const Styles = styled.div`
@@ -86,10 +86,6 @@ const LayoutDevice = props => {
         getDeviceImage(props.device.imageName);
     }, [props.device]);
 
-    const notify = message => {
-        toast(message);
-    };
-
     const openConnectionModal = e => {
         dispatch(selectedLayoutDeviceId(e.target.getAttribute('deviceid')));
     }
@@ -102,7 +98,7 @@ const LayoutDevice = props => {
         setClickedDeviceId(e.target.getAttribute('deviceid'));
         const clickedDeviceId = e.target.getAttribute('deviceid');
         if (selections[0].deviceId === undefined) {
-            notify('Choose destination device');
+            sweetAlert("Choose destination device");
             dispatch(connectionSelections([getSelectedDevice(clickedDeviceId), {}]));
         } if (selections[0].deviceId !== undefined) {
             dispatch(connectionSelections([selections[0], getSelectedDevice(clickedDeviceId)]));
@@ -135,7 +131,6 @@ const LayoutDevice = props => {
 
     return (
         <Styles>
-            <ToastContainer />
             <div className='midiOptions'>
 
             </div>

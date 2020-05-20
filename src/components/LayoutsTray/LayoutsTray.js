@@ -8,6 +8,7 @@ import firebase from 'firebase';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { TrayTabStyles } from '../../styles/components';
+import sweetAlert from 'sweetalert';
 
 
 const Styles = styled.div`
@@ -186,7 +187,14 @@ const LayoutsTray = () => {
                 });
             }
         } else {
-            alert('Currently selected layout cannot be deleted.');
+            sweetAlert({
+                title: 'Success',
+                text: 'Currently selected layout cannot be deleted.',
+                icon: 'warning',
+                buttons: false,
+                timer: 2000,
+                className: ''
+            });
         }
     }
 

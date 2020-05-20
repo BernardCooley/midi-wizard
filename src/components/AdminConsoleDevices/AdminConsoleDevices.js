@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { useTable, usePagination } from 'react-table';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
-import { ToastContainer, toast } from 'react-toastify';
 import { toggleEditingImage, deviceIdBeingEdited } from '../../actions';
 import ChangeImage from './ChangeImage';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import Colors from '../../styles/colors';
+import sweetAlert from 'sweetalert';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -347,10 +347,6 @@ const AdminConsoleTable = () => {
         }
     }, [showingAll]);
 
-    const notify = message => {
-        toast(message);
-    };
-
     const updatedData = () => {
         const updatedDevices = allStockDevices.map((device, index) => {
             if (device !== data[index]) {
@@ -361,7 +357,14 @@ const AdminConsoleTable = () => {
         updatedDevices.forEach(async device => {
             if (device) {
                 await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
-                notify('Devices saved');
+                sweetAlert({
+                    title: 'Success',
+                    text: 'Device added',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 2000,
+                    className: ''
+                });
             }
         });
     }
@@ -440,7 +443,6 @@ const AdminConsoleTable = () => {
             {isGettingData ?
                 <Loader className='centerElement spinner' type="Puff" color="#00BFFF" height={100} width={100} timeout={3000} /> : null
             }
-            <ToastContainer />
             <div className='tableButtonsContainer'>
                 <button onClick={updatedData} className='tableButtons'>Save devices</button>
                 <button onClick={showAllDevices} className='tableButtons'>
