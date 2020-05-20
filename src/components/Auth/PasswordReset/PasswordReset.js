@@ -5,7 +5,7 @@ import { currentAuthComponent } from '../../../actions';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { AuthFormContainerStyles, AuthFormFieldStyles, AuthFormOptionsStyles, CustomButtonStyles, AuthFormValidationMessageStyles } from '../../../styles/components';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div``;
@@ -19,12 +19,12 @@ const PasswordReset = () => {
 
     const sendPasswordResetEmail = data => {
         firebase.auth().sendPasswordResetEmail(data.email).then(function () {
-            sweetAlert({
+            sweetAlert.fire({
                 title: 'Success',
                 text: 'Password reset email sent.',
                 icon: 'success',
-                buttons: false,
-                timer: 2000,
+                showConfirmButton: false,
+                timer: 2500,
                 className: ''
             });
             window.location.reload();

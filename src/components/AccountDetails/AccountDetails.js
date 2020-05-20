@@ -9,7 +9,7 @@ import { resetState } from '../../actions';
 import { useDispatch } from 'react-redux';
 import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div`
@@ -111,12 +111,12 @@ const AccountDetails = () => {
         if (confirmUpdate) {
             await updatePassword(data.password).then(() => {
                 setFieldToEdit('');
-                sweetAlert({
+                sweetAlert.fire({
                     title: 'Success',
                     text: 'Password updated',
                     icon: 'success',
-                    buttons: false,
-                    timer: 2000,
+                    showConfirmButton: false,
+                    timer: 2500,
                     className: ''
                 });
             });

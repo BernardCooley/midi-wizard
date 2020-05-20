@@ -11,7 +11,7 @@ import EditIcon from '../../icons/edit.svg';
 import AddToLayoutIcon from '../../icons/add_to_layout.svg';
 import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div`
@@ -180,12 +180,12 @@ const TrayDevice = props => {
         await usersRef.doc(userId).update({
             layouts: updatedLayouts
         }).then(() => {
-            sweetAlert({
+            sweetAlert.fire({
                 title: 'Success',
                 text: 'Device deleted.',
                 icon: 'success',
-                buttons: false,
-                timer: 2000,
+                showConfirmButton: false,
+                timer: 2500,
                 className: ''
             });
         });

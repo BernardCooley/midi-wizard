@@ -9,7 +9,7 @@ import ChangeImage from './ChangeImage';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -357,12 +357,12 @@ const AdminConsoleTable = () => {
         updatedDevices.forEach(async device => {
             if (device) {
                 await stockDeviceDtaRef.doc(device.deviceId).set(formatData(device));
-                sweetAlert({
+                sweetAlert.fire({
                     title: 'Success',
                     text: 'Device added',
                     icon: 'success',
-                    buttons: false,
-                    timer: 2000,
+                    showConfirmButton: false,
+                    timer: 2500,
                     className: ''
                 });
             }

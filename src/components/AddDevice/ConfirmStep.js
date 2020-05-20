@@ -10,7 +10,7 @@ import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import firebase from '../../firebase';
 import { toggleAddDeviceForm, addDeviceFormValues, currentStep } from '../../actions';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 const Styles = styled.div`
     width: 90%;
@@ -161,12 +161,12 @@ const ConfirmStep = () => {
                 dispatch(toggleAddDeviceForm(false));
                 dispatch(addDeviceFormValues({}));
                 dispatch(currentStep(1));
-                sweetAlert({
+                sweetAlert.fire({
                     title: 'Success',
                     text: 'Device added',
                     icon: 'success',
-                    buttons: false,
-                    timer: 2000,
+                    showConfirmButton: false,
+                    timer: 2500,
                     className: ''
                 });
             });

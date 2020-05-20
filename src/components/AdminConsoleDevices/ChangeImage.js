@@ -5,7 +5,7 @@ import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleEditingImage, gettingData } from '../../actions';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 const Styles = styled.div`
     .changeImageContainer {
@@ -84,12 +84,12 @@ const ChangeImage = () => {
                 snapshot.ref.getDownloadURL().then(downloadURL => {
                     deleteExistingImage(existingImageName).then(() => {
                         updateDeviceDetails(imageName, downloadURL).then(() => {
-                            sweetAlert({
+                            sweetAlert.fire({
                                 title: 'Success',
                                 text: 'Image uploaded',
                                 icon: 'success',
-                                buttons: false,
-                                timer: 2000,
+                                showConfirmButton: false,
+                                timer: 2500,
                                 className: ''
                             });
                             dispatch(gettingData(false));
@@ -98,12 +98,12 @@ const ChangeImage = () => {
                 });
             });
         } else {
-            sweetAlert({
+            sweetAlert.fire({
                 title: 'Success',
                 text: 'Image already uploaded. Please choose another.',
                 icon: 'success',
-                buttons: false,
-                timer: 2000,
+                showConfirmButton: false,
+                timer: 2500,
                 className: ''
             });
         }

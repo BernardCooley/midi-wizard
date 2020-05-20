@@ -5,7 +5,7 @@ import firebase from '../../firebase';
 import { selectedLayoutDeviceId, connectionSelections } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert';
+import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div`
