@@ -32,19 +32,20 @@ const Styles = styled.div`
         width: 100%;
         margin: auto;
         justify-content: space-between;
-        margin-top: 150px;
+        margin-top: 30px;
         
         .summarySection {
-            height: 100%;
             width: 30%;
             margin: 10px;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
             -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
             box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
             flex-direction: column;
             align-items: center;
+            padding-bottom: 20px;
+            align-content: stretch;
 
             .midiContainer {
                 display: flex;
@@ -69,7 +70,7 @@ const Styles = styled.div`
 
             .summaryDetails {
                 width: 90%;
-                height: 100%;
+                height: auto;
 
                 .imagePreview img {
                     width: 100%;
@@ -259,7 +260,7 @@ const ConfirmStep = () => {
 
                                 <div className='detailContainer'>
                                     <div className='detailTitle'>
-                                        Device Types
+                                        Device Type
                                     </div>
                                     {formFieldValues.general.deviceTypes.map((type, index) => (
                                         <div key={index} className='detail'>

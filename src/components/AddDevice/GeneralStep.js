@@ -94,6 +94,7 @@ const Styles = styled.div`
         flex-direction: column;
         align-items: center;
         margin-top: 50px;
+        padding-bottom: 30px;
 
         .checkboxGroupTitle {
             position: relative;
@@ -308,7 +309,7 @@ const GeneralStep = () => {
 
                                 <div className={`deviceTypeContainer ${deviceTypesMessage.length > 0 ? 'errorBox' : ''}`}>
                                     <div className='valContainer'>{deviceTypesMessage.length > 0 ? deviceTypesMessage : ''}</div>
-                                    <div className='checkboxGroupTitle'>Device types</div>
+                                    <div className='checkboxGroupTitle'>Device type</div>
                                     <DeviceTypes></DeviceTypes>
                                 </div>
 

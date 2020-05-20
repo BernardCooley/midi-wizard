@@ -23,7 +23,7 @@ const Styles = styled.div`
 
         .formContainer {
             width: 100%;
-            height: 85%;
+            height: auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,24 +48,21 @@ const Styles = styled.div`
 
             .formStep {
                 display: none;
-                height: 100%;
+                height: auto;
                 width: 100%;
-                position: absolute;
-                z-index: -10;
                 flex-direction: column;
             }
 
             .currentStep {
                 display: flex;
-                position: relative;
-                z-index: 10;
             }
         }
 
         .stepIndicator {
             width: 100%;
             height: 50px;
-            border-bottom: 1px solid ${Colors.lightGray}
+            border-bottom: 1px solid ${Colors.lightGray};
+            padding-bottom: 20px;
         }
     }
 `;
