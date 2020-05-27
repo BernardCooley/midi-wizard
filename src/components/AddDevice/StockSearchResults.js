@@ -26,7 +26,7 @@ const StockSearchResults = props => {
     const searchResults = useSelector(state => state.searchResults);
     const userData = useSelector(state => state.userData);
     const stockTrigger = useSelector(state => state.triggerStockDeviceHook);
-    const [stockDevices, error, getNextDevices] = useFirebaseCall([], 'StockDevices', 'deviceId', 20);
+    const [stockDevices, error, getNextDevices] = useFirebaseCall([], 'StockDevices', 'deviceId', 9);
 
     useEffect(() => {
         if (stockDevices) {
@@ -35,7 +35,9 @@ const StockSearchResults = props => {
     }, [props.searchTerm, stockDevices]);
 
     useEffect(() => {
-        getNextDevices();
+        if (searchResults.length > 0) {
+            getNextDevices();
+        }
     }, [stockTrigger]);
 
     useEffect(() => {
