@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import DeleteIcon from '../../icons/delete.svg';

@@ -210,3 +210,9 @@ export const deviceBeingEdited = beingEdited => {
         payload: beingEdited
     };
 };
+
+export const triggerStockDeviceHook = () => {
+    return {
+        type: 'TRIGGER_STOCK_DEVICE_HOOK'
+    };
+};

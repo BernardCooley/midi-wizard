@@ -5,6 +5,7 @@ import { setSearchResults } from '../../actions';
 import SearchResultsCard from './SearchResultsCard';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
+import useFirebaseCall from '../../hooks/useFirebaseCall';
 
 const Styles = styled.div`
     width: 100%;
@@ -21,21 +22,38 @@ const Styles = styled.div`
 `
 
 const StockSearchResults = props => {
-
     const dispatch = useDispatch();
-    const allStockDevices = useSelector(state => state.allStockDevices);
     const searchResults = useSelector(state => state.searchResults);
     const userData = useSelector(state => state.userData);
+    const stockTrigger = useSelector(state => state.triggerStockDeviceHook);
+    const [stockDevices, error, getNextDevices] = useFirebaseCall([], 'StockDevices', 'deviceId', 20);
 
     useEffect(() => {
-        dispatch(setSearchResults(getSearchResults(props.searchTerm)));
-    }, [props.searchTerm]);
+        if (stockDevices) {
+            dispatch(setSearchResults(getSearchResults(props.searchTerm)));
+        }
+    }, [props.searchTerm, stockDevices]);
+
+    useEffect(() => {
+        getNextDevices();
+    }, [stockTrigger]);
+
+    useEffect(() => {
+        dispatch(setSearchResults(stockDevices));
+    }, []);
 
     const getSearchResults = searchTerm => {
-        const results = allStockDevices.filter(device =>
-            device.general.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            device.general.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        let results = [];
+
+        if (searchTerm.length > 0) {
+            results = stockDevices.filter(device =>
+                device.general.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                device.general.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        } else {
+            results = stockDevices;
+        }
+
         results.forEach(device => {
             device.inDeviceTray = userData.devices.filter(userDevice => userDevice.deviceId === device.deviceId).length > 0 ? true : false;
         });

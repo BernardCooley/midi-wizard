@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAddDeviceForm, currentStep, addDeviceFormValues, deviceBeingEdited } from '../../actions';
+import { toggleAddDeviceForm, currentStep, addDeviceFormValues, deviceBeingEdited, triggerStockDeviceHook } from '../../actions';
 import StockSearchResults from './StockSearchResults';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { CloseIconStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import SteppedForm from '../AddDevice/SteppedForm';
+import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 
 
 const Styles = styled.div`
@@ -72,6 +73,12 @@ const AddDevice = () => {
         })
     }, [isAddDeviceFormOpen]);
 
+    const handleContainerOnBottom = useCallback(() => {
+        dispatch(triggerStockDeviceHook());
+    }, []);
+
+    const containerRef = useBottomScrollListener(handleContainerOnBottom);
+
     const updateSearchTerm = e => {
         let searchTerm = e.target.value;
 
@@ -92,7 +99,7 @@ const AddDevice = () => {
                 <CloseIconStyles>
                     <FontAwesomeIcon className='closeIcon' icon="times-circle" />
                 </CloseIconStyles>
-                <div className='addDeviceContainer'>
+                <div className='addDeviceContainer' ref={containerRef}>
                     {!isdeviceBeingEdited ?
                         <input className='deviceSearchBox' type='text' onChange={updateSearchTerm} placeholder='Search'></input> : null
                     }

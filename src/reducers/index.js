@@ -36,7 +36,8 @@ const allReducers = combineReducers({
   addDeviceFormValues: addDeviceReducers.addDeviceFormValues,
   currentStep: addDeviceReducers.currentStep,
   userData: deviceReducers.userData,
-  deviceBeingEdited: deviceReducers.deviceBeingEdited
+  deviceBeingEdited: deviceReducers.deviceBeingEdited,
+  triggerStockDeviceHook: deviceReducers.triggerStockDeviceHook
 });
 
 const rootReducer = (state, action) => {

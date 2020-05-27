@@ -62,6 +62,14 @@ const deviceReducers = {
             default:
                 return state;
         }
+    },
+    triggerStockDeviceHook: (state = false, action) => {
+        switch (action.type) {
+            case 'TRIGGER_STOCK_DEVICE_HOOK':
+                return state = !state;
+            default:
+                return state;
+        }
     }
 }
 
