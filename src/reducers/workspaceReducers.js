@@ -63,9 +63,25 @@ const workspaceReducers = {
                 return state;
         }
     },
-    connectionSelections: (state = [{}, {}], action) => {
+    connectionSelections: (state = [], action) => {
         switch (action.type) {
             case 'CONNECTION_SELECTIONS':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    connectionDevices: (state = [], action) => {
+        switch (action.type) {
+            case 'CONNECTION_DEVICES':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    chartData: (state = [], action) => {
+        switch (action.type) {
+            case 'CHART_DATA':
                 return state = action.payload;
             default:
                 return state;

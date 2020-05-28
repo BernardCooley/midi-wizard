@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import LayoutDevice from '../SVGWorkspace/LayoutDevice';
 import ConnectionLegend from './ConnectionLegend';
 import Colors from '../../styles/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { chartData } from '../../actions';
 
 
 const Styles = styled.div`
@@ -24,6 +26,72 @@ const Styles = styled.div`
 `
 
 const SVGWorkspace = props => {
+
+    const dispatch = useDispatch();
+
+    const colors = {
+        midi_in: 'black',
+        midi_out: 'red',
+        midi_thru: 'blue',
+        audioOut: 'green',
+        audioIn: 'purple',
+    }
+
+    const dataMock = [
+        { title: 'midiIn', value: 10, color: colors.midi_in },
+        { title: 'midiOut', value: 10, color: colors.midi_out },
+        { title: 'midiThru', value: 10, color: colors.midi_thru },
+        { title: 'Audio out 1', value: 10, color: colors.audioOut },
+        { title: 'Audio in 1', value: 10, color: colors.audioIn },
+        { title: 'Audio out 2', value: 10, color: colors.audioOut },
+        { title: 'Audio in 2', value: 10, color: colors.audioIn },
+        { title: 'Audio out 3', value: 10, color: colors.audioOut },
+        { title: 'Audio in 3', value: 10, color: colors.audioIn },
+        { title: 'Audio out 4', value: 10, color: colors.audioOut },
+        { title: 'Audio in 4', value: 10, color: colors.audioIn },
+    ];
+
+    useEffect(() => {
+        if (props.layout.devices) {
+            addChartData(props.layout.devices);
+        }
+    }, [props.layout]);
+
+    const addChartData = layoutDevices => {
+        let devices = [];
+
+        Object.keys(layoutDevices).forEach(deviceKey => {
+            const data = [deviceKey];
+
+            Object.keys(layoutDevices[deviceKey].midi).forEach(key => {
+                if (layoutDevices[deviceKey].midi[key].enabled) {
+                    data.push({
+                        title: key,
+                        value: 10,
+                        color: colors[key]
+                    })
+                }
+            });
+            Object.keys(layoutDevices[deviceKey].audio.audioOut).forEach(key => {
+                data.push({
+                    title: key,
+                    value: 10,
+                    color: colors.audioOut
+                })
+            });
+            Object.keys(layoutDevices[deviceKey].audio.audioIn).forEach(key => {
+                data.push({
+                    title: key,
+                    value: 10,
+                    color: colors.audioIn
+                })
+            });
+            devices = [...devices, data];
+        });
+        dispatch(chartData(devices));
+    }
+
+
     return (
         <Styles>
             <div className='svgWorkspaceContainer'>

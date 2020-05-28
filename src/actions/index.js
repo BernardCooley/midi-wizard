@@ -216,3 +216,17 @@ export const triggerStockDeviceHook = () => {
         type: 'TRIGGER_STOCK_DEVICE_HOOK'
     };
 };
+
+export const connectionDevices = devices => {
+    return {
+        type: 'CONNECTION_DEVICES',
+        payload: devices
+    };
+};
+
+export const chartData = chartData => {
+    return {
+        type: 'CHART_DATA',
+        payload: chartData
+    };
+};

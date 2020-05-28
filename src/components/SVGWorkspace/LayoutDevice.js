@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { selectedLayoutDeviceId, connectionSelections } from '../../actions';
+import { selectedLayoutDeviceId, connectionSelections, connectionDevices } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
-import sweetAlert from 'sweetalert2';
 import DonutChart from './DonutChart';
 
 
@@ -52,9 +51,9 @@ const Styles = styled.div`
         }
 
         .optionsDisplayed {
-            opacity: 1 !important;
+            opacity: 1;
             z-index: 20;
-            width: 125px;
+            width: 80px;
         }
 
         img {
@@ -104,38 +103,10 @@ const LayoutDevice = props => {
     const dispatch = useDispatch();
 
     const imageStorageRef = firebase.storage().ref();
-    const db = firebase.firestore();
-    const deviceDataRef = db.collection('DeviceData');
     const [imageUrl, setImageUrl] = useState({});
-    const [clickedDeviceId, setClickedDeviceId] = useState('');
-    const [showOptions, setShowOptions] = useState(false);
-    const [showAudioOptions, setShowAudioOptions] = useState(false);
-    const [optionsToShow, setOptionsToShow] = useState('midi');
-    const selections = useSelector(state => state.connectionSelections);
-    const layout = useSelector(state => state.currentLayout);
-    const selectedDeviceId = useSelector(state => state.selectedLayoutDeviceId);
-
-    const colors = {
-        midiIn: 'black',
-        midiOut: 'red',
-        midiThru: 'blue',
-        audioOut: 'green',
-        audioIn: 'purple',
-    }
-
-    const dataMock = [
-        { title: 'Midi in', value: 10, color: colors.midiIn },
-        { title: 'Midi out', value: 10, color: colors.midiOut },
-        { title: 'Midi thru', value: 10, color: colors.midiThru },
-        { title: 'Audio out 1', value: 10, color: colors.audioOut },
-        { title: 'Audio in 1', value: 10, color: colors.audioIn },
-        { title: 'Audio out 2', value: 10, color: colors.audioOut },
-        { title: 'Audio in 2', value: 10, color: colors.audioIn },
-        { title: 'Audio out 3', value: 10, color: colors.audioOut },
-        { title: 'Audio in 3', value: 10, color: colors.audioIn },
-        { title: 'Audio out 4', value: 10, color: colors.audioOut },
-        { title: 'Audio in 4', value: 10, color: colors.audioIn }
-    ];
+    const selectedDevices = useSelector(state => state.connectionDevices);
+    const charts = useSelector(state => state.chartData);
+    const [currentChart, setCurrentChart] = useState([]);
 
     useEffect(() => {
         getDeviceImage(props.device.imageName);
@@ -144,34 +115,18 @@ const LayoutDevice = props => {
             if (e.target.getAttribute('class')) {
                 if (e.target.getAttribute('class').includes('svgWorkspaceContainer') || e.target.parentNode.getAttribute('class').includes('svgWorkspaceContainer')) {
                     dispatch(selectedLayoutDeviceId(''));
+                    dispatch(connectionSelections([]));
+                    dispatch(connectionDevices([]));
                 }
             }
-        })
-
-
+        });
     }, [props.device]);
 
-    const openConnectionModal = e => {
-        dispatch(selectedLayoutDeviceId(e.target.getAttribute('deviceid')));
-    }
-
-    const getSelectedDevice = deviceId => {
-        return layout.devices.filter(device => device.deviceId === deviceId)[0];
-    }
-
-    const makeSelection = e => {
-        setClickedDeviceId(e.target.getAttribute('deviceid'));
-        const clickedDeviceId = e.target.getAttribute('deviceid');
-        if (selections[0].deviceId === undefined) {
-            sweetAlert("Choose destination device");
-            dispatch(connectionSelections([getSelectedDevice(clickedDeviceId), {}]));
-        } if (selections[0].deviceId !== undefined) {
-            dispatch(connectionSelections([selections[0], getSelectedDevice(clickedDeviceId)]));
-            openConnectionModal(e);
-        } if (selections[0].deviceId !== undefined && selections[1].deviceId !== undefined) {
-            dispatch(connectionSelections([{}, {}]));
+    useEffect(() => {
+        if (charts.length > 0) {
+            setCurrentChart(charts.filter(chart => chart[0] === props.device.deviceId)[0]);
         }
-    }
+    }, [charts]);
 
     const getDeviceImage = async () => {
         const imageName = props.device.general.imageName;
@@ -183,24 +138,19 @@ const LayoutDevice = props => {
     }
 
     const showConnectionOptions = e => {
+        if (selectedDevices.length < 2) {
+            dispatch(connectionDevices([...selectedDevices, e.target.getAttribute('deviceid')]));
+        }
         dispatch(selectedLayoutDeviceId(e.target.getAttribute('deviceid')));
-    }
-
-    const displayOptions = buttonClicked => {
-        console.log(buttonClicked);
-    }
-
-    const setOptionsList = () => {
-        console.log('device clicked');
     }
 
     return (
         <Styles>
             <div className='deviceContainer'>
-                <div deviceid={props.device.deviceId} className={`donutChartContainer ${selectedDeviceId === props.device.deviceId ? 'optionsDisplayed' : ''}`}>
-                    <DonutChart className='donutContainer' data={dataMock}></DonutChart>
+                <div deviceid={props.device.deviceId} className={`donutChartContainer ${selectedDevices.includes(props.device.deviceId) ? 'optionsDisplayed' : ''}`}>
+                    <DonutChart className='donutContainer' data={currentChart}></DonutChart>
                 </div>
-                <img deviceid={props.device.deviceId} onClick={showConnectionOptions} className={`layoutDeviceImage ${selectedDeviceId === props.device.deviceId ? 'imageHidden' : ''}`} src={imageUrl} alt='device image'></img>
+                <img deviceid={props.device.deviceId} onClick={showConnectionOptions} className={`layoutDeviceImage ${selectedDevices.includes(props.device.deviceId) ? 'imageHidden' : ''}`} src={imageUrl} alt='device image'></img>
             </div>
         </Styles>
     )
