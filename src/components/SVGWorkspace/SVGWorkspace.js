@@ -31,28 +31,6 @@ const SVGWorkspace = props => {
     const charts = useSelector(state => state.chartData);
     const selections = useSelector(state => state.connectionSelections);
 
-    const colors = {
-        midi_in: 'black',
-        midi_out: 'red',
-        midi_thru: 'blue',
-        audioOut: 'green',
-        audioIn: 'purple',
-    }
-
-    const dataMock = [
-        { title: 'midiIn', value: 10, color: colors.midi_in },
-        { title: 'midiOut', value: 10, color: colors.midi_out },
-        { title: 'midiThru', value: 10, color: colors.midi_thru },
-        { title: 'Audio out 1', value: 10, color: colors.audioOut },
-        { title: 'Audio in 1', value: 10, color: colors.audioIn },
-        { title: 'Audio out 2', value: 10, color: colors.audioOut },
-        { title: 'Audio in 2', value: 10, color: colors.audioIn },
-        { title: 'Audio out 3', value: 10, color: colors.audioOut },
-        { title: 'Audio in 3', value: 10, color: colors.audioIn },
-        { title: 'Audio out 4', value: 10, color: colors.audioOut },
-        { title: 'Audio in 4', value: 10, color: colors.audioIn },
-    ];
-
     useEffect(() => {
         if (props.layout.devices) {
             addChartData(props.layout.devices);
@@ -112,7 +90,7 @@ const SVGWorkspace = props => {
                     data.push({
                         title: key,
                         value: 10,
-                        color: colors[key],
+                        color: Colors[key],
                         deviceId: deviceKey
                     })
                 }
@@ -121,7 +99,7 @@ const SVGWorkspace = props => {
                 data.push({
                     title: key,
                     value: 10,
-                    color: colors.audioOut,
+                    color: Colors.audioOut,
                     type: 'audioOut',
                     deviceId: deviceKey
                 })
@@ -130,7 +108,7 @@ const SVGWorkspace = props => {
                 data.push({
                     title: key,
                     value: 10,
-                    color: colors.audioIn,
+                    color: Colors.audioIn,
                     type: 'audioIn',
                     deviceId: deviceKey
                 })

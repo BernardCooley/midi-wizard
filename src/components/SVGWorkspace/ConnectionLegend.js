@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import FilterList from '@material-ui/icons/FilterList';
-import Publish from '@material-ui/icons/Publish';
-import PropTypes from 'prop-types';
 
 const Styles = styled.div`
     .legendContainer {
@@ -18,89 +15,38 @@ const Styles = styled.div`
         -moz-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
         box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
 
-        .connectionContainer {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            justify-content: space-between;
-            width: 120px;
-            height: 28px;
+        .connectionKey {
+            color: ${Colors.white};
+        }
 
-            .connectionIcons {
-                width: 57px;
-                height: 25px;
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                width: 35px;
-
-                .midiIcon, .audioIcon {
-                    font-size: 30px;
-                }
-
-                .midiOutIcon, .midiThruIcon, .midiThruIcon2, .audioIn {
-                    transform: rotate(270deg);
-                }
-
-                .midiThruIcon2 {
-                    position: relative;
-                    right: 17px;
-                }
-
-                .midiInIcon, .audioOut {
-                    transform: rotate(90deg);
-                }
-            }
+        .midiOutKey {
+            background-color: ${Colors.midi_out};
+        }
+        .midiInKey {
+            background-color: ${Colors.midi_in};
+        }
+        .midiThruKey {
+            background-color: ${Colors.midi_thru};
+        }
+        .audioOutKey {
+            background-color: ${Colors.audioOut};
+        }
+        .audioInKey {
+            background-color: ${Colors.audioIn};
         }
     }
 `;
 
 
 const ConnectionLegend = () => {
-
-    const MidiIcon = props => {
-        return (
-            <div className='connectionContainer'>
-                <div className='connectionIcons'>
-                    <FilterList className={`connectionIcon midiIcon ${props.connectionclass}`} />
-                    {props.connectiontype === 'thru' ?
-                        <FilterList className={`connectionIcon midiIcon ${props.connectiontype === 'thru' ? 'midiThruIcon2' : ''}`} /> : null
-                    }
-                </div>
-                <div className='labelContainer'>Midi {props.connectiontype}</div>
-            </div>
-        )
-    }
-
-    const AudioIcon = props => {
-        return (
-            <div className='connectionContainer'>
-                <div className='connectionIcons'>
-                    <Publish className={`connectionIcon audioIcon ${props.connectionclass}`} />
-                </div>
-                <div className='labelContainer'>Audio {props.connectiontype}</div>
-            </div>
-        )
-    }
-
-    const propTypes = {
-        connectionclass: PropTypes.string,
-        connectiontype: PropTypes.string
-    }
-
-    MidiIcon.propTypes = propTypes;
-
-    AudioIcon.propTypes = propTypes;
-
-
     return (
         <Styles>
             <div className='legendContainer'>
-                <MidiIcon connectionclass='midiOutIcon' connectiontype='out' />
-                <MidiIcon connectionclass='midiThruIcon' connectiontype='thru' />
-                <MidiIcon connectionclass='midiInIcon' connectiontype='in' />
-                <AudioIcon connectionclass='audioOut' connectiontype='out' />
-                <AudioIcon connectionclass='audioIn' connectiontype='in' />
+                <div className='connectionKey midiOutKey'>Midi out</div>
+                <div className='connectionKey midiInKey'>Midi in</div>
+                <div className='connectionKey midiThruKey'>Midi thru</div>
+                <div className='connectionKey audioOutKey'>Audio out</div>
+                <div className='connectionKey audioInKey'>Audio in</div>
             </div>
         </Styles>
     )

@@ -10,7 +10,12 @@ const Colors = {
     jet: '#333333',
     black: 'black',
     brightGreen: 'rgba(18, 171, 18, 1)',
-    brightGreenOpaque: 'rgba(18, 171, 18, 0.4)'
+    brightGreenOpaque: 'rgba(18, 171, 18, 0.4)',
+    midi_in: 'black',
+    midi_out: 'red',
+    midi_thru: 'blue',
+    audioOut: 'green',
+    audioIn: 'purple',
 }
 
 export default Colors;
