@@ -12,18 +12,19 @@ import { TrayTabStyles } from '../../styles/components';
 
 const Styles = styled.div`
     .deviceTrayContainer {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            scrollbar-color: red;
-            position: fixed;
-            bottom: -52px;
-            transition:0.6s;
-            -webkit-transition:0.6s;
-            -moz-transition:0.6s;
-            right: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        scrollbar-color: red;
+        position: fixed;
+        bottom: -52px;
+        transition:0.6s;
+        -webkit-transition:0.6s;
+        -moz-transition:0.6s;
+        right: 0;
+        z-index: 50;
 
         .devicesListContainer {
             display: flex;

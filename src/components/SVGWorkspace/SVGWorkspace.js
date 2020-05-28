@@ -19,11 +19,11 @@ const Styles = styled.div`
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        padding-top: 100px;
     }
 `
 
 const SVGWorkspace = props => {
-
     return (
         <Styles>
             <div className='svgWorkspaceContainer'>

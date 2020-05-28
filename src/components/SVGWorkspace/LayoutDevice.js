@@ -6,6 +6,7 @@ import { selectedLayoutDeviceId, connectionSelections } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
 import sweetAlert from 'sweetalert2';
+import DonutChart from './DonutChart';
 
 
 const Styles = styled.div`
@@ -27,20 +28,46 @@ const Styles = styled.div`
     }
 
     .deviceContainer {
+        position: relative;
         width: 150px;
         height: 150px;
         margin: 0 50px;
         cursor: pointer;
         transition: all .2s ease-in-out;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
 
-        &:hover{
-            -webkit-box-shadow: 5px 8px 11px 0px ${Colors.black};
-            -moz-box-shadow: 5px 8px 11px 0px ${Colors.black};
-            box-shadow: 5px 8px 11px 0px ${Colors.black};
-            transform: scale(1.06);
+        .donutChartContainer {
+            position: absolute;
+            opacity: 0;
+            transition:0.4s;
+            -webkit-transition:0.4s;
+            -moz-transition:0.4s;
+            width: 10px;
+
+            svg {
+                overflow: visible;
+            }
+        }
+
+        .optionsDisplayed {
+            opacity: 1 !important;
+            z-index: 20;
+            width: 125px;
+        }
+
+        img {
+            transition:0.4s;
+            -webkit-transition:0.4s;
+            -moz-transition:0.4s;
+            
+            &:hover{
+                -webkit-box-shadow: 5px 8px 11px 0px ${Colors.black};
+                -moz-box-shadow: 5px 8px 11px 0px ${Colors.black};
+                box-shadow: 5px 8px 11px 0px ${Colors.black};
+                transform: scale(1.1);
+            }
         }
 
         .showOptions {
@@ -57,6 +84,12 @@ const Styles = styled.div`
 
         .layoutDeviceImage {
             width: 100%;
+            z-index: 10;
+            opacity: 1;
+        }
+
+        .imageHidden {
+            opacity: 0.4;
         }
 
         .deviceName {
@@ -82,8 +115,40 @@ const LayoutDevice = props => {
     const layout = useSelector(state => state.currentLayout);
     const selectedDeviceId = useSelector(state => state.selectedLayoutDeviceId);
 
+    const colors = {
+        midiIn: 'black',
+        midiOut: 'red',
+        midiThru: 'blue',
+        audioOut: 'green',
+        audioIn: 'purple',
+    }
+
+    const dataMock = [
+        { title: 'Midi in', value: 10, color: colors.midiIn },
+        { title: 'Midi out', value: 10, color: colors.midiOut },
+        { title: 'Midi thru', value: 10, color: colors.midiThru },
+        { title: 'Audio out 1', value: 10, color: colors.audioOut },
+        { title: 'Audio in 1', value: 10, color: colors.audioIn },
+        { title: 'Audio out 2', value: 10, color: colors.audioOut },
+        { title: 'Audio in 2', value: 10, color: colors.audioIn },
+        { title: 'Audio out 3', value: 10, color: colors.audioOut },
+        { title: 'Audio in 3', value: 10, color: colors.audioIn },
+        { title: 'Audio out 4', value: 10, color: colors.audioOut },
+        { title: 'Audio in 4', value: 10, color: colors.audioIn }
+    ];
+
     useEffect(() => {
         getDeviceImage(props.device.imageName);
+
+        document.addEventListener('click', e => {
+            if (e.target.getAttribute('class')) {
+                if (e.target.getAttribute('class').includes('svgWorkspaceContainer') || e.target.parentNode.getAttribute('class').includes('svgWorkspaceContainer')) {
+                    dispatch(selectedLayoutDeviceId(''));
+                }
+            }
+        })
+
+
     }, [props.device]);
 
     const openConnectionModal = e => {
@@ -131,15 +196,11 @@ const LayoutDevice = props => {
 
     return (
         <Styles>
-            <div className='midiOptions'>
-
-            </div>
             <div className='deviceContainer'>
-                <img deviceid={props.device.deviceId} onClick={showConnectionOptions, setOptionsList} className={`layoutDeviceImage ${selections[0].deviceId === props.device.deviceId || selections[1].deviceId === props.device.deviceId ? 'deviceSelected' : ''}`} src={imageUrl} alt='device image'></img>
-
-                <div className='deviceName'>
-                    {props.device.general.deviceName}
+                <div deviceid={props.device.deviceId} className={`donutChartContainer ${selectedDeviceId === props.device.deviceId ? 'optionsDisplayed' : ''}`}>
+                    <DonutChart className='donutContainer' data={dataMock}></DonutChart>
                 </div>
+                <img deviceid={props.device.deviceId} onClick={showConnectionOptions} className={`layoutDeviceImage ${selectedDeviceId === props.device.deviceId ? 'imageHidden' : ''}`} src={imageUrl} alt='device image'></img>
             </div>
         </Styles>
     )
