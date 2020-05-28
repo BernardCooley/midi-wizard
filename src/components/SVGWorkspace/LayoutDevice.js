@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import firebase from '../../firebase';
-import { selectedLayoutDeviceId, connectionSelections, connectionDevices } from '../../actions';
+import { connectionSelections, connectionDevices } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../styles/colors';
 import DonutChart from './DonutChart';
@@ -114,7 +114,6 @@ const LayoutDevice = props => {
         document.addEventListener('click', e => {
             if (e.target.getAttribute('class')) {
                 if (e.target.getAttribute('class').includes('svgWorkspaceContainer') || e.target.parentNode.getAttribute('class').includes('svgWorkspaceContainer')) {
-                    dispatch(selectedLayoutDeviceId(''));
                     dispatch(connectionSelections([]));
                     dispatch(connectionDevices([]));
                 }
@@ -123,8 +122,8 @@ const LayoutDevice = props => {
     }, [props.device]);
 
     useEffect(() => {
-        if (charts.length > 0) {
-            setCurrentChart(charts.filter(chart => chart[0] === props.device.deviceId)[0]);
+        if (charts.length > 0 && charts[0].length > 0) {
+            setCurrentChart(charts.filter(chart => chart[0] && chart[0].deviceId === props.device.deviceId)[0]);
         }
     }, [charts]);
 
@@ -141,7 +140,6 @@ const LayoutDevice = props => {
         if (selectedDevices.length < 2) {
             dispatch(connectionDevices([...selectedDevices, e.target.getAttribute('deviceid')]));
         }
-        dispatch(selectedLayoutDeviceId(e.target.getAttribute('deviceid')));
     }
 
     return (

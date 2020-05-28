@@ -28,6 +28,8 @@ const Styles = styled.div`
 const SVGWorkspace = props => {
 
     const dispatch = useDispatch();
+    const charts = useSelector(state => state.chartData);
+    const selections = useSelector(state => state.connectionSelections);
 
     const colors = {
         midi_in: 'black',
@@ -55,20 +57,63 @@ const SVGWorkspace = props => {
         if (props.layout.devices) {
             addChartData(props.layout.devices);
         }
+
+        document.addEventListener('click', e => {
+            if (e.target.getAttribute('class')) {
+                if (e.target.getAttribute('class').includes('svgWorkspaceContainer') || e.target.parentNode.getAttribute('class').includes('svgWorkspaceContainer')) {
+                    if (props.layout.devices) {
+                        addChartData(props.layout.devices);
+                    }
+                }
+            }
+        });
     }, [props.layout]);
+
+    useEffect(() => {
+        if (selections.length === 1) {
+            filterChartData();
+        }
+    }, [selections]);
+
+    const filterChartData = () => {
+        const filteredCharts = [];
+
+        charts.forEach(chart => {
+            let option = [];
+
+            if (selections[0].connectionName === 'midi_out' || selections[0].connectionName === 'midi_thru') {
+                option = chart.filter(option => option.title === 'midi_in');
+            } else if (selections[0].connectionName === 'midi_in') {
+                option = chart.filter(option => option.title === 'midi_out' || option.title === 'midi_thru');
+            } else if (selections[0].connectionType === 'audioOut') {
+                option = chart.filter(option => option.type === 'audioIn');
+            } else if (selections[0].connectionType === 'audioIn') {
+                option = chart.filter(option => option.type === 'audioOut');
+            }
+
+            if (option) {
+                filteredCharts.push(option)
+            } else {
+                filteredCharts.push([]);
+            }
+        });
+
+        dispatch(chartData(filteredCharts));
+    }
 
     const addChartData = layoutDevices => {
         let devices = [];
 
         Object.keys(layoutDevices).forEach(deviceKey => {
-            const data = [deviceKey];
+            const data = [];
 
             Object.keys(layoutDevices[deviceKey].midi).forEach(key => {
                 if (layoutDevices[deviceKey].midi[key].enabled) {
                     data.push({
                         title: key,
                         value: 10,
-                        color: colors[key]
+                        color: colors[key],
+                        deviceId: deviceKey
                     })
                 }
             });
@@ -76,14 +121,18 @@ const SVGWorkspace = props => {
                 data.push({
                     title: key,
                     value: 10,
-                    color: colors.audioOut
+                    color: colors.audioOut,
+                    type: 'audioOut',
+                    deviceId: deviceKey
                 })
             });
             Object.keys(layoutDevices[deviceKey].audio.audioIn).forEach(key => {
                 data.push({
                     title: key,
                     value: 10,
-                    color: colors.audioIn
+                    color: colors.audioIn,
+                    type: 'audioIn',
+                    deviceId: deviceKey
                 })
             });
             devices = [...devices, data];

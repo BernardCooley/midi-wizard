@@ -24,14 +24,6 @@ const DonutChart = props => {
         }
     }, [selections]);
 
-    useEffect(() => {
-        props.data.shift();
-    }, [props.data]);
-
-    const filterChartData = chartData => {
-        console.log(chartData);
-    }
-
     return (
         <PieChart
             data={props.data}
@@ -60,11 +52,11 @@ const DonutChart = props => {
                 const selection =
                 {
                     connectionName: props.data[index].title,
-                    deviceId: e.target.parentNode.parentNode.getAttribute('deviceid')
+                    deviceId: e.target.parentNode.parentNode.getAttribute('deviceid'),
+                    connectionType: props.data[index].type
                 }
                 if (selections.length < 2) {
                     dispatch(connectionSelections([...selections, selection]));
-                    filterChartData()
                 }
             }}
         />
