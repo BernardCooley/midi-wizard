@@ -34,7 +34,7 @@ const SVGWorkspace = props => {
     const userId = useSelector(state => state.currentUserId);
 
     useEffect(() => {
-        if (props.layout.devices && Object.keys(props.layout.devices).length > 0) {
+        if (props.layout.devices) {
             createworkspace(props.layout.devices);
         }
     }, [props.layout]);
@@ -46,6 +46,19 @@ const SVGWorkspace = props => {
             container: 'svgWorkspaceContainer'
         });
 
+        setZoom(stage);
+
+        const mainLayer = new Konva.Layer({
+            draggable: true
+        });
+        stage.add(mainLayer);
+
+        Object.keys(devices).forEach(device => {
+            addDevice(mainLayer, devices[device]);
+        });
+    }
+
+    const setZoom = stage => {
         const scaleBy = 0.98;
         stage.on('wheel', (e) => {
             e.evt.preventDefault();
@@ -68,15 +81,6 @@ const SVGWorkspace = props => {
             };
             stage.position(newPos);
             stage.batchDraw();
-        });
-
-        const mainLayer = new Konva.Layer({
-            draggable: true
-        });
-        stage.add(mainLayer);
-
-        Object.keys(devices).forEach(device => {
-            addDevice(mainLayer, devices[device]);
         });
     }
 
