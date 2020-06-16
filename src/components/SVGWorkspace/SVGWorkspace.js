@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import LayoutDevice from '../SVGWorkspace/LayoutDevice';
-import ConnectionLegend from './ConnectionLegend';
 import Colors from '../../styles/colors';
-import { useDispatch, useSelector } from 'react-redux';
-import { chartData } from '../../actions';
+import { useSelector } from 'react-redux';
+import Konva from 'konva/lib/Core';
+import { Rect } from 'konva/lib/shapes/Rect';
+import { Text } from 'konva/lib/shapes/Text';
+import firebase from 'firebase';
+import ConnectionLegend from './ConnectionLegend';
 
 
 const Styles = styled.div`
@@ -17,114 +19,124 @@ const Styles = styled.div`
         background-size: 50px 50px;
         width: auto;
         height: 100vh;
-        padding: 50px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        padding-top: 100px;
+        padding-top: 50px;
     }
 `
 
 const SVGWorkspace = props => {
-
-    const dispatch = useDispatch();
-    const charts = useSelector(state => state.chartData);
     const selections = useSelector(state => state.connectionSelections);
+    const userLayouts = useSelector(state => state.layouts);
+    const db = firebase.firestore();
+    const usersRef = db.collection('Users');
+    const userId = useSelector(state => state.currentUserId);
 
     useEffect(() => {
-        if (props.layout.devices) {
-            addChartData(props.layout.devices);
+        if (props.layout.devices && Object.keys(props.layout.devices).length > 0) {
+            createworkspace(props.layout.devices);
         }
-
-        document.addEventListener('click', e => {
-            if (e.target.getAttribute('class')) {
-                if (e.target.getAttribute('class').includes('svgWorkspaceContainer') || e.target.parentNode.getAttribute('class').includes('svgWorkspaceContainer')) {
-                    if (props.layout.devices) {
-                        addChartData(props.layout.devices);
-                    }
-                }
-            }
-        });
     }, [props.layout]);
 
-    useEffect(() => {
-        if (selections.length === 1) {
-            filterChartData();
-        }
-    }, [selections]);
-
-    const filterChartData = () => {
-        const filteredCharts = [];
-
-        charts.forEach(chart => {
-            let option = [];
-
-            if (selections[0].connectionName === 'midi_out' || selections[0].connectionName === 'midi_thru') {
-                option = chart.filter(option => option.title === 'midi_in');
-            } else if (selections[0].connectionName === 'midi_in') {
-                option = chart.filter(option => option.title === 'midi_out' || option.title === 'midi_thru');
-            } else if (selections[0].connectionType === 'audioOut') {
-                option = chart.filter(option => option.type === 'audioIn');
-            } else if (selections[0].connectionType === 'audioIn') {
-                option = chart.filter(option => option.type === 'audioOut');
-            }
-
-            if (option) {
-                filteredCharts.push(option)
-            } else {
-                filteredCharts.push([]);
-            }
+    const createworkspace = devices => {
+        let stage = new Konva.Stage({
+            height: window.innerHeight,
+            width: window.innerWidth,
+            container: 'svgWorkspaceContainer'
         });
 
-        dispatch(chartData(filteredCharts));
+        const scaleBy = 0.98;
+        stage.on('wheel', (e) => {
+            e.evt.preventDefault();
+            const oldScale = stage.scaleX();
+
+            const pointer = stage.getPointerPosition();
+
+            const mousePointTo = {
+                x: (pointer.x - stage.x()) / oldScale,
+                y: (pointer.y - stage.y()) / oldScale,
+            };
+
+            const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+            stage.scale({ x: newScale, y: newScale });
+
+            const newPos = {
+                x: pointer.x - mousePointTo.x * newScale,
+                y: pointer.y - mousePointTo.y * newScale,
+            };
+            stage.position(newPos);
+            stage.batchDraw();
+        });
+
+        const mainLayer = new Konva.Layer({
+            draggable: true
+        });
+        stage.add(mainLayer);
+
+        Object.keys(devices).forEach(device => {
+            addDevice(mainLayer, devices[device]);
+        });
     }
 
-    const addChartData = layoutDevices => {
-        let devices = [];
+    const addDevice = (mainLayer, device) => {
+        if (!device.position) {
+            device['position'] = {};
+            device['position']['x'] = 300;
+            device['position']['y'] = 300;
+        }
 
-        Object.keys(layoutDevices).forEach(deviceKey => {
-            const data = [];
-
-            Object.keys(layoutDevices[deviceKey].midi).forEach(key => {
-                if (layoutDevices[deviceKey].midi[key].enabled) {
-                    data.push({
-                        title: key,
-                        value: 10,
-                        color: Colors[key],
-                        deviceId: deviceKey
-                    })
-                }
-            });
-            Object.keys(layoutDevices[deviceKey].audio.audioOut).forEach(key => {
-                data.push({
-                    title: key,
-                    value: 10,
-                    color: Colors.audioOut,
-                    type: 'audioOut',
-                    deviceId: deviceKey
-                })
-            });
-            Object.keys(layoutDevices[deviceKey].audio.audioIn).forEach(key => {
-                data.push({
-                    title: key,
-                    value: 10,
-                    color: Colors.audioIn,
-                    type: 'audioIn',
-                    deviceId: deviceKey
-                })
-            });
-            devices = [...devices, data];
+        let deviceGroup = new Konva.Group({
+            draggable: true,
+            x: device.position.x,
+            y: device.position.y
         });
-        dispatch(chartData(devices));
+
+        const rect = new Rect({
+            fill: 'blue',
+            width: 100,
+            height: 100,
+            shadowColor: 'black',
+            shadowOffsetX: 10,
+            shadowOffsetY: 10,
+            shadowOpacity: 0.2
+        });
+
+        const text = new Text({
+            text: device.general.deviceName,
+            fontSize: 20,
+            align: 'center',
+            verticalAlign: 'middle',
+            wrap: 'word',
+            width: 100,
+            height: 100
+        })
+
+        deviceGroup.add(rect);
+        deviceGroup.add(text);
+
+        deviceGroup.on('dragend', function () {
+            updatePosition(device, deviceGroup.attrs.x, deviceGroup.attrs.y);
+        });
+
+        mainLayer.add(deviceGroup);
+        mainLayer.draw();
+    }
+
+    const updatePosition = async (device, x, y) => {
+        device.position.x = x;
+        device.position.y = y;
+
+        await usersRef.doc(userId).update({
+            layouts: userLayouts
+        });
     }
 
 
     return (
         <Styles>
-            <div className='svgWorkspaceContainer'>
-                {props.layout.devices ? Object.keys(props.layout.devices).map((key, index) => (
-                    <LayoutDevice key={index} device={props.layout.devices[key]}></LayoutDevice>
-                )) : null}
+            <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
             </div>
             <ConnectionLegend />
         </Styles>
