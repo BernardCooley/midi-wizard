@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { useSelector } from 'react-redux';
-import Konva from 'konva/lib/Core';
-import { Rect } from 'konva/lib/shapes/Rect';
-import { Text } from 'konva/lib/shapes/Text';
+import { Stage, Layer, Text, Group, Image } from 'react-konva';
 import firebase from 'firebase';
 import ConnectionLegend from './ConnectionLegend';
+import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div`
@@ -27,106 +26,41 @@ const Styles = styled.div`
 `
 
 const SVGWorkspace = props => {
-    const selections = useSelector(state => state.connectionSelections);
     const userLayouts = useSelector(state => state.layouts);
     const db = firebase.firestore();
     const usersRef = db.collection('Users');
     const userId = useSelector(state => state.currentUserId);
+    const [stageScale, setStageScale] = useState();
+    const [stageX, setstageX] = useState();
+    const [stageY, setstageY] = useState();
+    const [imageObject, setImageObject] = useState(0);
 
     useEffect(() => {
-        if (props.layout.devices) {
-            createworkspace(props.layout.devices);
-        }
-    }, [props.layout]);
+        const image = new window.Image();
+        image.src = "https://i.imgur.com/g5iIJz9.jpg";
+        image.onload = () => {
+            setImageObject(image);
+        };
+        image.crossOrigin = "Anonymous";
+    }, []);
 
-    const createworkspace = devices => {
-        let stage = new Konva.Stage({
-            height: window.innerHeight,
-            width: window.innerWidth,
-            container: 'svgWorkspaceContainer'
-        });
+    const handleWheel = e => {
+        e.evt.preventDefault();
 
-        setZoom(stage);
-
-        const mainLayer = new Konva.Layer({
-            draggable: true
-        });
-        stage.add(mainLayer);
-
-        Object.keys(devices).forEach(device => {
-            addDevice(mainLayer, devices[device]);
-        });
-    }
-
-    const setZoom = stage => {
         const scaleBy = 0.98;
-        stage.on('wheel', (e) => {
-            e.evt.preventDefault();
-            const oldScale = stage.scaleX();
+        const stage = e.target.getStage();
+        const oldScale = stage.scaleX();
+        const mousePointTo = {
+            x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+            y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+        };
 
-            const pointer = stage.getPointerPosition();
+        const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
-            const mousePointTo = {
-                x: (pointer.x - stage.x()) / oldScale,
-                y: (pointer.y - stage.y()) / oldScale,
-            };
-
-            const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
-            stage.scale({ x: newScale, y: newScale });
-
-            const newPos = {
-                x: pointer.x - mousePointTo.x * newScale,
-                y: pointer.y - mousePointTo.y * newScale,
-            };
-            stage.position(newPos);
-            stage.batchDraw();
-        });
-    }
-
-    const addDevice = (mainLayer, device) => {
-        if (!device.position) {
-            device['position'] = {};
-            device['position']['x'] = 300;
-            device['position']['y'] = 300;
-        }
-
-        let deviceGroup = new Konva.Group({
-            draggable: true,
-            x: device.position.x,
-            y: device.position.y
-        });
-
-        const rect = new Rect({
-            fill: 'blue',
-            width: 100,
-            height: 100,
-            shadowColor: 'black',
-            shadowOffsetX: 10,
-            shadowOffsetY: 10,
-            shadowOpacity: 0.2
-        });
-
-        const text = new Text({
-            text: device.general.deviceName,
-            fontSize: 20,
-            align: 'center',
-            verticalAlign: 'middle',
-            wrap: 'word',
-            width: 100,
-            height: 100
-        })
-
-        deviceGroup.add(rect);
-        deviceGroup.add(text);
-
-        deviceGroup.on('dragend', function () {
-            updatePosition(device, deviceGroup.attrs.x, deviceGroup.attrs.y);
-        });
-
-        mainLayer.add(deviceGroup);
-        mainLayer.draw();
-    }
+        setStageScale(newScale);
+        setstageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
+        setstageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
+    };
 
     const updatePosition = async (device, x, y) => {
         device.position.x = x;
@@ -134,13 +68,66 @@ const SVGWorkspace = props => {
 
         await usersRef.doc(userId).update({
             layouts: userLayouts
+        }).then().catch(error => {
+            sweetAlert.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong! You may be disconnected from the internet. Please try again later.'
+            });
+            console.error(error);
         });
+    }
+
+    const WorkspaceDevice = (props) => {
+        return (
+            <Group
+                draggable={true}
+                x={props.device.position.x}
+                y={props.device.position.y}
+                width={100}
+                height={100}
+                onDragEnd={(data) => {
+                    updatePosition(props.device, data.currentTarget.attrs.x, data.currentTarget.attrs.y);
+                }}>
+                <Image
+                    image={imageObject}
+                    width={100}
+                    height={100}
+                />
+                <Text
+                    text={props.device.general.deviceName}
+                    fontSize={15}
+                    align={'center'}
+                    verticalAlign={'middle'}
+                    wrap={'word'}
+                    width={100}
+                    height={100} />
+            </Group>
+        )
+    }
+
+    WorkspaceDevice.propTypes = {
+        device: PropTypes.object
     }
 
 
     return (
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
+                <Stage
+                    scaleX={stageScale}
+                    scaleY={stageScale}
+                    x={stageX}
+                    y={stageY}
+                    onWheel={handleWheel}
+                    width={window.innerWidth}
+                    height={window.innerHeight}>
+                    <Layer>
+                        {props.layout.devices && Object.keys(props.layout.devices).length > 0 ? Object.keys(props.layout.devices).map((device, index) => (
+                            <WorkspaceDevice key={index} device={props.layout.devices[device]} />
+                        )) : null}
+                    </Layer>
+                </Stage>
             </div>
             <ConnectionLegend />
         </Styles>
@@ -148,7 +135,7 @@ const SVGWorkspace = props => {
 }
 
 SVGWorkspace.propTypes = {
-    layout: PropTypes.object
+    layout: PropTypes.array
 }
 
 export default SVGWorkspace;

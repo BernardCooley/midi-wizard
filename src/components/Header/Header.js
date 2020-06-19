@@ -132,7 +132,7 @@ const Header = () => {
                     {isAdmin ?
                         <>
                             <CustomButtonStyles>
-                                <button className={`customButton adminConsoleButton ${isAdminConsoleOpen ? 'buttonActive' : ''}`} active={isAdminConsoleOpen ? true : false} onClick={openCloseAdminConsole}>Admin console {numberOfUnverifiedDevices}</button>
+                                <button className={`customButton adminConsoleButton ${isAdminConsoleOpen ? 'buttonActive' : ''}`} active={isAdminConsoleOpen ? 'true' : 'false'} onClick={openCloseAdminConsole}>Admin console {numberOfUnverifiedDevices}</button>
                             </CustomButtonStyles>
                         </>
                         : null
