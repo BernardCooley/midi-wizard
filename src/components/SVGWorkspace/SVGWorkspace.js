@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { Stage, Layer } from 'react-konva';
-import ConnectionLegend from './ConnectionLegend';
 import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector } from 'react-redux';
 
@@ -31,6 +30,7 @@ const SVGWorkspace = props => {
     const [stageY, setstageY] = useState();
     const userId = useSelector(state => state.currentUserId);
     const userLayouts = useSelector(state => state.layouts);
+    const [clearSelection, setClearSelection] = useState(false);
 
     const handleWheel = e => {
         e.evt.preventDefault();
@@ -54,27 +54,44 @@ const SVGWorkspace = props => {
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
                 <Stage
+                    name={'stage'}
+                    onClick={e => {
+                        if (e.target.name() === 'stage') {
+                            setClearSelection(clearSelection => !clearSelection);
+                        }
+                    }}
                     scaleX={stageScale}
                     scaleY={stageScale}
                     x={stageX}
                     y={stageY}
                     onWheel={handleWheel}
                     width={window.innerWidth}
-                    height={window.innerHeight}>
+                    height={window.innerHeight}
+                    draggable={true}
+                    onDragStart={e => {
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'grabbing';
+                    }}
+                    onDragEnd={e => {
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'default';
+                    }}>
                     <Layer>
                         {props.layout.devices && Object.keys(props.layout.devices).length > 0 ? Object.keys(props.layout.devices).map((device, index) => (
-                            <WorkspaceDevice key={index} userid={userId} userlayouts={userLayouts} device={props.layout.devices[device]} />
+                            <WorkspaceDevice clearselection={clearSelection} key={index} userid={userId} userlayouts={userLayouts} device={props.layout.devices[device]} />
                         )) : null}
                     </Layer>
                 </Stage>
             </div>
-            <ConnectionLegend />
         </Styles>
     )
 }
 
 SVGWorkspace.propTypes = {
-    layout: PropTypes.array
+    layout: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.array,
+    ]),
 }
 
 export default SVGWorkspace;
