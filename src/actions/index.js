@@ -230,3 +230,10 @@ export const chartData = chartData => {
         payload: chartData
     };
 };
+
+export const selectedWorkspaceDeviceId = id => {
+    return {
+        type: 'SELECTED_WORKSPACE_DEVICE_ID',
+        payload: id
+    };
+};

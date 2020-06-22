@@ -4,24 +4,34 @@ import { Text, Group, Image, Rect } from 'react-konva';
 import firebase from 'firebase';
 import sweetAlert from 'sweetalert2';
 import Colors from '../../styles/colors';
+import Konva from 'konva';
+import { selectedWorkspaceDeviceId } from '../../actions';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const WorkspaceDevice = props => {
+    const currentDevice = props.device;
     const db = firebase.firestore();
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
     const [imageElement, setImageElement] = useState(0);
-    const [deviceOpacity, setDeviceOpacity] = useState(1);
-    const [optionsVisibility, setOptionsVisibility] = useState(false);
+    const [optionSelected, setOptionSelected] = useState('');
+    const [optionHovered, setOptionHovered] = useState('');
+    const dispatch = useDispatch();
+    const selectedDeviceId = useSelector(state => state.selectedWorkspaceDeviceId)
 
     useEffect(() => {
-        getImageUrl(props.device.general.imageName);
+        getImageUrl(currentDevice.general.imageName);
     }, []);
 
     useEffect(() => {
-        setDeviceOpacity(1);
-        setOptionsVisibility(false);
+        clearSelection();
     }, [props.clearselection]);
+
+    const clearSelection = () => {
+        dispatch(selectedWorkspaceDeviceId(''));
+        setOptionSelected('');
+    }
 
     const getImageUrl = async imageName => {
         const imageResponse = imageStorageRef.child(`deviceImages/${imageName}`);
@@ -56,7 +66,7 @@ const WorkspaceDevice = props => {
             <Rect
                 height={33}
                 width={100}
-                fill={Colors.middleGray}
+                fill={optionHovered === props.buttonname ? Colors.darkTeal : Colors.middleGray}
                 offsetY={props.offset}
                 stroke={Colors.whiteBlue}
                 strokeWidth={1}
@@ -64,36 +74,47 @@ const WorkspaceDevice = props => {
         )
     }
     OptionButton.propTypes = {
-        offset: PropTypes.number
+        offset: PropTypes.number,
+        buttonname: PropTypes.string
     }
 
     const DeviceText = props => {
         return (
             <Text
+                opacity={selectedDeviceId.length > 0 && selectedDeviceId !== currentDevice.deviceId ? 0.3 : 1}
+                name={props.buttonname}
                 text={props.buttonname}
                 fontSize={15}
                 align={'center'}
                 verticalAlign={'middle'}
                 width={100}
-                height={100}
-                fill={Colors.whiteBlue}
+                height={33}
+                fill={Colors.white}
                 offsetY={props.offset}
                 wrap={'word'}
+                onClick={e => {
+                    setOptionSelected(e.target.name());
+                }}
+                onMouseOver={e => {
+                    setOptionHovered(e.target.name());
+                }}
             />
         )
     }
     DeviceText.propTypes = {
         offset: PropTypes.number,
         buttonname: PropTypes.string,
+        opacity: PropTypes.number
     }
 
     const DeviceImage = props => {
         return (
             <Image
+                name={'image'}
                 image={props.image}
                 width={100}
                 height={100}
-                opacity={props.opacity}
+                opacity={selectedDeviceId.length > 0 ? 0.3 : 1}
             />
         )
     }
@@ -101,25 +122,86 @@ const WorkspaceDevice = props => {
         image: PropTypes.oneOfType([
             PropTypes.object,
             PropTypes.number,
-        ]),
-        opacity: PropTypes.number,
+        ])
+    }
+
+    const getConnectionOptions = () => {
+        const availableOptions = [];
+
+        if (optionSelected === 'Midi') {
+            if (currentDevice.midi.midi_in.enabled) {
+                availableOptions.push('In');
+            }
+            if (currentDevice.midi.midi_out.enabled) {
+                availableOptions.push('Out');
+            }
+            if (currentDevice.midi.midi_thru.enabled) {
+                availableOptions.push('Thru');
+            }
+        } else if (optionSelected === 'Audio') {
+            Object.keys(currentDevice.audio.audioIn).forEach(audio => {
+                availableOptions.push(audio);
+            });
+            Object.keys(currentDevice.audio.audioOut).forEach(audio => {
+                availableOptions.push(audio);
+            });
+        } else if (optionSelected === 'USB') {
+            if (currentDevice.usb) {
+                availableOptions.push('USB');
+            }
+        }
+        return availableOptions;
+    }
+
+    const ConnectionButtons = () => {
+        const options = getConnectionOptions();
+
+        return (
+            <Group
+                x={100}
+                y={0}
+                width={100}
+                height={33}
+            >
+                {options.map((option, index) => (
+                    <Group key={index}>
+                        <OptionButton buttonname={option} offset={index * -33}></OptionButton>
+                        <DeviceText buttonname={option} offset={index * -33}></DeviceText>
+                    </Group>
+                ))}
+            </Group>
+        )
     }
 
     return (
         <Group
             draggable={true}
-            x={Math.round(props.device.position.x / 50) * 50}
-            y={Math.round(props.device.position.y / 50) * 50}
+            x={Math.round(currentDevice.position.x / 50) * 50}
+            y={Math.round(currentDevice.position.y / 50) * 50}
             width={100}
             height={100}
             onDragStart={e => {
                 const container = e.target.getStage().container();
                 container.style.cursor = 'grabbing';
+
+                e.target.to({
+                    duration: 0.5,
+                    easing: Konva.Easings.ElasticEaseOut,
+                    scaleX: 1.2,
+                    scaleY: 1.2
+                });
             }}
             onDragEnd={e => {
-                updatePosition(props.device, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
+                updatePosition(currentDevice, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
                 const container = e.target.getStage().container();
                 container.style.cursor = 'pointer';
+
+                e.target.to({
+                    duration: 0.5,
+                    easing: Konva.Easings.ElasticEaseOut,
+                    scaleX: 1,
+                    scaleY: 1
+                });
             }}
             onMouseOver={e => {
                 const container = e.target.getStage().container();
@@ -130,23 +212,22 @@ const WorkspaceDevice = props => {
                 container.style.cursor = 'default';
             }}
             onClick={e => {
-                setDeviceOpacity(0.3);
-                setOptionsVisibility(true);
-                console.log(e.currentTarget.attrs.x, e.currentTarget.attrs.y);
+                dispatch(selectedWorkspaceDeviceId(currentDevice.deviceId));
             }}>
-            <DeviceImage image={imageElement} opacity={deviceOpacity}></DeviceImage>
-            <DeviceText buttonname={props.device.general.deviceName} offset={-65}></DeviceText>
+            <DeviceImage image={imageElement}></DeviceImage>
+            <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
             <Group
-                visible={optionsVisibility}
+                visible={selectedDeviceId === currentDevice.deviceId ? true : false}
                 opacity={0.6}
                 cursor={'pointer'}>
-                <OptionButton offset={0}></OptionButton>
-                <DeviceText buttonname='Midi' offset={33}></DeviceText>
-                <OptionButton offset={-33}></OptionButton>
-                <DeviceText buttonname='Audio' offset={0}></DeviceText>
-                <OptionButton offset={-66}></OptionButton>
-                <DeviceText buttonname='USB' offset={-33}></DeviceText>
+                <OptionButton buttonname='Midi' offset={0}></OptionButton>
+                <DeviceText buttonname='Midi' offset={0}></DeviceText>
+                <OptionButton buttonname='Audio' offset={-33}></OptionButton>
+                <DeviceText buttonname='Audio' offset={-33}></DeviceText>
+                <OptionButton buttonname='USB' offset={-66}></OptionButton>
+                <DeviceText buttonname='USB' offset={-66}></DeviceText>
             </Group>
+            <ConnectionButtons />
         </Group>
     )
 

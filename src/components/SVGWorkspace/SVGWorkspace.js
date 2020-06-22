@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { Stage, Layer } from 'react-konva';
 import WorkspaceDevice from './WorkspaceDevice';
-import { useSelector } from 'react-redux';
+import { useSelector, Provider } from 'react-redux';
+import { store } from '../../index';
 
 
 const Styles = styled.div`
@@ -35,7 +36,7 @@ const SVGWorkspace = props => {
     const handleWheel = e => {
         e.evt.preventDefault();
 
-        const scaleBy = 0.98;
+        const scaleBy = 0.97;
         const stage = e.target.getStage();
         const oldScale = stage.scaleX();
         const mousePointTo = {
@@ -65,7 +66,7 @@ const SVGWorkspace = props => {
                     x={stageX}
                     y={stageY}
                     onWheel={handleWheel}
-                    width={window.innerWidth}
+                    width={window.innerWidth - 50}
                     height={window.innerHeight}
                     draggable={true}
                     onDragStart={e => {
@@ -77,9 +78,11 @@ const SVGWorkspace = props => {
                         container.style.cursor = 'default';
                     }}>
                     <Layer>
-                        {props.layout.devices && Object.keys(props.layout.devices).length > 0 ? Object.keys(props.layout.devices).map((device, index) => (
-                            <WorkspaceDevice clearselection={clearSelection} key={index} userid={userId} userlayouts={userLayouts} device={props.layout.devices[device]} />
-                        )) : null}
+                        <Provider store={store}>
+                            {props.layout.devices && Object.keys(props.layout.devices).length > 0 ? Object.keys(props.layout.devices).map((device, index) => (
+                                <WorkspaceDevice clearselection={clearSelection} key={index} userid={userId} userlayouts={userLayouts} device={props.layout.devices[device]} />
+                            )) : null}
+                        </Provider>
                     </Layer>
                 </Stage>
             </div>

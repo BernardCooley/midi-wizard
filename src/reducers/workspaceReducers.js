@@ -86,6 +86,14 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    selectedWorkspaceDeviceId: (state = '', action) => {
+        switch (action.type) {
+            case 'SELECTED_WORKSPACE_DEVICE_ID':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 
