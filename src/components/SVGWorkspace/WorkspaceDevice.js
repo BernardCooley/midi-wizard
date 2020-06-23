@@ -153,16 +153,35 @@ const WorkspaceDevice = props => {
         return availableOptions;
     }
 
-    const ConnectionButtons = () => {
-        const options = getConnectionOptions();
+    const getConnectionTypes = () => {
+        const connectionTypes = [];
+
+        if (props.device.midi.midi_in.enabled || props.device.midi.midi_out.enabled || props.device.midi.midi_thru.enabled) {
+            connectionTypes.push('Midi');
+        }
+
+        if (Object.keys(props.device.audio.audioIn).length > 0 || Object.keys(props.device.audio.audioOut).length > 0) {
+            connectionTypes.push('Audio');
+        }
+
+        // if (props.device.usb.enabled) {
+        //     connectionTypes.push('USB');
+        // }
+
+        return connectionTypes;
+    }
+
+    const ConnectionButtons = props => {
+        const options = props.buttonset === 1 ? getConnectionTypes() : getConnectionOptions();
 
         return (
             <Group
-                x={100}
+                visible={selectedDeviceId === currentDevice.deviceId ? true : false}
+                x={props.buttonset === 1 ? 0 : 100}
                 y={0}
                 width={100}
                 height={33}
-            >
+                cursor={'pointer'}>
                 {options.map((option, index) => (
                     <Group key={index}>
                         <OptionButton buttonname={option} offset={index * -33}></OptionButton>
@@ -173,6 +192,10 @@ const WorkspaceDevice = props => {
         )
     }
 
+    WorkspaceDevice.propTypes = {
+        buttonset: PropTypes.number
+    }
+
     return (
         <Group
             draggable={true}
@@ -180,6 +203,7 @@ const WorkspaceDevice = props => {
             y={Math.round(currentDevice.position.y / 50) * 50}
             width={100}
             height={100}
+            cursor={'pointer'}
             onDragStart={e => {
                 const container = e.target.getStage().container();
                 container.style.cursor = 'grabbing';
@@ -216,18 +240,8 @@ const WorkspaceDevice = props => {
             }}>
             <DeviceImage image={imageElement}></DeviceImage>
             <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
-            <Group
-                visible={selectedDeviceId === currentDevice.deviceId ? true : false}
-                opacity={0.6}
-                cursor={'pointer'}>
-                <OptionButton buttonname='Midi' offset={0}></OptionButton>
-                <DeviceText buttonname='Midi' offset={0}></DeviceText>
-                <OptionButton buttonname='Audio' offset={-33}></OptionButton>
-                <DeviceText buttonname='Audio' offset={-33}></DeviceText>
-                <OptionButton buttonname='USB' offset={-66}></OptionButton>
-                <DeviceText buttonname='USB' offset={-66}></DeviceText>
-            </Group>
-            <ConnectionButtons />
+            <ConnectionButtons buttonset={1} />
+            <ConnectionButtons buttonset={2} />
         </Group>
     )
 

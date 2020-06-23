@@ -36,7 +36,7 @@ const SVGWorkspace = props => {
     const handleWheel = e => {
         e.evt.preventDefault();
 
-        const scaleBy = 0.97;
+        const scaleBy = 0.94;
         const stage = e.target.getStage();
         const oldScale = stage.scaleX();
         const mousePointTo = {
