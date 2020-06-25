@@ -237,3 +237,24 @@ export const selectedWorkspaceDeviceId = id => {
         payload: id
     };
 };
+
+export const drawing = drawing => {
+    return {
+        type: 'DRAWING',
+        payload: drawing
+    };
+};
+
+export const connection = connection => {
+    return {
+        type: 'CONNECTION',
+        payload: connection
+    };
+};
+
+export const availableConnectionIds = availableConnectionIds => {
+    return {
+        type: 'AVAILABLE_CONNECTION_IDS',
+        payload: availableConnectionIds
+    };
+};

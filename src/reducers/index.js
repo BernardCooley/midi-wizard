@@ -40,7 +40,10 @@ const allReducers = combineReducers({
   triggerStockDeviceHook: deviceReducers.triggerStockDeviceHook,
   connectionDevices: workspaceReducers.connectionDevices,
   chartData: workspaceReducers.chartData,
-  selectedWorkspaceDeviceId: workspaceReducers.selectedWorkspaceDeviceId
+  selectedWorkspaceDeviceId: workspaceReducers.selectedWorkspaceDeviceId,
+  drawing: workspaceReducers.drawing,
+  connection: workspaceReducers.connection,
+  availableConnectionIds: workspaceReducers.availableConnectionIds
 });
 
 const rootReducer = (state, action) => {

@@ -94,6 +94,39 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    drawing: (state = false, action) => {
+        switch (action.type) {
+            case 'DRAWING':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    connection: (state = [
+        {
+            deviceId: '',
+            connectionType: ''
+        },
+        {
+            deviceId: '',
+            connectionType: ''
+        }
+    ], action) => {
+        switch (action.type) {
+            case 'CONNECTION':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    availableConnectionIds: (state = [], action) => {
+        switch (action.type) {
+            case 'AVAILABLE_CONNECTION_IDS':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 
