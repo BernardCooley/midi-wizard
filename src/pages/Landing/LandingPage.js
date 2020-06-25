@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PasswordReset from '../../components/Auth/PasswordReset/PasswordReset';
 import backGroundImage from '../../images/landing_page_cover.jpg';
+import logo from '../../images/logo.png';
 import Colors from '../../styles/colors';
 
 
@@ -31,6 +32,14 @@ const Styles = styled.div`
             margin: auto;
             position: relative;
             top: 75px;
+            display: flex;
+            flex-direction: column;
+
+            .logoImage {
+                height: 70px;
+                width: 350px;
+                margin: auto;
+            }
         }
     }
 `
@@ -47,7 +56,7 @@ const LandingPage = () => {
 
             <div className='landingPageContainer'>
                 <div className='loginRegisterContainer'>
-
+                    <img src={logo} className='logoImage'></img>
                     {(() => {
                         switch (authComponent) {
                             case 'passwordReset':

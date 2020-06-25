@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAdminConsole, isManageAccountPageOpen } from '../../actions';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
+import logo from '../../images/logo.png';
+import AccountIcon from '../../icons/account.png';
 
 const Styles = styled.div`
     .headerContainer {
@@ -51,6 +52,12 @@ const Styles = styled.div`
             justify-content: center;
             align-items: center;
 
+            .logoImage {
+                height: 30px;
+                width: 215px;
+                margin: auto;
+            }
+
             .appTitle {
                 color: ${Colors.whiteBlue};
                 font-size: 30px;
@@ -72,9 +79,15 @@ const Styles = styled.div`
                 font-size: 30px;
                 margin: 0 10px;
                 cursor: pointer;
+                transition:0.2s;
+                -webkit-transition:0.2s;
+                -moz-transition:0.2s;
 
                 &:hover {
-                    font-size: 35px;
+                    transform: scale(1.2);
+                    -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                    -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                    box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
                 }
             }
 
@@ -91,14 +104,8 @@ const Header = () => {
     library.add(faUserCircle);
     const isAdmin = useSelector(state => state.isAdmin);
     const isAdminConsoleOpen = useSelector(state => state.isAdminConsoleOpen);
-    const currentUsername = useSelector(state => state.currentUsername);
-    const [firstName, setFirstName] = useState('');
     const allStockDevices = useSelector(state => state.allStockDevices);
     const [numberOfUnverifiedDevices, setNumberOfUnverifiedDevices] = useState('');
-
-    useEffect(() => {
-        setFirstName(getFirstName());
-    }, [currentUsername]);
 
     useEffect(() => {
         setNumberOfUnverifiedDevices(getUnverifiedDevices());
@@ -106,10 +113,6 @@ const Header = () => {
 
     const getUnverifiedDevices = () => {
         return allStockDevices.filter(device => device.verified === false).length;
-    }
-
-    const getFirstName = () => {
-        return currentUsername.replace(/ .*/, '');
     }
 
     const openCloseAdminConsole = () => {
@@ -139,11 +142,10 @@ const Header = () => {
                     }
                 </div>
                 <div className='titleContainer'>
-                    <div className='appTitle'>Studio Socket</div>
+                    <img src={logo} className='logoImage'></img>
                 </div>
                 <div className='accountActionsContainer'>
-                    <div className='userName'>Welcome {firstName}</div>
-                    <FontAwesomeIcon onClick={openAccountPage} className='svg openAccountIcon' icon="user-circle" />
+                    <img src={AccountIcon} onClick={openAccountPage} className='openAccountIcon'></img>
                 </div>
             </div>
         </Styles>

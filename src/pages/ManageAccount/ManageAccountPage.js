@@ -15,7 +15,7 @@ const Styles = styled.div`
 
     .manageAccountContainer {
         padding: 100px 50px 50px 50px;
-        background-color: ${Colors.lightgray};
+        background-color: ${Colors.whiteBlue};
         width: auto;
         height: 100vh;
         display: flex;
