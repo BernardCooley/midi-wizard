@@ -6,24 +6,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../styles/colors';
 
 const Styles = styled.div`
-    min-width: 275px;
+    width: 32%;
 
     .deviceCardContainer {
         background-color: ${Colors.whiteBlueOpaque};
         margin: 10px 0;
         display: flex;
         justify-content: flex-start;
-        align-items: center;
+        align-items: flex-start;
         -webkit-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
         -moz-box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
         box-shadow: 8px 10px 19px -2px rgba(0,0,0,0.76);
-        height: 100px;
+        height: 120px;
         padding: 15px;
         transition:0.2s;
         -webkit-transition:0.2s;
         -moz-transition:0.2s;
         cursor: pointer;
         outline: 1px solid ${Colors.black};
+        overflow: hidden;
 
         &:hover {
             transform: scale(1.05);
@@ -44,7 +45,13 @@ const Styles = styled.div`
 
             .deviceName {
                 font-size: 24px;
-                text-align: center;
+                text-align: left;
+                max-width: 215px;
+                max-height: 100px;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
             }
         }
 
@@ -108,8 +115,8 @@ const SearchResultsCard = props => {
         <Styles>
             <div className={`deviceCardContainer ${props.device.inDeviceTray ? 'inTray' : ''}`} onClick={addToUserDevices}>
                 <div className='detailContainer'>
-                    <div className='manufacturer'>{props.device.general.manufacturer}</div>
-                    <div className='deviceName'>{props.device.general.deviceName}</div>
+                    <div className='manufacturer'>{props.device.maker[0].title}</div>
+                    <div className='deviceName'>{props.device.title}</div>
                 </div>
                 <div className='cardImageContainer'>
                     <img src={imageUrl} className='cardImage'></img>

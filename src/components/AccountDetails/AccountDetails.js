@@ -116,7 +116,7 @@ const AccountDetails = () => {
                     text: 'Password updated',
                     icon: 'success',
                     showConfirmButton: false,
-                    timer: 2500,
+                    timer: 1500,
                     className: ''
                 });
             });

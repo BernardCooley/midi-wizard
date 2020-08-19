@@ -171,6 +171,9 @@ export const TrayTabStyles = styled.div`
 `
 
 export const CustomButtonStyles = styled.div`
+    display: flex;
+    justify-content: center;
+
     .customButton {
         width: 200px;
         height: 50px;
@@ -186,20 +189,29 @@ export const CustomButtonStyles = styled.div`
             background-color: ${Colors.darkTeal};
         }
     }
+
+    .clearImageUploadField {
+        color: ${Colors.red};
+        background-color: ${Colors.whiteBlue};
+    }
 `
 
 export const CloseIconStyles = styled.div`
     .closeIcon {
         position: relative;
-        right: 7px;
-        top: 23px;
+        right: 6px;
+        top: 8px;
         font-size: 30px;
         cursor: pointer;
         z-index: 20;
         color: ${Colors.middleGray};
+        transition:0.2s;
+        -webkit-transition:0.2s;
+        -moz-transition:0.2s;
 
         &:hover {
             color: ${Colors.darkTeal};
+            transform: scale(1.2);
         }
     }
 `
@@ -298,6 +310,10 @@ export const AddDeviceFormStyles = styled.div`
             flex-direction: column;
             height: 100%;
 
+            .imageUploadInput {
+                display: none;
+            }
+
             .errorBox {
                 -webkit-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
                 -moz-box-shadow: 0 0 3pt 2pt ${Colors.red} !important;
@@ -324,7 +340,7 @@ export const AddDeviceFormStyles = styled.div`
                 width: 100%;
                 display: flex;
                 align-items: center;
-                margin-bottom: 50px;
+                flex-direction: column;
 
                 .navPlaceholder {
                     width: 35px;
@@ -332,20 +348,19 @@ export const AddDeviceFormStyles = styled.div`
 
                 .fieldContainer {
                     display: flex;
-                    flex-direction: column;
                     justify-content: center;
                     align-items: center;
                     width: 100%;
 
                     .inputContainer {
-                        width: 100%;
+                        width: 30%;
                         display: flex;
                         justify-content: center;
                         flex-direction: column;
                         align-items: center;
 
                         .inputField {
-                            width: 50%;
+                            width: 90%;
                             font-size: 20px;
                             margin: 5px 0;
                             height: 40px;
@@ -356,6 +371,7 @@ export const AddDeviceFormStyles = styled.div`
                             -webkit-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
                             -moz-box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
                             box-shadow: 0 0 3pt 2pt ${Colors.lightGray};
+                            background: ${Colors.whiteBlueOpaque};
                         }
 
                         .manufacturerSuggestions {

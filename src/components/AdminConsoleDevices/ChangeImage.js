@@ -89,7 +89,7 @@ const ChangeImage = () => {
                                 text: 'Image uploaded',
                                 icon: 'success',
                                 showConfirmButton: false,
-                                timer: 2500,
+                                timer: 1500,
                                 className: ''
                             });
                             dispatch(gettingData(false));
@@ -103,7 +103,7 @@ const ChangeImage = () => {
                 text: 'Image already uploaded. Please choose another.',
                 icon: 'success',
                 showConfirmButton: false,
-                timer: 2500,
+                timer: 1500,
                 className: ''
             });
         }

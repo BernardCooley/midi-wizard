@@ -192,7 +192,7 @@ const LayoutsTray = () => {
                 text: 'Currently selected layout cannot be deleted.',
                 icon: 'warning',
                 showConfirmButton: false,
-                timer: 2500,
+                timer: 1500,
                 className: ''
             });
         }

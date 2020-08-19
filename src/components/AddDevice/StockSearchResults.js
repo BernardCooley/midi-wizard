@@ -15,7 +15,7 @@ const Styles = styled.div`
         height: 100%;
         background-color: ${Colors.whiteBlue};
         display: flex;
-        justify-content: space-evenly;
+        justify-content: space-between;
         align-items: flex-start;
         flex-wrap: wrap;
     }
@@ -26,7 +26,7 @@ const StockSearchResults = props => {
     const searchResults = useSelector(state => state.searchResults);
     const userData = useSelector(state => state.userData);
     const stockTrigger = useSelector(state => state.triggerStockDeviceHook);
-    const [stockDevices, error, getNextDevices] = useFirebaseCall([], 'StockDevices', 'deviceId', 9);
+    const [stockDevices, error, getNextDevices] = useFirebaseCall([], 'Stock', 'itemID', 20);
 
     useEffect(() => {
         if (stockDevices) {
@@ -49,8 +49,8 @@ const StockSearchResults = props => {
 
         if (searchTerm.length > 0) {
             results = stockDevices.filter(device =>
-                device.general.deviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                device.general.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
+                device.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                device.maker[0].title.toLowerCase().includes(searchTerm.toLowerCase())
             );
         } else {
             results = stockDevices;

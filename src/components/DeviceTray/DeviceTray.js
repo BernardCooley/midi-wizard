@@ -118,7 +118,7 @@ const DeviceTray = () => {
 
     return (
         <Styles>
-            <div className={`deviceTrayContainer ${!deviceTrayOpen ? 'closed' : ''}`}>
+            <div className={`deviceTrayContainer ${isAddDeviceFormOpen || !deviceTrayOpen ? 'closed' : ''}`}>
                 <div className='devicesListContainer'>
                     <TrayTabStyles>
                         <button onClick={toggleDeviceTray} className={`trayTab deviceTab ${!deviceTrayOpen ? 'open' : ''}`}>Devices</button>
