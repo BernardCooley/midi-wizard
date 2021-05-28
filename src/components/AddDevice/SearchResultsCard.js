@@ -91,11 +91,13 @@ const SearchResultsCard = props => {
     }, [props.device]);
 
     const getImageUrl = async () => {
-        const imageResponse = imageStorageRef.child('deviceImages').child(props.device.general.imageName);
+        if (props.device.general) {
+            const imageResponse = imageStorageRef.child('deviceImages').child(props.device.general.imageName);
 
-        await imageResponse.getDownloadURL().then(url => {
-            setImageUrl(url);
-        })
+            await imageResponse.getDownloadURL().then(url => {
+                setImageUrl(url);
+            })
+        }
     }
 
     const addToUserDevices = async () => {

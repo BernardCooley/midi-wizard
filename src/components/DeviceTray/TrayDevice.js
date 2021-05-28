@@ -14,13 +14,15 @@ import sweetAlert from 'sweetalert2';
 
 
 const Styles = styled.div`
-    border-right: 3px outset ${Colors.middleGray};
+    background-color: #4a4a4a;
+    margin: 0 3px;
+    border-radius: 10px;
 
     .deviceContainer {
-        height: 171px;
+        height: 195px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         margin: 5px 10px;
         padding: 5px;
@@ -100,11 +102,13 @@ const TrayDevice = props => {
     }, [props.device]);
 
     const getImageUrl = async () => {
-        const deviceImageName = props.device.general.imageName ? props.device.general.imageName : 'default_device_image.jpg';
+        if (props.device.general) {
+            const deviceImageName = props.device.general.imageName ? props.device.general.imageName : 'default_device_image.jpg';
 
-        await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL().then(response => {
-            setImageUrl(response);
-        });
+            await firebase.storage().ref().child(`deviceImages/${deviceImageName}`).getDownloadURL().then(response => {
+                setImageUrl(response);
+            });
+        }
     }
 
     const addToLayout = async (e) => {
@@ -248,6 +252,11 @@ const TrayDevice = props => {
                     </div>
                 </div>
                 <img deviceid={props.device ? props.device.deviceId : ''} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>
+
+                {props.device.general ? 
+                    <div>{props.device.general.deviceName}</div> :
+                    <div>{props.device.title}</div>
+                }
                 <div className={`deviceTitle ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`}>{props.device ? props.device.deviceName : ''}</div>
             </div>
         </Styles>

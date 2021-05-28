@@ -19,7 +19,7 @@ const Styles = styled.div`
         align-items: center;
         scrollbar-color: red;
         position: fixed;
-        bottom: -52px;
+        bottom: -68px;
         transition:0.6s;
         -webkit-transition:0.6s;
         -moz-transition:0.6s;
@@ -50,7 +50,7 @@ const Styles = styled.div`
                 width: 98%;
                 position: relative;
                 top: -30px;
-                height: 208px;
+                height: 275px;
 
                 .listContainer {
                     display: flex;
@@ -61,7 +61,8 @@ const Styles = styled.div`
                     margin: auto;
                     overflow-y: auto;
                     justify-content: center;
-                    padding-left: 155px;
+                    padding-left: 305px;
+                    margin-top: 10px;
 
                     .addFirstDevice {
                         font-size: 30px;
@@ -96,7 +97,7 @@ const Styles = styled.div`
         }
     }
     .closed {
-        bottom: -237px;
+        bottom: -305px;
     }
     .hidden {
         display: none;
