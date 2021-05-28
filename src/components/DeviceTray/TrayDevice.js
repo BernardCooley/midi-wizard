@@ -116,6 +116,8 @@ const TrayDevice = props => {
 
         selectedDevice = { [selectedDevice.deviceId]: selectedDevice };
 
+        console.table(selectedDevice);
+
         const updatedLayoutDevices = { ...currentLayout.devices, ...selectedDevice };
         const updatedLayouts = userLayouts.map(layout => {
             if (layout.layoutId === currentLayout.layoutId) {

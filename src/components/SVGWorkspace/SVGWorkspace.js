@@ -25,7 +25,6 @@ const Styles = styled.div`
 `
 
 const SVGWorkspace = props => {
-
     const [stageScale, setStageScale] = useState();
     const [stageX, setstageX] = useState();
     const [stageY, setstageY] = useState();

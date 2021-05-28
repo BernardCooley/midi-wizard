@@ -11,6 +11,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const WorkspaceDevice = props => {
     const currentDevice = props.device;
+
+    // console.table(currentDevice);
+
     const db = firebase.firestore();
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
@@ -197,51 +200,55 @@ const WorkspaceDevice = props => {
     }
 
     return (
-        <Group
-            draggable={true}
-            x={Math.round(currentDevice.position.x / 50) * 50}
-            y={Math.round(currentDevice.position.y / 50) * 50}
-            width={100}
-            height={100}
-            cursor={'pointer'}
-            onDragStart={e => {
-                const container = e.target.getStage().container();
-                container.style.cursor = 'grabbing';
+        <Group>
+            {currentDevice.position ?
+                <Group
+                    draggable={true}
+                    x={Math.round(currentDevice.position.x / 50) * 50}
+                    y={Math.round(currentDevice.position.y / 50) * 50}
+                    width={100}
+                    height={100}
+                    cursor={'pointer'}
+                    onDragStart={e => {
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'grabbing';
 
-                e.target.to({
-                    duration: 0.5,
-                    easing: Konva.Easings.ElasticEaseOut,
-                    scaleX: 1.2,
-                    scaleY: 1.2
-                });
-            }}
-            onDragEnd={e => {
-                updatePosition(currentDevice, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
-                const container = e.target.getStage().container();
-                container.style.cursor = 'pointer';
+                        e.target.to({
+                            duration: 0.5,
+                            easing: Konva.Easings.ElasticEaseOut,
+                            scaleX: 1.2,
+                            scaleY: 1.2
+                        });
+                    }}
+                    onDragEnd={e => {
+                        updatePosition(currentDevice, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'pointer';
 
-                e.target.to({
-                    duration: 0.5,
-                    easing: Konva.Easings.ElasticEaseOut,
-                    scaleX: 1,
-                    scaleY: 1
-                });
-            }}
-            onMouseOver={e => {
-                const container = e.target.getStage().container();
-                container.style.cursor = 'pointer';
-            }}
-            onMouseLeave={e => {
-                const container = e.target.getStage().container();
-                container.style.cursor = 'default';
-            }}
-            onClick={e => {
-                dispatch(selectedWorkspaceDeviceId(currentDevice.deviceId));
-            }}>
-            <DeviceImage image={imageElement}></DeviceImage>
-            <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
-            <ConnectionButtons buttonset={1} />
-            <ConnectionButtons buttonset={2} />
+                        e.target.to({
+                            duration: 0.5,
+                            easing: Konva.Easings.ElasticEaseOut,
+                            scaleX: 1,
+                            scaleY: 1
+                        });
+                    }}
+                    onMouseOver={e => {
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'pointer';
+                    }}
+                    onMouseLeave={e => {
+                        const container = e.target.getStage().container();
+                        container.style.cursor = 'default';
+                    }}
+                    onClick={e => {
+                        dispatch(selectedWorkspaceDeviceId(currentDevice.deviceId));
+                    }}>
+                    <DeviceImage image={imageElement}></DeviceImage>
+                    <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
+                    <ConnectionButtons buttonset={1} />
+                    <ConnectionButtons buttonset={2} />
+                </Group>
+                : null}
         </Group>
     )
 
