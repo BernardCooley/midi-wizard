@@ -11,9 +11,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const WorkspaceDevice = props => {
     const currentDevice = props.device;
-
-    // console.table(currentDevice);
-
     const db = firebase.firestore();
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
@@ -21,7 +18,8 @@ const WorkspaceDevice = props => {
     const [optionSelected, setOptionSelected] = useState('');
     const [optionHovered, setOptionHovered] = useState('');
     const dispatch = useDispatch();
-    const selectedDeviceId = useSelector(state => state.selectedWorkspaceDeviceId)
+    const selectedDeviceId = useSelector(state => state.selectedWorkspaceDeviceId);
+    const scaleStage = useSelector(state => state.stageScale);
 
     useEffect(() => {
         getImageUrl(currentDevice.general.imageName);
@@ -87,7 +85,7 @@ const WorkspaceDevice = props => {
                 opacity={selectedDeviceId.length > 0 && selectedDeviceId !== currentDevice.deviceId ? 0.3 : 1}
                 name={props.buttonname}
                 text={props.buttonname}
-                fontSize={15}
+                fontSize={16 / scaleStage}
                 align={'center'}
                 verticalAlign={'middle'}
                 width={100}

@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { Stage, Layer } from 'react-konva';
 import WorkspaceDevice from './WorkspaceDevice';
-import { useSelector, Provider } from 'react-redux';
+import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
+import { stageScale } from '../../actions';
 
 
 const Styles = styled.div`
@@ -25,10 +26,11 @@ const Styles = styled.div`
 `
 
 const SVGWorkspace = props => {
-    const [stageScale, setStageScale] = useState();
+    const dispatch = useDispatch();
     const [stageX, setstageX] = useState();
     const [stageY, setstageY] = useState();
     const userId = useSelector(state => state.currentUserId);
+    const scaleStage = useSelector(state => state.stageScale);
     const userLayouts = useSelector(state => state.layouts);
     const [clearSelection, setClearSelection] = useState(false);
 
@@ -45,7 +47,7 @@ const SVGWorkspace = props => {
 
         const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
-        setStageScale(newScale);
+        dispatch(stageScale(newScale));
         setstageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
         setstageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
@@ -60,8 +62,8 @@ const SVGWorkspace = props => {
                             setClearSelection(clearSelection => !clearSelection);
                         }
                     }}
-                    scaleX={stageScale}
-                    scaleY={stageScale}
+                    scaleX={scaleStage}
+                    scaleY={scaleStage}
                     x={stageX}
                     y={stageY}
                     onWheel={handleWheel}

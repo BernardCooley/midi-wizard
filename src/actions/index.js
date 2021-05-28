@@ -258,3 +258,10 @@ export const availableConnectionIds = availableConnectionIds => {
         payload: availableConnectionIds
     };
 };
+
+export const stageScale = stageScale => {
+    return {
+        type: 'STAGE_SCALE',
+        payload: stageScale
+    };
+};

@@ -127,6 +127,14 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    stageScale: (state = 1, action) => {
+        switch (action.type) {
+            case 'STAGE_SCALE':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

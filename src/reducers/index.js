@@ -43,7 +43,8 @@ const allReducers = combineReducers({
   selectedWorkspaceDeviceId: workspaceReducers.selectedWorkspaceDeviceId,
   drawing: workspaceReducers.drawing,
   connection: workspaceReducers.connection,
-  availableConnectionIds: workspaceReducers.availableConnectionIds
+  availableConnectionIds: workspaceReducers.availableConnectionIds,
+  stageScale: workspaceReducers.stageScale
 });
 
 const rootReducer = (state, action) => {
