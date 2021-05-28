@@ -7,7 +7,7 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { CustomButtonStyles } from '../../styles/components';
 import Colors from '../../styles/colors';
 import logo from '../../images/logo.png';
-import AccountIcon from '../../icons/account.png';
+import AccountIcon from '../../icons/user.svg';
 
 const Styles = styled.div`
     .headerContainer {
@@ -76,7 +76,7 @@ const Styles = styled.div`
 
             .openAccountIcon {
                 color: ${Colors.whiteBlue};
-                font-size: 30px;
+                height: 30px;
                 margin: 0 10px;
                 cursor: pointer;
                 transition:0.2s;

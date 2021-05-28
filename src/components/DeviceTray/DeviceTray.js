@@ -1,13 +1,13 @@
 import React from 'react';
 import TrayDevice from './TrayDevice';
 import { useSelector, useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toggleAddDeviceForm, isDeviceTrayOpen } from '../../actions';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { TrayTabStyles } from '../../styles/components';
+import PlusIcon from '../../icons/plus.svg';
 
 
 const Styles = styled.div`
@@ -89,7 +89,7 @@ const Styles = styled.div`
                     }
 
                     .svg {
-                        font-size: 25px;
+                        height: 30px;
                     }
                 }
             }
@@ -134,8 +134,8 @@ const DeviceTray = () => {
                             )) : null}
                         </div>
                         {!isAddDeviceFormOpen && userData.devices && userData.devices.length > 0 ?
-                            <div className={'openAddDeviceFormButton'} onClick={() => dispatch(toggleAddDeviceForm(true))}>
-                                <FontAwesomeIcon className='svg' icon="plus" />
+                            <div className='openAddDeviceFormButton' onClick={() => dispatch(toggleAddDeviceForm(true))}>
+                                <img src={PlusIcon} className='svg'></img>
                             </div>
                             :
                             null
