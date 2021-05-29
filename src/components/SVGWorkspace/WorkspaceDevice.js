@@ -15,6 +15,7 @@ const WorkspaceDevice = props => {
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
     const [imageElement, setImageElement] = useState(0);
+    const [imageShadowOffset, setImageShadowOffset] = useState({x: 5, y: 5});
     const [optionSelected, setOptionSelected] = useState('');
     const [optionHovered, setOptionHovered] = useState('');
     const dispatch = useDispatch();
@@ -116,6 +117,9 @@ const WorkspaceDevice = props => {
                 width={100}
                 height={100}
                 opacity={selectedDeviceId.length > 0 ? 0.3 : 1}
+                shadowColor={Colors.jet}
+                shadowOffset={imageShadowOffset}
+                shadowBlur={7}
             />
         )
     }
@@ -217,6 +221,8 @@ const WorkspaceDevice = props => {
                             scaleX: 1.2,
                             scaleY: 1.2
                         });
+
+                        setImageShadowOffset({x: 15, y: 15});
                     }}
                     onDragEnd={e => {
                         updatePosition(currentDevice, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
@@ -229,6 +235,8 @@ const WorkspaceDevice = props => {
                             scaleX: 1,
                             scaleY: 1
                         });
+
+                        setImageShadowOffset({x: 5, y: 5});
                     }}
                     onMouseOver={e => {
                         const container = e.target.getStage().container();
