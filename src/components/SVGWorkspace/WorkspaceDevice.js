@@ -7,6 +7,7 @@ import Colors from '../../styles/colors';
 import Konva from 'konva';
 import { selectedWorkspaceDeviceId } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
+import LoadingImage from '../../icons/loading.svg';
 
 
 const WorkspaceDevice = props => {
@@ -15,6 +16,7 @@ const WorkspaceDevice = props => {
     const usersRef = db.collection('Users');
     const imageStorageRef = firebase.storage().ref();
     const [imageElement, setImageElement] = useState(0);
+    const [placeholderImage, setPlaceholderImage] = useState(0);
     const [imageShadowOffset, setImageShadowOffset] = useState({x: 5, y: 5});
     const [optionSelected, setOptionSelected] = useState('');
     const [optionHovered, setOptionHovered] = useState('');
@@ -24,6 +26,7 @@ const WorkspaceDevice = props => {
 
     useEffect(() => {
         getImageUrl(currentDevice.general.imageName);
+        getPlaceholderImage();
     }, []);
 
     useEffect(() => {
@@ -45,6 +48,14 @@ const WorkspaceDevice = props => {
                 setImageElement(image);
             };
         });
+    }
+
+    const getPlaceholderImage =  () => {
+        const image = new window.Image();
+        image.src = LoadingImage;
+        image.onload = () => {
+            setPlaceholderImage(image);
+        };
     }
 
     const updatePosition = async (device, x, y) => {
@@ -112,11 +123,13 @@ const WorkspaceDevice = props => {
     const DeviceImage = props => {
         return (
             <Image
+                x={props.image ? 0 : 25}
+                y={props.image ? 0 : 25}
                 name={'image'}
-                image={props.image}
-                width={100}
-                height={100}
-                opacity={selectedDeviceId.length > 0 ? 0.3 : 1}
+                image={props.image ? props.image : props.placeholderImage}
+                width={props.image ? 100 : 50}
+                height={props.image ? 100 : 50}
+                opacity={!props.image || selectedDeviceId.length > 0 ? 0.3 : 1}
                 shadowColor={Colors.jet}
                 shadowOffset={imageShadowOffset}
                 shadowBlur={7}
@@ -125,6 +138,10 @@ const WorkspaceDevice = props => {
     }
     DeviceImage.propTypes = {
         image: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.number,
+        ]),
+        placeholderImage: PropTypes.oneOfType([
             PropTypes.object,
             PropTypes.number,
         ])
@@ -249,7 +266,7 @@ const WorkspaceDevice = props => {
                     onClick={e => {
                         dispatch(selectedWorkspaceDeviceId(currentDevice.deviceId));
                     }}>
-                    <DeviceImage image={imageElement}></DeviceImage>
+                    <DeviceImage image={imageElement} placeholderImage={placeholderImage}></DeviceImage>
                     <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
                     <ConnectionButtons buttonset={1} />
                     <ConnectionButtons buttonset={2} />
