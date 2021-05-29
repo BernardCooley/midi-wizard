@@ -9,8 +9,8 @@ import DeleteIcon from '../../icons/delete.svg';
 import EditIcon from '../../icons/edit.svg';
 import AddToLayoutIcon from '../../icons/add_to_layout.svg';
 import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
-import Colors from '../../styles/colors';
 import sweetAlert from 'sweetalert2';
+import NoImageImage from '../../images/no-image-found.png'
 
 
 const Styles = styled.div`
@@ -26,6 +26,18 @@ const Styles = styled.div`
         align-items: center;
         margin: 5px 10px;
         padding: 5px;
+
+        .imageContainer {
+            height: 150px;
+            width: 150px;
+            display: flex;
+        }
+
+        .noImage {
+            height: 100px;
+            margin: auto;
+            opacity: 0.7;
+        }
 
         .deviceTrayOptions {
             width: 100%;
@@ -68,7 +80,7 @@ const Styles = styled.div`
         }
 
         .alreadyInLayout {
-            opacity: 0.5 !important;
+            opacity: 0.3 !important;
             pointer-events: none;
             cursor: default;
         }
@@ -251,9 +263,11 @@ const TrayDevice = props => {
                         <img src={DeleteIcon} className='deleteIcon actionIcon'></img>
                     </div>
                 </div>
-                <img deviceid={props.device ? props.device.deviceId : ''} className={`img ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl} alt=''></img>
+                <div className={`imageContainer`}>
+                    <img deviceid={props.device ? props.device.deviceId : ''} className={`img ${imageUrl ? '' : 'noImage'} ${inCurrentWorkspace ? 'alreadyInLayout' : ''}`} src={imageUrl ? imageUrl : NoImageImage} alt=''></img>
+                </div>
 
-                {props.device.general ? 
+                {props.device.general ?
                     <div>{props.device.general.deviceName}</div> :
                     <div>{props.device.title}</div>
                 }
