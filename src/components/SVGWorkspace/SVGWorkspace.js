@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import { Stage, Layer } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
@@ -27,12 +27,95 @@ const Styles = styled.div`
 
 const SVGWorkspace = props => {
     const dispatch = useDispatch();
-    const [stageX, setstageX] = useState();
-    const [stageY, setstageY] = useState();
+    const [stageX, setStageX] = useState();
+    const [stageY, setStageY] = useState();
+    const [positions, setPositions] = useState();
+    const [connections, setConnections] = useState([]);
     const userId = useSelector(state => state.currentUserId);
     const scaleStage = useSelector(state => state.stageScale);
     const userLayouts = useSelector(state => state.layouts);
     const [clearSelection, setClearSelection] = useState(false);
+    const devices = props.layout.devices;
+
+    const lineColors = {
+        audio: 'green',
+        midi: 'blue'
+    }
+
+    useEffect(() => {
+        if (devices) {
+            getPositions();
+        }
+    }, [devices]);
+
+    useEffect(() => {
+        if (devices) {
+            setConnectionLines();
+        }
+    }, [positions]);
+
+    const getPositions = () => {
+        setPositions(
+            Object.keys(devices).map(key => {
+                return {
+                    x: devices[key].position.x,
+                    y: devices[key].position.y,
+                    deviceId: devices[key].deviceId
+                }
+            })
+        );
+    }
+
+    const setConnectionLines = () => {
+        const connectionArray = [];
+
+        Object.keys(devices).forEach(deviceKey => {
+            const deviceAudioInKeys = Object.keys(devices[deviceKey].audio.audioIn);
+
+            if (deviceAudioInKeys.length > 0) {
+                deviceAudioInKeys.forEach(deviceAudioInKey => {
+                    if (devices[deviceKey].audio.audioIn[deviceAudioInKey].length > 0) {
+                        let outputName = '';
+
+                        const fromDeviceAudio = devices[devices[deviceKey].audio.audioIn[deviceAudioInKey]].audio.audioOut
+
+                        Object.keys(fromDeviceAudio).forEach(audioOutputKey => {
+                            if (fromDeviceAudio[audioOutputKey] === devices[deviceKey].deviceId) {
+                                outputName = audioOutputKey;
+                            }
+                        });
+
+                        const inputDevicePosition = positions.filter(position => position.deviceId === devices[deviceKey].deviceId)[0];
+
+                        const outputDevicePosition = positions.filter(position => position.deviceId === devices[deviceKey].audio.audioIn[deviceAudioInKey])[0];
+
+                        const connection = {
+                            type: 'audio',
+                            from: {
+                                deviceId: devices[deviceKey].audio.audioIn[deviceAudioInKey],
+                                output: outputName,
+                                position: {
+                                    x: outputDevicePosition.x,
+                                    y: outputDevicePosition.y
+                                }
+                            },
+                            to: {
+                                deviceId: devices[deviceKey].deviceId,
+                                input: deviceAudioInKey,
+                                position: {
+                                    x: inputDevicePosition.x,
+                                    y: inputDevicePosition.y
+                                }
+                            }
+                        }
+
+                        connectionArray.push(connection);
+                    }
+                });
+            }
+            setConnections(connectionArray);
+        })
+    }
 
     const handleWheel = e => {
         e.evt.preventDefault();
@@ -48,8 +131,8 @@ const SVGWorkspace = props => {
         const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
         dispatch(stageScale(newScale));
-        setstageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
-        setstageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
+        setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
+        setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
 
     return (
@@ -80,8 +163,23 @@ const SVGWorkspace = props => {
                     }}>
                     <Layer>
                         <Provider store={store}>
-                            {props.layout.devices && Object.keys(props.layout.devices).length > 0 ? Object.keys(props.layout.devices).map((device, index) => (
-                                <WorkspaceDevice clearselection={clearSelection} key={index} userid={userId} userlayouts={userLayouts} device={props.layout.devices[device]} />
+                            {connections ? connections.map(connection => (
+                                <Line
+                                    key={connection}
+                                    points={[
+                                        connection.from.position.x + 50,
+                                        connection.from.position.y + 50,
+                                        connection.to.position.x + 50,
+                                        connection.to.position.y + 50
+                                    ]}
+                                    stroke="black"
+                                    lineCap='round'
+                                    strokeWidth={2}
+                                    stroke={lineColors[connection.type]}
+                                />
+                            )) : null}
+                            {devices && Object.keys(devices).length > 0 ? Object.keys(devices).map(device => (
+                                <WorkspaceDevice clearselection={clearSelection} key={device} userid={userId} userlayouts={userLayouts} device={devices[device]} />
                             )) : null}
                         </Provider>
                     </Layer>
