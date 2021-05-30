@@ -37,10 +37,8 @@ const SVGWorkspace = props => {
     const [clearSelection, setClearSelection] = useState(false);
     const devices = props.layout.devices;
 
-    const lineColors = {
-        audio: 'green',
-        midi: 'blue'
-    }
+    const positionOffset = (Math.random() * (100 - 0) + 0);
+
 
     useEffect(() => {
         if (devices) {
@@ -148,6 +146,26 @@ const SVGWorkspace = props => {
         }
     }
 
+    const buildGradient = (x1, y1, x2, y2, type) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+
+        if (type === 'audio') {
+            grad.addColorStop(0.00, 'green');
+            grad.addColorStop(1, 'red');
+        } if (type === 'midiOutIn') {
+            grad.addColorStop(0.00, 'black');
+            grad.addColorStop(1, 'blue');
+        } else if (type === 'midiThruIn') {
+            grad.addColorStop(0.00, 'yellow');
+            grad.addColorStop(1, 'blue');
+        }
+
+        return grad;
+    }
+
     return (
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
@@ -176,22 +194,26 @@ const SVGWorkspace = props => {
                     }}>
                     <Layer>
                         <Provider store={store}>
-                            {connections ? connections.map(connection => (
+                            {connections ? connections.map((connection, index) => (
                                 <Line
                                     key={connection}
                                     points={[
-                                        connection.from.position.x + 50,
-                                        connection.from.position.y + 50,
+                                        connection.from.position.x + positionOffset,
+                                        connection.from.position.y + positionOffset,
                                         findMidPoint(connection).x,
                                         findMidPoint(connection).y,
-                                        connection.to.position.x + 50,
-                                        connection.to.position.y + 50
+                                        connection.to.position.x + positionOffset,
+                                        connection.to.position.y + positionOffset
                                     ]}
-                                    stroke="black"
-                                    lineCap='round'
-                                    strokeWidth={2}
-                                    stroke={lineColors[connection.type]}
-                                    dash={[10, 10]}
+                                    strokeWidth={3}
+                                    stroke={buildGradient(
+                                        connection.from.position.x,
+                                        connection.from.position.y,
+                                        connection.to.position.x,
+                                        connection.to.position.y,
+                                        connection.type
+                                    )
+                                    }
                                     tension={Math.random() * (1 - 0.2) + 0.2}
                                 />
                             )) : null}
