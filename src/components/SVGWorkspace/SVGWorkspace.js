@@ -37,9 +37,6 @@ const SVGWorkspace = props => {
     const [clearSelection, setClearSelection] = useState(false);
     const devices = props.layout.devices;
 
-    const positionOffset = (Math.random() * (100 - 0) + 0);
-
-
     useEffect(() => {
         if (devices) {
             getPositions();
@@ -198,12 +195,12 @@ const SVGWorkspace = props => {
                                 <Line
                                     key={connection}
                                     points={[
-                                        connection.from.position.x + positionOffset,
-                                        connection.from.position.y + positionOffset,
+                                        connection.from.position.x + 50,
+                                        connection.from.position.y + 50,
                                         findMidPoint(connection).x,
                                         findMidPoint(connection).y,
-                                        connection.to.position.x + positionOffset,
-                                        connection.to.position.y + positionOffset
+                                        connection.to.position.x + 50,
+                                        connection.to.position.y + 50
                                     ]}
                                     strokeWidth={3}
                                     stroke={buildGradient(
