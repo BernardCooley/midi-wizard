@@ -135,6 +135,19 @@ const SVGWorkspace = props => {
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
     };
 
+    const findMidPoint = conn => {
+        const from = conn.from.position;
+        const to = conn.to.position;
+
+        const midX = (Math.abs((from.x - to.x)) / 2) + Math.min(from.x, to.x);
+        const midY = (Math.abs((from.y - to.y)) / 2) + Math.min(from.y, to.y);
+
+        return {
+            x: midX,
+            y: midY
+        }
+    }
+
     return (
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
@@ -169,6 +182,8 @@ const SVGWorkspace = props => {
                                     points={[
                                         connection.from.position.x + 50,
                                         connection.from.position.y + 50,
+                                        findMidPoint(connection).x,
+                                        findMidPoint(connection).y,
                                         connection.to.position.x + 50,
                                         connection.to.position.y + 50
                                     ]}
@@ -176,6 +191,8 @@ const SVGWorkspace = props => {
                                     lineCap='round'
                                     strokeWidth={2}
                                     stroke={lineColors[connection.type]}
+                                    dash={[10, 10]}
+                                    tension={Math.random() * (1 - 0.2) + 0.2}
                                 />
                             )) : null}
                             {devices && Object.keys(devices).length > 0 ? Object.keys(devices).map(device => (
