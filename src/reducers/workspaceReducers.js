@@ -135,6 +135,22 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    showAudioConnections: (state = true, action) => {
+        switch (action.type) {
+            case 'SHOW_AUDIO_CONNECTIONS':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    showMidiConnections: (state = true, action) => {
+        switch (action.type) {
+            case 'SHOW_MIDI_CONNECTIONS':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

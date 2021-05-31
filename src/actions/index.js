@@ -265,3 +265,17 @@ export const stageScale = stageScale => {
         payload: stageScale
     };
 };
+
+export const showAudioConnectionsAction = showAudioConnections => {
+    return {
+        type: 'SHOW_AUDIO_CONNECTIONS',
+        payload: showAudioConnections
+    };
+};
+
+export const showMidiConnectionsAction = showMidiConnections => {
+    return {
+        type: 'SHOW_MIDI_CONNECTIONS',
+        payload: showMidiConnections
+    };
+};

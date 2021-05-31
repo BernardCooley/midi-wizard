@@ -7,6 +7,7 @@ import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
 import { stageScale } from '../../actions';
+import WorkspaceControls from '../SVGWorkspace/WorkSpaceControls';
 
 
 const Styles = styled.div`
@@ -34,6 +35,8 @@ const SVGWorkspace = props => {
     const userId = useSelector(state => state.currentUserId);
     const scaleStage = useSelector(state => state.stageScale);
     const userLayouts = useSelector(state => state.layouts);
+    const showAudioConnections = useSelector(state => state.showAudioConnections);
+    const showMidiConnections = useSelector(state => state.showMidiConnections);
     const [clearSelection, setClearSelection] = useState(false);
     const devices = props.layout.devices;
 
@@ -191,6 +194,7 @@ const SVGWorkspace = props => {
     return (
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
+                <WorkspaceControls/>
                 <Stage
                     name={'stage'}
                     onClick={e => {
@@ -225,9 +229,10 @@ const SVGWorkspace = props => {
                                         strokeWidth={3}
                                         stroke={buildGradient(connection)}
                                         tension={rand(0.2, 1)}
-                                        onMouseOver={() => {
-
-                                        }}
+                                        visible={
+                                            (connection.type === 'audio' && showAudioConnections) || 
+                                            (connection.type === 'midi' && showMidiConnections)
+                                        }
                                     />
                                     {/* <Text
                                         x={connection.midPoint.x}
