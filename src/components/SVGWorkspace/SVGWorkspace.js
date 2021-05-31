@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Group, Text } from 'react-konva';
 import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
@@ -85,6 +85,7 @@ const SVGWorkspace = props => {
                         const outputDevicePosition = positions.filter(position => position.deviceId === devices[deviceKey].audio.audioIn[deviceAudioInKey])[0];
 
                         const connection = {
+                            id: `${devices[deviceKey].audio.audioIn[deviceAudioInKey]}-${devices[deviceKey].deviceId}-${outputName}-${deviceAudioInKey}`,
                             type: 'audio',
                             from: {
                                 deviceId: devices[deviceKey].audio.audioIn[deviceAudioInKey],
@@ -101,6 +102,10 @@ const SVGWorkspace = props => {
                                     x: inputDevicePosition.x,
                                     y: inputDevicePosition.y
                                 }
+                            },
+                            midPoint: {
+                                x: (Math.abs((outputDevicePosition.x - inputDevicePosition.x)) / 2) + Math.min(outputDevicePosition.x, inputDevicePosition.x) + rand(0, 100),
+                                y: (Math.abs((outputDevicePosition.y - inputDevicePosition.y)) / 2) + Math.min(outputDevicePosition.y, inputDevicePosition.y) - rand(0, 100)
                             }
                         }
 
@@ -143,24 +148,44 @@ const SVGWorkspace = props => {
         }
     }
 
-    const buildGradient = (x1, y1, x2, y2, type) => {
+    const buildGradient = connection => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+        const grad = ctx.createLinearGradient(
+            connection.from.position.x,
+            connection.from.position.y,
+            connection.to.position.x,
+            connection.to.position.y,
+        );
 
-        if (type === 'audio') {
-            grad.addColorStop(0.00, 'green');
+        if (connection.type === 'audio') {
+            grad.addColorStop(0.3, 'green');
             grad.addColorStop(1, 'red');
-        } if (type === 'midiOutIn') {
-            grad.addColorStop(0.00, 'black');
+        } if (connection.type === 'midiOutIn') {
+            grad.addColorStop(0, 'black');
             grad.addColorStop(1, 'blue');
-        } else if (type === 'midiThruIn') {
-            grad.addColorStop(0.00, 'yellow');
+        } else if (connection.type === 'midiThruIn') {
+            grad.addColorStop(0, 'yellow');
             grad.addColorStop(1, 'blue');
         }
 
         return grad;
+    }
+
+    const getPoints = connection => {
+        return [
+            connection.from.position.x + rand(0, 100),
+            connection.from.position.y + 50,
+            connection.midPoint.x,
+            connection.midPoint.y,
+            connection.to.position.x + 50,
+            connection.to.position.y + 50
+        ];
+    }
+
+    const rand = (min, max) => {
+        return Math.random() * (max - min) + min;
     }
 
     return (
@@ -191,28 +216,27 @@ const SVGWorkspace = props => {
                     }}>
                     <Layer>
                         <Provider store={store}>
-                            {connections ? connections.map((connection, index) => (
-                                <Line
-                                    key={connection}
-                                    points={[
-                                        connection.from.position.x + 50,
-                                        connection.from.position.y + 50,
-                                        findMidPoint(connection).x,
-                                        findMidPoint(connection).y,
-                                        connection.to.position.x + 50,
-                                        connection.to.position.y + 50
-                                    ]}
-                                    strokeWidth={3}
-                                    stroke={buildGradient(
-                                        connection.from.position.x,
-                                        connection.from.position.y,
-                                        connection.to.position.x,
-                                        connection.to.position.y,
-                                        connection.type
-                                    )
-                                    }
-                                    tension={Math.random() * (1 - 0.2) + 0.2}
-                                />
+                            {connections ? connections.map(connection => (
+                                <Group>
+                                    <Line
+                                        name={connection.type}
+                                        key={connection}
+                                        points={getPoints(connection)}
+                                        strokeWidth={3}
+                                        stroke={buildGradient(connection)}
+                                        tension={rand(0.2, 1)}
+                                        onMouseOver={() => {
+
+                                        }}
+                                    />
+                                    {/* <Text
+                                        x={connection.midPoint.x}
+                                        y={connection.midPoint.y}
+                                        text={`${connection.from.output} -> ${connection.to.input}`}
+                                        fill='white'
+                                        zIndex={10}
+                                    /> */}
+                                </Group>
                             )) : null}
                             {devices && Object.keys(devices).length > 0 ? Object.keys(devices).map(device => (
                                 <WorkspaceDevice clearselection={clearSelection} key={device} userid={userId} userlayouts={userLayouts} device={devices[device]} />
