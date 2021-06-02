@@ -6,7 +6,7 @@ import { Stage, Layer, Line, Group, Text } from 'react-konva';
 import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
-import { stageScale } from '../../actions';
+import { stageScale, newConnectionPointsAction } from '../../actions';
 import WorkspaceControls from '../SVGWorkspace/WorkSpaceControls';
 
 
@@ -39,6 +39,8 @@ const SVGWorkspace = props => {
     const showMidiConnections = useSelector(state => state.showMidiConnections);
     const [clearSelection, setClearSelection] = useState(false);
     const devices = props.layout.devices;
+    const makingConnection = useSelector(state => state.makingConnection);
+    const newConnectionPoints = useSelector(state => state.newConnectionPoints);
 
     useEffect(() => {
         if (devices) {
@@ -107,8 +109,8 @@ const SVGWorkspace = props => {
                                 }
                             },
                             midPoint: {
-                                x: (Math.abs((outputDevicePosition.x - inputDevicePosition.x)) / 2) + Math.min(outputDevicePosition.x, inputDevicePosition.x) + rand(0, 100),
-                                y: (Math.abs((outputDevicePosition.y - inputDevicePosition.y)) / 2) + Math.min(outputDevicePosition.y, inputDevicePosition.y) - rand(0, 100)
+                                x: (Math.abs((outputDevicePosition.x - inputDevicePosition.x)) / 2) + Math.min(outputDevicePosition.x, inputDevicePosition.x),
+                                y: (Math.abs((outputDevicePosition.y - inputDevicePosition.y)) / 2) + Math.min(outputDevicePosition.y, inputDevicePosition.y)
                             }
                         }
 
@@ -178,7 +180,7 @@ const SVGWorkspace = props => {
 
     const getPoints = connection => {
         return [
-            connection.from.position.x + rand(0, 100),
+            connection.from.position.x + 50,
             connection.from.position.y + 50,
             connection.midPoint.x,
             connection.midPoint.y,
@@ -187,19 +189,23 @@ const SVGWorkspace = props => {
         ];
     }
 
-    const rand = (min, max) => {
-        return Math.random() * (max - min) + min;
-    }
-
     return (
         <Styles>
             <div id='svgWorkspaceContainer' className='svgWorkspaceContainer'>
-                <WorkspaceControls/>
+                <WorkspaceControls />
                 <Stage
                     name={'stage'}
-                    onClick={e => {
-                        if (e.target.name() === 'stage') {
-                            setClearSelection(clearSelection => !clearSelection);
+                    onMouseMove={e => {
+                        if (makingConnection) {
+                            const stage = e.target.getStage();
+
+                            const newPoints = {
+                                x1: newConnectionPoints.x1,
+                                y1: newConnectionPoints.y1,
+                                x2: stage.getPointerPosition().x,
+                                y2: stage.getPointerPosition().y
+                            }
+                            dispatch(newConnectionPointsAction(newPoints));
                         }
                     }}
                     scaleX={scaleStage}
@@ -209,7 +215,7 @@ const SVGWorkspace = props => {
                     onWheel={handleWheel}
                     width={window.innerWidth - 50}
                     height={window.innerHeight}
-                    draggable={true}
+                    draggable={!makingConnection}
                     onDragStart={e => {
                         const container = e.target.getStage().container();
                         container.style.cursor = 'grabbing';
@@ -221,26 +227,37 @@ const SVGWorkspace = props => {
                     <Layer>
                         <Provider store={store}>
                             {connections ? connections.map(connection => (
-                                <Group>
+                                <Group key={connection.id}>
+                                    {
+                                        makingConnection &&
+                                        newConnectionPoints.x1 !== 0 &&
+                                        newConnectionPoints.y1 !== 0 &&
+                                        newConnectionPoints.x2 !== 0 &&
+                                        newConnectionPoints.y2 !== 0
+                                     ?
+                                        <Line
+                                            name='tempLine'
+                                            points={[
+                                                newConnectionPoints.x1,
+                                                newConnectionPoints.y1,
+                                                newConnectionPoints.x2,
+                                                newConnectionPoints.y2
+                                            ]}
+                                            strokeWidth={3}
+                                            stroke='red'
+                                        /> : null
+                                    }
                                     <Line
                                         name={connection.type}
-                                        key={connection}
                                         points={getPoints(connection)}
                                         strokeWidth={3}
                                         stroke={buildGradient(connection)}
-                                        tension={rand(0.2, 1)}
+                                        tension={0.5}
                                         visible={
-                                            (connection.type === 'audio' && showAudioConnections) || 
+                                            (connection.type === 'audio' && showAudioConnections) ||
                                             (connection.type === 'midi' && showMidiConnections)
                                         }
                                     />
-                                    {/* <Text
-                                        x={connection.midPoint.x}
-                                        y={connection.midPoint.y}
-                                        text={`${connection.from.output} -> ${connection.to.input}`}
-                                        fill='white'
-                                        zIndex={10}
-                                    /> */}
                                 </Group>
                             )) : null}
                             {devices && Object.keys(devices).length > 0 ? Object.keys(devices).map(device => (

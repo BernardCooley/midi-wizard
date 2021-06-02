@@ -46,7 +46,9 @@ const allReducers = combineReducers({
   availableConnectionIds: workspaceReducers.availableConnectionIds,
   stageScale: workspaceReducers.stageScale,
   showAudioConnections: workspaceReducers.showAudioConnections,
-  showMidiConnections: workspaceReducers.showMidiConnections
+  showMidiConnections: workspaceReducers.showMidiConnections,
+  makingConnection: workspaceReducers.makingConnection,
+  newConnectionPoints: workspaceReducers.newConnectionPoints
 });
 
 const rootReducer = (state, action) => {

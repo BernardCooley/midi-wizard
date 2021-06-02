@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import sweetAlert from 'sweetalert2';
 import Colors from '../../styles/colors';
 import Konva from 'konva';
-import { selectedWorkspaceDeviceId } from '../../actions';
+import { selectedWorkspaceDeviceId, newConnectionPointsAction, makingConnectionAction } from '../../actions';
 import { useSelector, useDispatch } from 'react-redux';
 import LoadingImage from '../../icons/loading.svg';
 
@@ -17,12 +17,14 @@ const WorkspaceDevice = props => {
     const imageStorageRef = firebase.storage().ref();
     const [imageElement, setImageElement] = useState(0);
     const [placeholderImage, setPlaceholderImage] = useState(0);
-    const [imageShadowOffset, setImageShadowOffset] = useState({x: 5, y: 5});
+    const [imageShadowOffset, setImageShadowOffset] = useState({ x: 5, y: 5 });
     const [optionSelected, setOptionSelected] = useState('');
     const [optionHovered, setOptionHovered] = useState('');
     const dispatch = useDispatch();
     const selectedDeviceId = useSelector(state => state.selectedWorkspaceDeviceId);
     const scaleStage = useSelector(state => state.stageScale);
+    const makingConnection = useSelector(state => state.makingConnection);
+    const newConnectionPoints = useSelector(state => state.newConnectionPoints);
 
     useEffect(() => {
         getImageUrl(currentDevice.general.imageName);
@@ -50,7 +52,7 @@ const WorkspaceDevice = props => {
         });
     }
 
-    const getPlaceholderImage =  () => {
+    const getPlaceholderImage = () => {
         const image = new window.Image();
         image.src = LoadingImage;
         image.onload = () => {
@@ -94,7 +96,6 @@ const WorkspaceDevice = props => {
     const DeviceText = props => {
         return (
             <Text
-                opacity={selectedDeviceId.length > 0 && selectedDeviceId !== currentDevice.deviceId ? 0.3 : 1}
                 name={props.buttonname}
                 text={props.buttonname}
                 fontSize={16 / scaleStage}
@@ -105,12 +106,12 @@ const WorkspaceDevice = props => {
                 fill={Colors.white}
                 offsetY={props.offset}
                 wrap={'word'}
-                onClick={e => {
-                    setOptionSelected(e.target.name());
-                }}
-                onMouseOver={e => {
-                    setOptionHovered(e.target.name());
-                }}
+            // onClick={e => {
+            //     setOptionSelected(e.target.name());
+            // }}
+            // onMouseOver={e => {
+            //     setOptionHovered(e.target.name());
+            // }}
             />
         )
     }
@@ -129,7 +130,7 @@ const WorkspaceDevice = props => {
                 image={props.image ? props.image : props.placeholderImage}
                 width={props.image ? 100 : 50}
                 height={props.image ? 100 : 50}
-                opacity={!props.image || selectedDeviceId.length > 0 ? 0.3 : 1}
+                opacity={!props.image ? 0.3 : 1}
                 shadowColor={Colors.jet}
                 shadowOffset={imageShadowOffset}
                 shadowBlur={7}
@@ -204,12 +205,6 @@ const WorkspaceDevice = props => {
                 width={100}
                 height={33}
                 cursor={'pointer'}>
-                {options.map((option, index) => (
-                    <Group key={index}>
-                        <OptionButton buttonname={option} offset={index * -33}></OptionButton>
-                        <DeviceText buttonname={option} offset={index * -33}></DeviceText>
-                    </Group>
-                ))}
             </Group>
         )
     }
@@ -222,7 +217,7 @@ const WorkspaceDevice = props => {
         <Group>
             {currentDevice.position ?
                 <Group
-                    draggable={true}
+                    draggable={!makingConnection}
                     x={Math.round(currentDevice.position.x / 50) * 50}
                     y={Math.round(currentDevice.position.y / 50) * 50}
                     width={100}
@@ -239,7 +234,7 @@ const WorkspaceDevice = props => {
                             scaleY: 1.2
                         });
 
-                        setImageShadowOffset({x: 15, y: 15});
+                        setImageShadowOffset({ x: 15, y: 15 });
                     }}
                     onDragEnd={e => {
                         updatePosition(currentDevice, Math.round(e.currentTarget.attrs.x / 50) * 50, Math.round(e.currentTarget.attrs.y / 50) * 50);
@@ -253,7 +248,7 @@ const WorkspaceDevice = props => {
                             scaleY: 1
                         });
 
-                        setImageShadowOffset({x: 5, y: 5});
+                        setImageShadowOffset({ x: 5, y: 5 });
                     }}
                     onMouseOver={e => {
                         const container = e.target.getStage().container();
@@ -264,8 +259,24 @@ const WorkspaceDevice = props => {
                         container.style.cursor = 'default';
                     }}
                     onClick={e => {
+                        const stage = e.target.getStage();
+
+                        if (newConnectionPoints.x1 === 0 && newConnectionPoints.y1 === 0) {
+
+                        } else {
+                            const newPoints = {
+                                x1: stage.getPointerPosition().x,
+                                y1: stage.getPointerPosition().y,
+                                x2: 0,
+                                y2: 0
+                            }
+                            dispatch(makingConnectionAction(true));
+                            dispatch(newConnectionPointsAction(newPoints));
+                        }
+
                         dispatch(selectedWorkspaceDeviceId(currentDevice.deviceId));
-                    }}>
+                    }}
+                >
                     <DeviceImage image={imageElement} placeholderImage={placeholderImage}></DeviceImage>
                     <DeviceText buttonname={currentDevice.general.deviceName} offset={-95}></DeviceText>
                     <ConnectionButtons buttonset={1} />

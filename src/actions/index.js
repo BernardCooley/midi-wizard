@@ -279,3 +279,17 @@ export const showMidiConnectionsAction = showMidiConnections => {
         payload: showMidiConnections
     };
 };
+
+export const makingConnectionAction = makingConnection => {
+    return {
+        type: 'MAKING_CONNECTION',
+        payload: makingConnection
+    };
+};
+
+export const newConnectionPointsAction = newConnectionPoints => {
+    return {
+        type: 'NEW_CONNECTION_POINTS',
+        payload: newConnectionPoints
+    };
+};

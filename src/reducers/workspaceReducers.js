@@ -151,6 +151,22 @@ const workspaceReducers = {
             default:
                 return state;
         }
+    },
+    makingConnection: (state = false, action) => {
+        switch (action.type) {
+            case 'MAKING_CONNECTION':
+                return state = action.payload;
+            default:
+                return state;
+        }
+    },
+    newConnectionPoints: (state = [0, 0, 0, 0], action) => {
+        switch (action.type) {
+            case 'NEW_CONNECTION_POINTS':
+                return state = action.payload;
+            default:
+                return state;
+        }
     }
 }
 

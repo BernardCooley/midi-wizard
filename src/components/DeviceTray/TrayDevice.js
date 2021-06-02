@@ -10,7 +10,7 @@ import EditIcon from '../../icons/edit.svg';
 import AddToLayoutIcon from '../../icons/add_to_layout.svg';
 import { toggleAddDeviceForm, deviceBeingEdited, addDeviceFormValues } from '../../actions';
 import sweetAlert from 'sweetalert2';
-import NoImageImage from '../../images/no-image-found.png'
+import NoImageImage from '../../images/no-image-found.png';
 
 
 const Styles = styled.div`

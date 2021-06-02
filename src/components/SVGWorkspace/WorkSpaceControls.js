@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Colors from '../../styles/colors';
 import { useSelector, useDispatch } from 'react-redux';
-import { showAudioConnectionsAction, showMidiConnectionsAction } from '../../actions/index';
+import { showAudioConnectionsAction, showMidiConnectionsAction, makingConnectionAction } from '../../actions/index';
 import { CustomButtonStyles } from '../../styles/components';
+import { StarTwoTone } from '@material-ui/icons';
 
 const Styles = styled.div`
     position: absolute;
@@ -76,6 +77,7 @@ const WorkspaceControls = props => {
     const dispatch = useDispatch();
     const showAudioConnections = useSelector(state => state.showAudioConnections);
     const showMidiConnections = useSelector(state => state.showMidiConnections);
+    const makingConnection = useSelector(state => state.makingConnection);
 
     const audioCheckbox = useRef();
     const midiCheckbox = useRef();
@@ -102,12 +104,20 @@ const WorkspaceControls = props => {
         )
     }
 
-    const newAudioConnection = () => {
 
+    const newConnection = audioMidi => {
+        dispatch(makingConnectionAction(true));
+
+
+        if (audioMidi === 'audio') {
+
+        } else if (audioMidi === 'midi') {
+
+        }
     }
 
-    const newMidiConnection = () => {
-        
+    const cancelNewConnection = () => {
+        dispatch(makingConnectionAction(false));
     }
 
     const NewConnection = () => {
@@ -115,12 +125,21 @@ const WorkspaceControls = props => {
             <div className='controlsSectionContainer'>
                 <div className='controlsTitle'>New connection</div>
                 <div className='buttonsContainer'>
-                    <CustomButtonStyles className='buttonOverride'>
-                    <button onClick={newAudioConnection} className='customButton newConnectionButton'>Audio</button>
-                    </CustomButtonStyles>
-                    <CustomButtonStyles className='buttonOverride'>
-                    <button onClick={newMidiConnection} className='customButton newConnectionButton'>Midi</button>
-                    </CustomButtonStyles>
+                    {makingConnection ?
+                        <CustomButtonStyles className='buttonOverride'>
+                            <button onClick={cancelNewConnection} className='customButton newConnectionButton'>Cancel</button>
+                        </CustomButtonStyles>
+                        :
+                        <div className='buttonsContainer'>
+                            <CustomButtonStyles className='buttonOverride'>
+                                <button onClick={() => newConnection('audio')} className='customButton newConnectionButton'>Audio</button>
+                            </CustomButtonStyles>
+                            <CustomButtonStyles className='buttonOverride'>
+                                <button onClick={() => newConnection('midi')} className='customButton newConnectionButton'>Midi</button>
+                            </CustomButtonStyles>
+                        </div>
+                    }
+
                 </div>
             </div>
         )
