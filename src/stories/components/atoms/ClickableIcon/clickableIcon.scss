@@ -1,0 +1,26 @@
+.iconContainer {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  
+    &__icon {
+      color: #f3f7ff;
+      margin: 0 10px;
+      max-height: 100px;
+      cursor: pointer;
+      transition: 0.2s;
+      -webkit-transition: 0.2s;
+      -moz-transition: 0.2s;
+      z-index: 2;
+  
+      &:hover {
+        transform: scale(1.2);
+        -webkit-box-shadow: 0 0 3pt 2pt #c4c9cb;
+        -moz-box-shadow: 0 0 3pt 2pt #c4c9cb;
+        box-shadow: 0 0 3pt 2pt #c4c9cb;
+      }
+    }
+  }
+  

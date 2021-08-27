@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StudioDesignerPage from './pages/StudioDesigner/StudioDesignerPage';
-import Header from './components/Header/Header';
+import HeaderOld from './components/Header/Header';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsLoggedIn, setCurrentUserId, setCurrentUsername, isAdmin, isVerified, isManageAccountPageOpen, allStockDevices, layouts, userData } from './actions';
 import firebase from './firebase';
@@ -8,6 +8,7 @@ import LandingPage from './pages/Landing/LandingPage';
 import AdminConsole from './pages/AdminConsole/AdminConsole';
 import styled from 'styled-components';
 import ManageAccountPage from './pages/ManageAccount/ManageAccountPage';
+import { Header } from './stories';
 
 
 const Styles = styled.div`
@@ -15,7 +16,7 @@ const Styles = styled.div`
     height: 99%;
 
     .loggedInContainer {
-      height: 100%;
+      height: 100vh;
     }
 
     .loggedOutContainer {
@@ -37,6 +38,7 @@ function App() {
   const isUserVerified = useSelector(state => state.isVerified);
   const manageAccountPageOpen = useSelector(state => state.isManageAccountPageOpen);
   const [currentPage, setCurrentPage] = useState('');
+  const isUserAdmin = useSelector(state => state.isAdmin);
 
   useEffect(() => {
     getAllStockDevices();
@@ -128,7 +130,8 @@ function App() {
       <div className="App">
         {isLoggedIn && isUserVerified ?
           <div className='loggedInContainer'>
-            <Header />
+            {/* <HeaderOld/> */}
+            <Header isAdmin={isUserAdmin} height='50px' />
 
             {(() => {
               switch (currentPage) {

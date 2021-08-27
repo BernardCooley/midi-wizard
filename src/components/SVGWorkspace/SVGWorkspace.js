@@ -7,14 +7,14 @@ import WorkspaceDevice from './WorkspaceDevice';
 import { useSelector, Provider, useDispatch } from 'react-redux';
 import { store } from '../../index';
 import { stageScale, newConnectionPointsAction } from '../../actions';
-import WorkspaceControls from '../SVGWorkspace/WorkSpaceControls';
+import WorkspaceControls from './WorkSpaceControls.tss';
 
 
 const Styles = styled.div`
     width: 100%;
 
     .svgWorkspaceContainer {
-        background-color: ${Colors.middleGray2};
+        background-color: ${Colors.workspace};
         background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
         background-size: 50px 50px;
         width: auto;

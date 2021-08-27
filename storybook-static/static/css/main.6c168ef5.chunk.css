@@ -1,0 +1,8 @@
+.storybook-button{font-family:'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:700;border:0;border-radius:5px;cursor:pointer;display:inline-block;line-height:1}.storybook-button--primary{color:#f3f7ff;background-color:#5c5e5f;border:1px solid #f3f7ff;transition:all 500ms linear}.storybook-button--primary:hover{border:1px solid #5c5e5f;background-color:#f3f7ff;color:#5c5e5f;transition:all 200ms linear}.storybook-button--secondary{color:#333;background-color:transparent;box-shadow:rgba(0,0,0,0.15) 0px 0px 0px 1px inset}.storybook-button--small{font-size:12px;padding:10px 16px}.storybook-button--medium{font-size:14px;padding:11px 20px}.storybook-button--large{font-size:16px;padding:12px 24px}
+
+.iconContainer{height:100%;display:flex;justify-content:flex-end;align-items:center}.iconContainer .icon{color:#f3f7ff;height:30px;margin:0 10px;cursor:pointer;transition:0.2s;-webkit-transition:0.2s;-moz-transition:0.2s}.iconContainer .icon:hover{-webkit-transform:scale(1.2);transform:scale(1.2);box-shadow:0 0 3pt 2pt #c4c9cb}.iconContainer .label{color:#f3f7ff}
+
+.wrapper{font-family:'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;border-bottom:1px solid rgba(0,0,0,0.1);padding:15px 20px;display:flex;align-items:center;justify-content:space-between;background-color:#333333;border-bottom:1px solid #f3f7ff}svg{display:inline-block;vertical-align:top}h1{font-weight:900;font-size:20px;line-height:1;margin:6px 0 6px 10px;display:inline-block;vertical-align:top}button+button{margin-left:10px}.logoImage{height:30px;width:215px;margin:auto}
+
+
+/*# sourceMappingURL=main.6c168ef5.chunk.css.map*/

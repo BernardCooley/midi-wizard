@@ -1,0 +1,60 @@
+.control-panel {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  width: 200px;
+  border: 1px solid darkgray;
+  padding: 10px;
+  border-radius: 10px;
+//   background-color: lightgray;
+  overflow: hidden;
+
+  box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
+
+  &__container {
+    width: 200px;
+    height: 400px;
+    position: relative;
+
+    &__header {
+        cursor: pointer;
+        height: 30px;
+        border-radius: 5px;
+        transition: all 0.2s;
+
+        &__icon {
+            position: absolute;
+
+            &:hover {
+                background-color: darkgray;
+            }
+        }
+    
+        &__title {
+          text-align: center;
+          padding-top: 6px;
+          font-weight: bold;
+        }
+    }
+
+    &__input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin: 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid darkgray;
+
+      &:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      button {
+        margin: 5px;
+        min-width: 85px;
+      }
+    }
+  }
+}

@@ -7,6 +7,8 @@ import styled from 'styled-components';
 
 
 const Styles = styled.div`
+    height: 100vh;
+
     .studioDesignerContainer {
         height: 100%;
         display: flex;

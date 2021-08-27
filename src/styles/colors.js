@@ -16,6 +16,8 @@ const Colors = {
     midi_thru: 'blue',
     audioOut: 'green',
     audioIn: 'purple',
+    workspace: '#406a82',
+    primaryButton: '#406a82'
 }
 
 export default Colors;

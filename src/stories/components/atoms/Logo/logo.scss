@@ -1,0 +1,15 @@
+.logoContainer {
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  &__icon {
+    height: 100%;
+    color: #f3f7ff;
+  }
+}

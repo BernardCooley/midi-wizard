@@ -148,7 +148,7 @@ export const ConnectionFormSectionStyles = styled.div`
 export const TrayTabStyles = styled.div`
     .trayTab {
         position: relative;
-        background-color: #383838;
+        background-color: transparent;
         height: 30px;
         border: none;
         width: 120px;
@@ -159,7 +159,6 @@ export const TrayTabStyles = styled.div`
         transition:0.2s;
         -webkit-transition:0.2s;
         -moz-transition:0.2s;
-        background: linear-gradient(rgba(211,211,211,1) 0%, rgba(137,137,137,1) 4%, rgba(56,56,56,1) 82%, rgba(56,56,56,1) 100%);
         z-index: 10;
 
         &:hover {
