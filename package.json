@@ -41,6 +41,6 @@
   },
   "devDependencies": {
     "firestore-export-import": "^0.3.3",
-    "node-sass": "^4.13.1"
+    "node-sass": "^7.0.0"
   }
 }
